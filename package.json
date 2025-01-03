@@ -15,6 +15,7 @@
     "@ray-js/components-ty": "^0.1.2",
     "@ray-js/components-ty-tabs": "0.0.14",
     "@ray-js/panel-sdk": "^1.10.0",
+    "@ray-js/presskey": "^1.0.1",
     "@ray-js/ray": "^1.4.60",
     "@ray-js/ray-error-catch": "^0.0.20",
     "@ray-js/stat-charts": "^2.2.0",

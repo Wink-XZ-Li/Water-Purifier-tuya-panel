@@ -5,180 +5,106 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #f2f2f2;
+  // background-color: #f2f2f2;
+  background:linear-gradient(to bottom, rgb(100,175,210), rgb(238,241,240))
 }
 
 .content {
-  position: relative;
+  // position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 84%;
+  height: auto;
 }
 
-.tempButton:active {
-  position: relative;
-  display: flex;
+.stateAndControlSection {
+  // margin-top: 13px;
+  height: auto;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
-  align-items: center;
-}
-
-
-// .tempButton {
-//   position: relative;
-//   display: flex;
-//   height: 80%;
-//   aspect-ratio: 1;
-//   color: rgb(91,91,91);
-// }
-
-.roSection {
   position: relative;
   display: flex;
-  flex-direction: row;
-  width: 96%;
-  height: 4%;
-  margin-left: 2%;
-  margin-right: 2%;
-  // background-color: #ffffff;
-  border-radius: 16px;
-  margin-bottom: 5px;
-  align-items: center;
-  justify-content: center;
-  // box-shadow: 2px 0px 2px 2px rgba(168, 164, 164, 0.2);
-}
-
-.rwSection {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  width: 96%;
-  height: 10%;
-  margin-left: 2%;
-  margin-right: 2%;
   background-color: #ffffff;
-  border-radius: 16px;
-  margin-top: 20px;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 2px 0px 2px 2px rgba(168, 164, 164, 0.2);
 }
 
-.powerIconOn {
-  box-shadow: 0px 0px 14px 4px rgba(41, 91, 221, 0.2);
+.baseSection {
+  position: relative;
+  display: flex;
+  // flex-direction: row;
+  // width: 90%;
+  background-color: #ffffff !important;
+  border-radius: 16px !important;
+  // align-items: center;
+  // justify-content: center;
+  box-shadow: 4px 4px 4px 4px rgba(168, 164, 164, 0.2);
+  margin-left: 18px;
+  margin-right: 18px;
+  margin-bottom: 18px;
 }
 
-.powerIconOn:active {
-  box-shadow: 0px 0px 14px 8px rgba(41, 91, 221, 0.2);
+.sectionTitle {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  font-size: medium;
+  font-weight: normal;
+  margin-top: 5%;
+  margin-left: 8%;
 }
 
-.powerIconOff:active {
-  box-shadow: 0px 0px 14px 8px rgba(102, 102, 102, 0.2);
+.sectionTitleLogo {
+  margin-right: 4px;
 }
 
-.powerIconOff {
-  box-shadow: 0px 0px 14px 4px rgba(102, 102, 102, 0.2);
+.sectionTitleText {
+  font-weight: bold;
+  color: black;
 }
 
 .sectionItem {
   position: relative;
   display: flex;
-  flex: 1;
-  padding-top: 1%;
-  padding-bottom: 1%;
-  height: 100%;
-  justify-content: center;
+  flex-direction: row;
+  width: 90%;
+  justify-content: space-between;
   align-items: center;
-  flex-direction: column;
+  color: black;
 }
 
-.button {
-  position: relative;
-  display: flex;
-  flex: 1;
-  // padding-top: 1%;
-  // padding-bottom: 1%;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.reportIcon {
-  position: relative;
-  display: flex;
-  padding-right: 15px;
-}
-
-.sectionItemTitle {
-  color: #a7a7a7;
-  font-size: small;
-  text-align: center;
-}
-
-.sectionItemTitleRO {
-  color: #a7a7a7;
-  font-size: small;
-  text-align: center;
-}
-.sectionItemContentROWaterFlow {
-  color: #a7a7a7;
-  font-size: 20px;
-  text-align: center;
-  margin-left: 3%;
-}
-
-
-.sectionItemContentRO {
-  color: #a7a7a7;
-  font-size: 20px;
-  text-align: center;
-}
-
-.sectionItemContent {
-  color: #666666;
-  font-size: 28px;
-  text-align: center;
-}
-// .sectionItemContent:active {
-//   font-weight: bold;
-// }
-
-.tempUnitSplit {
-  display: flex;
-  position: absolute;
-
-}
-
-.sectionItemUsageReport {
-  color: #666666;
-  font-size: 28px;
-  text-align: center;
-}
-
-.sectionItemUsageReport:active {
-  font-weight: bold;
-}
-
-.sectionItemStyle {
-  display: flex;
-  position: relative;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-}
-
-.sectionItemStyle:active .sectionItemContent {
-  font-weight: bold;
-}
-
-.sectionItemForUsageReport {
+.arrowText {
   position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
 }
 
+.sectionItemText {
+  position: relative;
+  display: flex;
+  width: auto;
+  justify-content: space-between;
+  font-weight: normal;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.blueText {
+  color: #00B7FB;
+}
+
+.redText {
+  color: red;
+}
+
+.sectionBtn {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
