@@ -22,17 +22,13 @@ import { useDebounceEffect } from 'ahooks';
 
 export function Stats() {
   const [date, setDate] = useState(dayjs());
-  const [powerTotal, setPowerTotal] = useState<string>('0.0');
   const [waterTotal, setWaterTotal] = useState<string>('0.0');
-  const totalWaterSchema = useDevice(devInfo => devInfo.dpSchema['water_consumption']);
-  const totalPowerSchema = useDevice(devInfo => devInfo.dpSchema['power_consumption']);
+  const totalWaterSchema = useDevice(devInfo => devInfo.dpSchema['water_total']);
   const waterUnit = "gal";
-  const powerUnit = "kw·h";
   const devId = useDevice(d => d.devInfo.devId);
   const dpState = useProps(state => state); // 获取所有dpState
-  const waterConsumption = dpState['water_consumption']
-  const powerConsumption = dpState['power_consumption']
-  const show_power_consumption: boolean = dpState['show_power_consumption']
+  const waterConsumption = dpState['water_total']
+
   // 防止date 大于今天日期
   if (date>dayjs()) setDate(dayjs());
 
@@ -255,98 +251,10 @@ export function Stats() {
     }
   },[date,token,waterConsumption], { wait: 1000 })
 
-  // power
-  useDebounceEffect(() => {
-    if (token==='day'||token==='week') {
-      getStatisticsRangDay({
-        devId,
-        dpId: totalPowerSchema.id,
-        startDay: startDateFormated,
-        endDay: endDateFormated,
-        type: 'minux',
-      })
-      .then(res => {
-        console.log("day consumption: ", res)
-        if (token==='day') {
-          setPowerTotal((parseFloat(res[startDateFormated])).toString())
-        } else if (token==='week') {
-          const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
-          setPowerTotal((parseFloat(total)).toString())
-        }
-      })
-    } else if (token==='month') {
-      getStatisticsRangDay({
-        devId,
-        dpId: totalPowerSchema.id,
-        startDay: startDateFormated,
-        endDay: endDateFormated,
-        type: 'minux',
-      }).then(res => {
-        console.log("month consumption: ", res)
-        const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
-        setPowerTotal((parseFloat(total)).toString())
-      })
-    } else if (token==='year') {
-      getStatisticsRangMonth({
-        devId,
-        dpId: totalPowerSchema.id,
-        startMonth: startDateFormated,
-        endMonth: endDateFormated,
-        type: 'minux',
-      }).then(res => {
-        console.log("year consumption: ", res)
-        const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
-        setPowerTotal((parseFloat(total)).toString())
-      })
-    }
-  }, [date,token,powerConsumption]), {wait: 1000};
-
   return (
     <View className={styles.view}>
       <ScrollView refresherTriggered={false} scrollY> 
         {datePicker()}
-        {/* POWER */}
-        
-        {show_power_consumption && <View>
-          <StatCharts
-            style={{ width: '686rpx', padding: '0' }}
-            devIdList={[devId]}
-            dpList={[{ id: totalPowerSchema.id, name: Strings.getLang('powerConsumption') }]}
-            unit={powerUnit}
-            range={range}
-            // @ts-ignore
-            type='minux'
-            startDate={startDateFormated}
-            endDate={endDateFormated}
-            chartType="bar"
-            width={686}
-            height={636}
-            debounce={{ wait: 1000, leading: false, trailing: true }}
-            renderTitle={() => {
-              return (
-                <View className={styles.powerInfo}>
-                  <Svg width='25px' height='45px' viewBox="0 0 25 45">
-                    <polygon fill="#295bdd" points="18.47 2.5 18.47 2.5 1.16 24.5 11.16 24.5 5.16 42.5 23.84 16.5 13.82 16.5 18.47 2.5"/>
-                  </Svg>
-                  <Text style={{paddingLeft: '4px'}}>
-                    <Text style={{fontSize: '20px', paddingLeft: 8}}>You've used </Text>
-                    <Text style={{color: "#295bdd", fontSize: '25px', paddingLeft:10, paddingRight:10, fontWeight: 'bold'}}>{powerTotal}</Text>
-                    <Text style={{fontSize: '20px'}}>kWh</Text>
-                  </Text>
-                </View>
-              )
-            }}
-            colors={['#295bdd']}
-            debug={false}
-            renderFooter={() => {
-              return (
-                <View style={{padding: '8px'}}>
-                  <Text style={{fontSize: '13px', color: '#999'}}>Under normal operation, there’s a ±15% tolerance in power consumption monitoring.</Text>
-                </View>
-              )
-            }}
-          />
-        </View>}
         <View>
           {/* WATER */}
           <StatCharts
@@ -367,12 +275,12 @@ export function Stats() {
               return (
                 <View className={styles.powerInfo}>
                 <Svg width='25px' height='45px' viewBox="0 0 22 30.07">
-                  <path fill='#4565d5' d='m0,18.74c0-1.98.99-4.52,2.76-7.56.7-1.21,1.52-2.47,2.43-3.78,1.11-1.59,2.27-3.14,3.49-4.65.48-.6.97-1.2,1.47-1.79l.12-.14.73-.84.73.84.12.14c.09.11.2.24.32.38.39.46.77.93,1.15,1.4,1.21,1.51,2.38,3.06,3.49,4.65.91,1.31,1.73,2.57,2.43,3.78,1.77,3.04,2.76,5.58,2.76,7.56,0,6.25-4.92,11.33-11,11.33S0,24.99,0,18.74M10.18,3.98c-1.19,1.47-2.33,2.99-3.41,4.54-.88,1.26-1.67,2.49-2.35,3.65-1.61,2.76-2.49,5.03-2.49,6.57,0,5.19,4.07,9.39,9.07,9.39s9.07-4.2,9.07-9.39c0-1.54-.89-3.81-2.5-6.57-.68-1.16-1.47-2.39-2.35-3.65-1.09-1.55-2.22-3.07-3.41-4.54-.27-.34-.55-.67-.82-1-.25.31-.53.64-.82,1'></path>
-                  <path fill='#4565d5' d='m11,26.7c-4.24,0-7.67-3.47-7.67-7.75s3.99-2.11,7.67,0c3.7,2.12,7.67-4.28,7.67,0s-3.44,7.75-7.67,7.75'></path>
+                  <path fill='#00B7FB' d='m0,18.74c0-1.98.99-4.52,2.76-7.56.7-1.21,1.52-2.47,2.43-3.78,1.11-1.59,2.27-3.14,3.49-4.65.48-.6.97-1.2,1.47-1.79l.12-.14.73-.84.73.84.12.14c.09.11.2.24.32.38.39.46.77.93,1.15,1.4,1.21,1.51,2.38,3.06,3.49,4.65.91,1.31,1.73,2.57,2.43,3.78,1.77,3.04,2.76,5.58,2.76,7.56,0,6.25-4.92,11.33-11,11.33S0,24.99,0,18.74M10.18,3.98c-1.19,1.47-2.33,2.99-3.41,4.54-.88,1.26-1.67,2.49-2.35,3.65-1.61,2.76-2.49,5.03-2.49,6.57,0,5.19,4.07,9.39,9.07,9.39s9.07-4.2,9.07-9.39c0-1.54-.89-3.81-2.5-6.57-.68-1.16-1.47-2.39-2.35-3.65-1.09-1.55-2.22-3.07-3.41-4.54-.27-.34-.55-.67-.82-1-.25.31-.53.64-.82,1'></path>
+                  <path fill='#00B7FB' d='m11,26.7c-4.24,0-7.67-3.47-7.67-7.75s3.99-2.11,7.67,0c3.7,2.12,7.67-4.28,7.67,0s-3.44,7.75-7.67,7.75'></path>
                 </Svg>
                 <Text style={{paddingLeft: '4px'}}>
                   <Text style={{fontSize: '20px', paddingLeft: 8}}>You've used </Text>
-                  <Text style={{color: "#295bdd", fontSize: '25px', paddingLeft:10, paddingRight:10, fontWeight: 'bold'}}>{waterTotal}</Text>
+                  <Text style={{color: "#00B7FB", fontSize: '25px', paddingLeft:10, paddingRight:10, fontWeight: 'bold'}}>{waterTotal}</Text>
                   <Text style={{fontSize: '20px'}}>Gallon</Text>
                 </Text>
               </View>
@@ -385,7 +293,7 @@ export function Stats() {
                 </View>
               )
             }}
-            colors={['#295bdd']}
+            colors={['#00B7FB']}
             debug={false}
           />
         </View>

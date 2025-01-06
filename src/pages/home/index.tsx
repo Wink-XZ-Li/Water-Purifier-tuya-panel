@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Switch, Text, View, ScrollView, navigateTo, Map, Image, showModal,Modal, setTabBarStyle, Button, Slider } from '@ray-js/ray';
+import { Switch, Text, View, ScrollView, navigateTo, Image, showModal, Button, Picker, getCurrentPages } from '@ray-js/ray';
 import { useActions, useDevInfo, useDpSchema, useProps } from "@ray-js/panel-sdk";
 import PressKey from '@ray-js/presskey';
 import { TopBar } from '@/components';
@@ -33,6 +33,16 @@ const heatLevels = [
   { text: "185℉", value: '3' },
   { text: "203℉", value: '4' },
 ];
+
+const seriesName = {
+  'WD600A0W': 'Pureflo Series 400GPD',
+  'WP600A0W': 'Pureflo Series 600GPD',
+  'WP800A1W': 'Megaflo Mini Series 800GPD',
+  'WP1000A1W':'Megaflo Mini Series 1000GPD',
+  'WP800A0G': 'Megaflo Series 800GPD',
+  'WP1000A0G':'Megaflo Series 1000GPD',
+  'WD800A0G': 'Megaflo HOT Series 800GPD',
+}
 
 export function Home() {
   const dpSchema = useDpSchema();
@@ -82,17 +92,17 @@ export function Home() {
   // fault alert
   React.useEffect(() => {
     const binaryFault = fault.toString(2).split('').reverse()
-    var title: ""
+    var title = ""
     if (fault !== 0) {
       
       if (binaryFault[0]==='1') {
-        title = Strings.getLang('e1Title')
+        title = "E8"//Strings.getLang('e1Title')
       } else if (binaryFault[1]==='1') {
-        title = Strings.getLang('e3Title')
+        title = "E15"//Strings.getLang('e3Title')
       } else if (binaryFault[2]==='1') {
-        title = Strings.getLang('e4Title')
+        // title = Strings.getLang('e4Title')
       }
-      showModal({title: title, content: Strings.getLang('eContent'), showCancel: false, confirmText: Strings.getLang('confirm')})
+      showModal({title: title, showCancel: false, confirmText: Strings.getLang('confirm')})
     }
   }, [dpState['fault']]);
   
@@ -101,6 +111,29 @@ export function Home() {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+  }
+
+  // 将number转换为时间字符串
+  function formatDays(days) {
+    const years = Math.floor(days / 365);
+    const dayss = days % 365;
+    return `${years.toString()}年${dayss.toString()}天`;
+  }
+
+  // 将时间字符串转换为number
+  function parseTimeToMinutes(timeStr) {
+    const [hours, mins] = timeStr.split(':').map(Number);
+    return hours * 60 + mins;
+  }
+
+  // 跳转到历史界面
+  function navigateToHistory() {
+    const pages: Array<object> = getCurrentPages()
+    if (pages[pages.length-1].pageId === 'page_0') {
+      navigateTo({url: '/pages/history/index'})
+    }
+    console.log(pages)
+    // navigateTo({url: '/pages/home/test/testConpoments'})
   }
 
   return (
@@ -125,10 +158,10 @@ export function Home() {
           textAlign: 'center',
           margin: '0 auto',
           marginTop: '-10px',
-          marginBottom: '20px'
-        }}>
-        Megaflo Mini Series 1000GPD
-        </View>
+          marginBottom: '20px',
+          color: 'white',
+          fontWeight: 'bold'
+        }}>{seriesName[modelStr]}</View>
 
         {/* 水质与状态 */}
         {/* G810;F;FH */}
@@ -180,7 +213,7 @@ export function Home() {
           <Button 
             className={styles.sectionItem} id='PCF'
             onClick={ () =>
-              console.log('review pcf state')
+              showModal({title: 'PCF剩余天数',content: formatDays(pcfFiltertimeDay), cancelText: 'Cancel', confirmText: 'Confirm',})
             }
           >
             <View className={styles.sectionItemText}>PCF</View>
@@ -195,7 +228,7 @@ export function Home() {
           <Button 
             className={styles.sectionItem} id='RO'
             onClick={ () =>
-              console.log('review ro state')
+              showModal({title: 'RO剩余天数',content: formatDays(roFiltertimeDay)})
             }
           >
             <View className={styles.sectionItemText}>RO</View>
@@ -304,18 +337,23 @@ export function Home() {
           
           <Divider/></>}
 
-          <Button 
-            className={styles.sectionItem} id='timer'
-            onClick={ () =>
-              console.log('review timer state')
-            }
+          <Picker mode='time' style={{width: '100%', marginLeft: '10%'}}
+            onChange={(e) => {
+              const time = parseTimeToMinutes(e.detail.value)
+              actions['flush_timer'].set(time)
+            }}
+            value={formatTime(flushTimer)}
+            confirmText='Confirm'
+            cancelText='Cancel'
           >
-            <View className={styles.sectionItemText}>Scheduled Flushing / 24h</View>
-            <View className={styles.arrowText}>
-              <View className={styles.sectionItemText}>{formatTime(flushTimer)}</View>
-              <Arrow/>
+            <View className={styles.sectionItem} id='timer'>
+              <View className={styles.sectionItemText}>Scheduled Flushing / 24h</View>
+              <View className={styles.arrowText}>
+                <View className={styles.sectionItemText}>{formatTime(flushTimer)}</View>
+                <Arrow/>
+              </View>
             </View>
-          </Button>
+          </Picker>
           <Text style={{width: '90%', fontSize: '10px', opacity: '0.6',marginBottom: '5px'}}>To maintain and extend the life expectancy of the filters, the system will be automatically flushed for 300 seconds per 24 hours.</Text>
         </View>
 
@@ -327,7 +365,7 @@ export function Home() {
           <Button 
             className={styles.sectionBtn}
             onClick={ () =>
-            {}
+              navigateToHistory()
             }
           >
             <View className={styles.sectionTitle} style={{marginBottom: '5%'}}>
