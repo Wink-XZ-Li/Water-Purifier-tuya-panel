@@ -7,7 +7,6 @@ import styles from './index.module.less';
 import Svg, { Icon } from '@ray-js/svg';
 import Strings from '@/i18n';
 import { FilterType } from './filter';
-import { filter } from 'lodash-es';
 
 /**
  * mini款400&600:   dknfai4pqtl1k2hf
@@ -36,13 +35,21 @@ const heatLevels = [
   { text: "203℉", value: '4' },
 ];
 const models = {
-  'WD600A0W': {name: 'Pureflo Series 400GPD',       url: require('src/images/G400.png'), },
-  'WP600A0W': {name: 'Pureflo Series 600GPD',       url: require('src/images/G600.png')},
-  'WP800A1W': {name: 'Megaflo Mini Series 800GPD',  url: require('src/images/G800.png')},
-  'WP1000A1W':{name: 'Megaflo Mini Series 1000GPD', url: require('src/images/G1000.png')},
-  'WP800A0G': {name: 'Megaflo Series 800GPD',       url: require('src/images/F800.png')},
-  'WP1000A0G':{name: 'Megaflo Series 1000GPD',      url: require('src/images/F1000.png')},
-  'WD800A0G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
+  // 'WD600A0W': {name: 'Pureflo Series 400GPD',       url: require('src/images/G400.png'),},
+  'WD600A2W': {name: 'Pureflo Series 400GPD',       url: require('src/images/G400.png'),},
+  // 'WP600A0W': {name: 'Pureflo Series 600GPD',       url: require('src/images/G600.png')},
+  'WP600A2W': {name: 'Pureflo Series 600GPD',       url: require('src/images/G600.png')},
+  // 'WP800A1W': {name: 'Megaflo Mini Series 800GPD',  url: require('src/images/G800.png')},
+  'WP800A2W': {name: 'Megaflo Mini Series 800GPD',  url: require('src/images/G800.png')},
+  // 'WP1000A1W':{name: 'Megaflo Mini Series 1000GPD', url: require('src/images/G1000.png')},
+  'WP1000A2W':{name: 'Megaflo Mini Series 1000GPD', url: require('src/images/G1000.png')},
+  // 'WP800A0G': {name: 'Megaflo Series 800GPD',       url: require('src/images/F800.png')},
+  'WP800A1G': {name: 'Megaflo Series 800GPD',       url: require('src/images/F800.png')},
+  // 'WP1000A0G':{name: 'Megaflo Series 1000GPD',      url: require('src/images/F1000.png')},
+  'WP1000A1G':{name: 'Megaflo Series 1000GPD',      url: require('src/images/F1000.png')},
+  // 'WD800A0G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
+  'WD800A1G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
+
   'default':  {name: '',                            url: require('src/images/FH.png')},
 }
 
@@ -134,7 +141,7 @@ export function Home() {
     const pages: Array<object> = getCurrentPages()
     if (pages.length>0) {
       if (pages[pages.length-1].pageId === 'page_0') {
-        navigateTo({url: '/pages/home/filter/index?type='+filter+'&model='+Model})
+        navigateTo({url: '/pages/home/filter/index?type='+filter})
       }
     }
   }

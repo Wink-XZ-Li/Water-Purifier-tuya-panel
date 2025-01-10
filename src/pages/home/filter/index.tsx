@@ -8,69 +8,56 @@ import { Arrow, Divider } from '..';
 
 export enum FilterType{ro, pcf};
 
-const models = {
-    'WD600A0W': {ro: 'Pureflo Series 400GPD',         url: require('src/images/G400.png')},
-    'WP600A0W': {name: 'Pureflo Series 600GPD',       url: require('src/images/G600.png')},
-    'WP800A1W': {name: 'Megaflo Mini Series 800GPD',  url: require('src/images/G800.png')},
-    'WP1000A1W':{name: 'Megaflo Mini Series 1000GPD', url: require('src/images/G1000.png')},
-    'WP800A0G': {name: 'Megaflo Series 800GPD',       url: require('src/images/F800.png')},
-    'WP1000A0G':{name: 'Megaflo Series 1000GPD',      url: require('src/images/F1000.png')},
-    'WD800A0G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
-    'default':  {name: '',                            url: require('src/images/FH.png')},
-}
-
 const pcfFilters = {
     // F FH
     'RP009A0N': {
-        models: ['WP800A0G', 'WD800A0G', 'WP1000A0G'], 
-        amazon: '', 
-        fogatti: ''
+        models: ['WP800A0G','WP1000A0G','WD800A0G','WP800A1G','WP1000A1G','WD800A1G'], 
+        amazon: 'https://www.amazon.com/dp/B0D3GBM3LY', 
+        fogatti: 'https://watercomfortdepot.com/products/pcf-filter-replacement-cartridge'
     },
     // G
     'RP010A0N': {
-        models: ['WD600A0W', 'WP600A0W', 'WP800A1W', 'WP1000A1W'], 
-        amazon: '', 
-        fogatti: ''
+        models: ['WD600A0W','WP600A0W','WP800A1W','WP1000A1W','WD600A2W','WP600A2W','WP800A2W','WP1000A2W'], 
+        amazon: 'https://www.amazon.com/dp/B0DPG6JR2P', 
+        fogatti: 'https://watercomfortdepot.com/products/pcf-filter-for-mizudo-pureflo-megaflo-mini-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system'
     },
 }
 const roFilters = {
     // F FH
     'RP007A0N': {
-        models: ['WP800A0G', 'WD800A0G'], 
-        amazon: '', 
-        fogatti: ''
+        models: ['WP800A0G', 'WD800A0G', 'WP800A1G', 'WD800A1G'], 
+        amazon: 'https://www.amazon.com/dp/B0D3GBJKB7', 
+        fogatti: 'https://watercomfortdepot.com/products/800gpd-ro-filter-replacement-cartridge'
     },
     // F FH
     'RP008A0N': {
-        models: ['WP1000A0G'], 
-        amazon: '', 
-        fogatti: ''
+        models: ['WP1000A0G', 'WP1000A1G'], 
+        amazon: 'https://www.amazon.com/dp/B0D3GDB334', 
+        fogatti: 'https://watercomfortdepot.com/products/1000gpd-ro-filter-replacement-cartridge'
     },
 
     // G
     'RP011A0N': {
-        models: ['WD600A0W'], 
-        amazon: '', 
-        fogatti: ''
+        models: ['WD600A0W', 'WD600A2W'], 
+        amazon: 'https://www.amazon.com/dp/B0DJS77D62', 
+        fogatti: 'https://watercomfortdepot.com/products/ro-filter-for-mizudo-pureflo-400g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system'
     },
     'RP012A0N': {
-        models: ['WP600A0W'], 
-        amazon: '', 
-        fogatti: ''
+        models: ['WP600A0W', 'WP600A2W'], 
+        amazon: 'https://www.amazon.com/dp/B0DPG78585', 
+        fogatti: 'https://watercomfortdepot.com/products/ro-filter-for-mizudo-pureflo-600g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system'
     },
     'RP013A0N': {
-        models: ['WP800A1W'], 
-        amazon: '', 
-        fogatti: ''
+        models: ['WP800A1W', 'WP800A2W'], 
+        amazon: 'https://www.amazon.com/dp/B0DPG6PSHM', 
+        fogatti: 'https://watercomfortdepot.com/products/ro-filter-for-mizudo-megaflo-mini-800g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system'
     },
     'RP014A0N': {
-        models: ['WP1000A1W'], 
-        amazon: '', 
-        fogatti: ''
+        models: ['WP1000A1W', 'WP1000A2W'], 
+        amazon: 'https://www.amazon.com/dp/B0DJS6VCJ6', 
+        fogatti: 'https://watercomfortdepot.com/products/ro-filter-for-mizudo-megaflo-mini-1000g-reverse-osmosis-water-filter-tankless-ro-water-filtration-system-under-sink'
     },
 }
-
-
 
 export function FilterManage(props) {
     const dpState = useProps(state => state);
@@ -79,13 +66,24 @@ export function FilterManage(props) {
     const roFiltertimeDay = dpState['ro_filtertime_day'];
     const pcfFiltertimeDay = dpState['cbpa_filtertime_day'];
     const type = props.location.query.type
-    const model = props.location.query.Model
+    const modelStr = dpState['model'];
 
     const title = type === "0"?'RO Filter':'PCF Filter';
     const filterTime = type === "0"?roFiltertime:pcfFiltertime;
     const filterDays = type === "0"?roFiltertimeDay:pcfFiltertimeDay;
-    const filterWebAmazon = type === "0"?'https://www.amazon.com/dp/B0DCVB21BF':'https://www.amazon.com/dp/B0DCVB21BF'
-    const filterWebFogatti = type === "0"?'https://fogatti.com':'https://fogatti.com'
+
+    function getFilterLink(model: string): { amazon: string; fogatti: string } | null {
+        const filters = (type === "0")?roFilters:pcfFilters
+        for (const filterKey in filters) {
+            if (filters[filterKey].models.includes(model)) {
+                return {
+                    amazon: filters[filterKey].amazon,
+                    fogatti: filters[filterKey].fogatti,
+                };
+            }
+        }
+        return null; // 如果没有找到对应的编码
+    }
 
     // 将number转换为时间字符串
     function formatDays(days) {
@@ -134,14 +132,20 @@ export function FilterManage(props) {
             <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
                 <Button 
                     className={styles.sectionItem} id='PCF'
+                    disabled={getFilterLink(modelStr)===null}
                     onClick={ () => {
                         showActionSheet({
                             itemList: ['amazon', 'fogatti.com'],
                             success(params) {
-                                if (params.tapIndex===0) {
-                                    openURL({url:filterWebAmazon})
-                                } else if (params.tapIndex===1) {
-                                    openURL({url:filterWebFogatti})
+                                const url = getFilterLink(modelStr)
+                                if (url !== null) {
+                                    if (params.tapIndex===0) {
+                                        openURL({url:url.amazon})
+                                    } else if (params.tapIndex===1) {
+                                        openURL({url:url.fogatti})
+                                    }
+                                } else {
+                                    // TODO: 提示没有对应滤芯
                                 }
                             },
                         })
