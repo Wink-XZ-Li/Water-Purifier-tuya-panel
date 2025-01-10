@@ -11,6 +11,7 @@ export const thing = {
   "pages": [
     "pages/home/index",
     "pages/history/index",
+    "pages/home/filter/index",
     "pages/home/components/TopTemperatureView/tempCircleTest"
   ]
 };

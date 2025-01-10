@@ -1953,10 +1953,17 @@
   dependencies:
     react-is "^17.0.2"
 
-"@ray-core/html2mini-plugin@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.npmjs.org/@ray-core/html2mini-plugin/-/html2mini-plugin-0.0.8.tgz"
-  integrity sha512-606zx97Qai83VNle0pBO+Dk4SigDD9fJO0CU0CZqrJcFFViyNmseAX8DuwlSSh13mDCKPJIIA+HoECziXDX/rw==
+"@ray-core/framework-shared@0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@ray-core/framework-shared/-/framework-shared-0.4.8.tgz#c0769b1b5a91a626ed7f4fc93ce223d6afbd7fb0"
+  integrity sha512-WG8Id/7RrJmS/iaNqC70gcPIsqOZlBuzD+qHirvXkhiFyTwmLemIuv7vIlAziz1NR6xiyt2pHxeVaApukLGbEQ==
+  dependencies:
+    react-is "^17.0.2"
+
+"@ray-core/html2mini-plugin@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@ray-core/html2mini-plugin/-/html2mini-plugin-1.0.0.tgz#86c6104346665f848ceae51aea0cd931f4f6be03"
+  integrity sha512-xgK2OQCRX1LrOm3T7G4DrbZuhOrLZ0bebOdlIFICo6eqjp05EvF+mx9TWKOov2p+sI2s7LQKWfjWMcV3SQCXPg==
 
 "@ray-core/htmlparser2@4.1.1", "@ray-core/htmlparser2@^4.1.1":
   version "4.1.1"
@@ -1981,6 +1988,13 @@
   integrity sha512-glpbYxZowJbi+kGyOowYgvrTY2eF+Vp9lTP5rb1xu058Md7ZYkNdf1inrXvHqIgYJl4sMbp3PYThz/j4gQIX9g==
   dependencies:
     "@ray-core/shared" "0.1.3"
+
+"@ray-core/macro@^0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@ray-core/macro/-/macro-0.4.8.tgz#dc614775ea60fdd24d0e503faaf5e49a3c631f70"
+  integrity sha512-hlDbnr61T4S7HUjRDjNRHR35c9G9HHxoNBPIRRnih/qU6njptZmeYwyqXROMgGasNCmTamHsH4z2VJZhB8xszw==
+  dependencies:
+    "@ray-core/shared" "0.4.8"
 
 "@ray-core/one@0.4.0":
   version "0.4.0"
@@ -2088,6 +2102,21 @@
     react-reconciler "0.26.2"
     scheduler "0.19.1"
 
+"@ray-core/runtime@^0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@ray-core/runtime/-/runtime-0.4.8.tgz#050b11a30c60f308b2fc7a244a4d871771c7aeda"
+  integrity sha512-OX0Dppy0VrN4TAUQmpbgzHghVarT7LdNffqa6jXopy7KRuVsjz1ySp2OfwtV5T60a0IiALYBNBAGaZX1oY0Yng==
+  dependencies:
+    "@ray-core/framework-shared" "0.4.8"
+    "@ray-core/htmlparser2" "4.1.1"
+    "@ray-core/shared" "0.4.8"
+    "@ray-core/web" "0.4.8"
+    lodash-es "^4.17.21"
+    qs "^6.9.3"
+    react-is "^17.0.2"
+    react-reconciler "0.26.2"
+    scheduler "0.19.1"
+
 "@ray-core/shared@0.1.3", "@ray-core/shared@^0.1.x":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@ray-core/shared/-/shared-0.1.3.tgz#3a6cb5207998315973a953270180c9a3c9478547"
@@ -2115,6 +2144,15 @@
     "@babel/traverse" "^7.11.0"
     "@ray-core/htmlparser2" "^4.1.1"
 
+"@ray-core/shared@0.4.8", "@ray-core/shared@^0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@ray-core/shared/-/shared-0.4.8.tgz#aa0662794e1725f59d71c0858195698e5487c68c"
+  integrity sha512-2E+P4Q2mf0AlhpDQs28kSVF8iNOQsVAQSB2WvoTTgBRvwAgd39PAdUgIhBMT2iHZNE66k9v8AuvAm9VS0/2QQw==
+  dependencies:
+    "@babel/parser" "^7.11.4"
+    "@babel/traverse" "^7.11.0"
+    "@ray-core/htmlparser2" "^4.1.1"
+
 "@ray-core/types@0.4.0", "@ray-core/types@^0.4.0":
   version "0.4.0"
   resolved "https://registry.npmjs.org/@ray-core/types/-/types-0.4.0.tgz"
@@ -2129,6 +2167,16 @@
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@ray-core/types/-/types-0.1.3.tgz#c9b75b2b394a287d556014b3bab86b0e49c59e10"
   integrity sha512-xcxV2VieigYjujCmMlJoPiVWcxIPziTzVKPYG/vg75Z2rqVOMR0CSVu6dE2YA9JXQgNlB9165dUJaiTl4FOBoQ==
+  dependencies:
+    "@babel/types" "^7.8.0"
+    "@types/react" "^16.9.56"
+    "@types/yargs" "^15.0.0"
+    webpack-chain "^6.4.0"
+
+"@ray-core/types@^0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@ray-core/types/-/types-0.4.8.tgz#bc5d4f6cf535582008986977b2a15e7c66ebb8aa"
+  integrity sha512-nngW/C9TvgP3wb2DvKmhiQZWm2aK+qLFHlmfQpvI8Ssgc2+6tvePP1Oc05sANzCJZihFGK4PNwk9rkDIkzm5hg==
   dependencies:
     "@babel/types" "^7.8.0"
     "@types/react" "^16.9.56"
@@ -2174,6 +2222,19 @@
     rmc-pull-to-refresh "^1.0.12"
     umi-hd "^5.0.1"
 
+"@ray-core/web@0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@ray-core/web/-/web-0.4.8.tgz#242f0417669d7391686b451c2f04aab592620c6b"
+  integrity sha512-ydI3PufEsip/W98hmlyzMyvF15x9xqomYa+ujdnAvGZikrc/B36/4oFgWnqvsIKkjVOZQuZYF42ipBwVa7yW/w==
+  dependencies:
+    "@loadable/component" "^5.12.0"
+    "@ray-core/framework-shared" "0.4.8"
+    "@remax/react-router-cache-route" "^1.8.4"
+    react-is "^17.0.2"
+    react-router-dom "^5.2.0"
+    rmc-pull-to-refresh "^1.0.12"
+    umi-hd "^5.0.1"
+
 "@ray-core/wechat@0.4.0", "@ray-core/wechat@^0.4.0":
   version "0.4.0"
   resolved "https://registry.npmjs.org/@ray-core/wechat/-/wechat-0.4.0.tgz"
@@ -2188,6 +2249,14 @@
   integrity sha512-qlyEbG8Yq50RDdXaJAVyK7cInstWdMFH7zwTfb1YQfFnPthNfdR+NQNBjhnFKQE407d4uKSl0BpzJ6GiBypzEQ==
   dependencies:
     "@ray-core/shared" "0.1.3"
+    miniprogram-api-typings "^3.4.3"
+
+"@ray-core/wechat@^0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@ray-core/wechat/-/wechat-0.4.8.tgz#7cc7e27c238f875be3fe1a2fd70c2f8de60e0e4e"
+  integrity sha512-eOdkNgBhjB4ehEtZp7Wc7N8Z+IrV2s6MJej0UX5ZiR9yE9MqiNGnuYFMWpkT+VJrCI+qTSISQMCUfv/tnBooZg==
+  dependencies:
+    "@ray-core/shared" "0.4.8"
     miniprogram-api-typings "^3.4.3"
 
 "@ray-js/adapter@1.4.52":
@@ -2208,6 +2277,15 @@
     "@ray-core/shared" "^0.4.0"
     "@ray-core/types" "^0.4.0"
 
+"@ray-js/adapter@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/adapter/-/adapter-1.5.48.tgz#799d53bbc93d706415c8119ebf5b19e430e03e56"
+  integrity sha512-OIdP1MU+GLMq7n8wjzCsA/EMXM6Cqdun9lOde2DfjkkbGRTlXodi1CZL+2fCnvbd08j5kztMB9sAvnxsB48Ang==
+  dependencies:
+    "@ray-core/runtime" "^0.4.8"
+    "@ray-core/shared" "^0.4.8"
+    "@ray-core/types" "^0.4.8"
+
 "@ray-js/adapter@^0.6.32":
   version "0.6.32"
   resolved "https://registry.yarnpkg.com/@ray-js/adapter/-/adapter-0.6.32.tgz#c4cf360829b454966c54c15377aaf60ed0ff50d7"
@@ -2225,6 +2303,17 @@
     "@ray-js/framework" "1.5.0"
     "@ray-js/router" "1.5.0"
     "@ray-js/wechat" "^0.2.8"
+    base64-browser "^1.0.1"
+    query-string "^7.1.3"
+
+"@ray-js/api@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/api/-/api-1.5.48.tgz#abbe80ab094cfbb7e8e26e55df670aa2daa7a20e"
+  integrity sha512-Rgfcyc17f39MAKCvTiWz316ZA7id0iAEvyfbQRtcSYy7Tqe1FNopfMzZ70UP8u3QGrAYVrH6Mceu5OTAa6u0wg==
+  dependencies:
+    "@ray-js/framework" "1.5.48"
+    "@ray-js/router" "1.5.48"
+    "@ray-js/wechat" "^0.2.19"
     base64-browser "^1.0.1"
     query-string "^7.1.3"
 
@@ -2370,12 +2459,17 @@
     webpack-dev-server "^3.11.3"
     webpackbar "^5.0.2"
 
-"@ray-js/capability@1.5.0":
-  version "1.5.0"
-  resolved "https://registry.npmjs.org/@ray-js/capability/-/capability-1.5.0.tgz"
-  integrity sha512-KUBvAl/S9nYmREuVg1Nl/NbH487bTrylOL3dl/IarzQpaI46Nl0kaPxoyLrBEJqb1D7gwJnqaauSlBD6nsxEiQ==
+"@ray-js/capability@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/capability/-/capability-1.5.48.tgz#a29e1d783e606e173157013e9b306fd91ff1563a"
+  integrity sha512-YFdNtbzTVHxjbzQkFFRz9ELM10fyAw2emYoDa011Pne14BUNn5Y285b2ssOHE5uJIJrVm+xc7JBZjho/k04nAg==
   dependencies:
-    "@ray-js/api" "1.5.0"
+    "@ray-js/api" "1.5.48"
+
+"@ray-js/circle-progress@0.0.10-beta-1":
+  version "0.0.10-beta-1"
+  resolved "https://registry.yarnpkg.com/@ray-js/circle-progress/-/circle-progress-0.0.10-beta-1.tgz#a9a6485f95e01248dd100eb3de079857c4701ca8"
+  integrity sha512-qgftdUHcF3v1/oscH+bjNeGTCKaM6U7FN07xTHQMZ/uMExhL0hIKDciuPHCuZ01LN8wYTCSz83j1jpVagWBzcQ==
 
 "@ray-js/cli@^1.4.45":
   version "1.4.52"
@@ -2536,6 +2630,23 @@
     react "^17.0.2"
     style-to-object "^0.3.0"
 
+"@ray-js/components@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/components/-/components-1.5.48.tgz#f871b02871b77c072dc84393af57ee3d0c49ba8a"
+  integrity sha512-Ztcl9Zx4Ns4hwqBAtZR7EAYV6WfBikl/dpqtmg9d02V47zBuzoDIc/i+xhyeowiHxd/RxhdmrofFxjnZP9SjcQ==
+  dependencies:
+    "@ray-core/macro" "^0.4.8"
+    "@ray-core/wechat" "^0.4.8"
+    "@ray-js/adapter" "1.5.48"
+    "@ray-js/framework-shared" "1.5.48"
+    ahooks "^3.8.1"
+    clsx "^1.2.1"
+    core-js "^3.39.0"
+    hooks "^0.3.2"
+    param-case "^3.0.4"
+    react "^17.0.2"
+    style-to-object "^0.3.0"
+
 "@ray-js/components@^0.6.32":
   version "0.6.32"
   resolved "https://registry.yarnpkg.com/@ray-js/components/-/components-0.6.32.tgz#c201dcd768442c877701dd025feff779034e07d6"
@@ -2558,6 +2669,11 @@
   resolved "https://registry.npmjs.org/@ray-js/env/-/env-1.5.0.tgz"
   integrity sha512-Ug13LOuixX4uZg20G+H5N15Pcwo/HaO7qMBkLNUW/NNsiufO0D5fzyhbnBJkLem97OLLufQoAfuM8X9/kkM+LA==
 
+"@ray-js/env@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/env/-/env-1.5.48.tgz#c07c1ceee2848480e2786fb23e2edc5f246cf64c"
+  integrity sha512-ntG9ISkwcGV24n5CuaaACgrPc+5MBvV5b6hd5gR8ZkhK8kVKYeQlddHdk+cgO7KPdnXa0qWhQAR2uKhBYzFI8w==
+
 "@ray-js/env@^0.6.32":
   version "0.6.32"
   resolved "https://registry.yarnpkg.com/@ray-js/env/-/env-0.6.32.tgz#3f00f9abacab745c6b2c3ab7a3108332d905d829"
@@ -2569,6 +2685,13 @@
   integrity sha512-GCUHgTQn0/e2oO+n8TEDP33HXKTpyQbtFMsnVD/TdwBUfI39MTLBPyY4jCYv78bAyUe5CgKLKlLw51BosSr1BA==
   dependencies:
     "@ray-js/runtime" "1.5.0"
+
+"@ray-js/framework-mp@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/framework-mp/-/framework-mp-1.5.48.tgz#d92f4f7bc6824892b08fd61ee5dadd0f98d32367"
+  integrity sha512-pj7cJXlkNQr8R1l/C1I1VjZmjAgrvIRq1oMgR3Zf3oB44hg7l6hOd4XRlqBMhHrDKgio4fbEYbxtAKyfHsdynA==
+  dependencies:
+    "@ray-js/runtime" "1.5.48"
 
 "@ray-js/framework-mp@^0.6.32":
   version "0.6.32"
@@ -2586,6 +2709,16 @@
     "@ray-js/env" "1.5.0"
     "@ray-js/types" "1.5.0"
     path-to-regexp "^6.2.1"
+
+"@ray-js/framework-shared@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/framework-shared/-/framework-shared-1.5.48.tgz#38b6ed08bd4671d8d56cf5de2984355954e01b6b"
+  integrity sha512-W1n9i/oM5exDbiOJ4lRWfBBsAnoFDZ0xz80XNTMBxC0Lf1MykDD2qonk99/5o42DfFpIWKGavrT80Mz41Zu4XA==
+  dependencies:
+    "@ray-core/wechat" "^0.4.8"
+    "@ray-js/env" "1.5.48"
+    "@ray-js/types" "1.5.48"
+    path-to-regexp "^6.3.0"
 
 "@ray-js/framework-shared@^0.6.32":
   version "0.6.32"
@@ -2608,6 +2741,24 @@
     "@ray-js/location" "1.5.0"
     "@ray-js/router" "1.5.0"
     "@ray-js/runtime" "1.5.0"
+    clsx "^1.2.1"
+    hoist-non-react-statics "^3.3.2"
+    lodash.get "^4.4.2"
+    lodash.set "^4.3.2"
+    slash "^5.1.0"
+    tiny-invariant "^1.3.3"
+
+"@ray-js/framework@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/framework/-/framework-1.5.48.tgz#494b7a9136b9314aeae704d0109837ea52cc4ca9"
+  integrity sha512-KSe5dk5smJpv+/xybxYyP5+kXywuwcXhPtEw8j+o8UYoF7hf9S9rvQOvHXx9hxk/YkYXjzN84/U1MPqaQTj/FA==
+  dependencies:
+    "@ray-js/framework-mp" "1.5.48"
+    "@ray-js/framework-shared" "1.5.48"
+    "@ray-js/library" "1.5.48"
+    "@ray-js/location" "1.5.48"
+    "@ray-js/router" "1.5.48"
+    "@ray-js/runtime" "1.5.48"
     clsx "^1.2.1"
     hoist-non-react-statics "^3.3.2"
     lodash.get "^4.4.2"
@@ -2647,6 +2798,13 @@
   dependencies:
     merge "^2.1.1"
 
+"@ray-js/library@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/library/-/library-1.5.48.tgz#b72af45519a0f6e6c81afbadce84b5bea1bb9119"
+  integrity sha512-MzH5i9t4Fco1/gpX4PnE8d/UV+MKgODYd9AQ679MUa9YMyM9wCNbq2Xy/LuSYBWIgPoUqvL7IDVwzE9TuxRrHw==
+  dependencies:
+    merge "^2.1.1"
+
 "@ray-js/library@^0.6.32":
   version "0.6.32"
   resolved "https://registry.yarnpkg.com/@ray-js/library/-/library-0.6.32.tgz#c97ea0fd6cf6eeb8f64e9d57b122f85a3906755e"
@@ -2663,6 +2821,15 @@
     "@ray-js/router" "1.5.0"
     "@ray-js/router-mp" "1.5.0"
 
+"@ray-js/location@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/location/-/location-1.5.48.tgz#401ceda6f59fef5ebeab53d8239e33ffca798637"
+  integrity sha512-ghE5xPm7vUHGKPEmFr3j+XrCUAyK42YZz6ROgEfmmf8FDyNVKw7BnH7g5xh6fQ/gC8aMNgs/7dXVJ30mV3JZew==
+  dependencies:
+    "@ray-js/library" "1.5.48"
+    "@ray-js/router" "1.5.48"
+    "@ray-js/router-mp" "1.5.48"
+
 "@ray-js/location@^0.6.32":
   version "0.6.32"
   resolved "https://registry.yarnpkg.com/@ray-js/location/-/location-0.6.32.tgz#b4001c946def61eb0ed709b745e619eb8b92db55"
@@ -2672,13 +2839,6 @@
     "@ray-js/router" "^0.6.32"
     "@ray-js/router-mp" "^0.6.32"
 
-"@ray-js/panel-cloud@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npmjs.org/@ray-js/panel-cloud/-/panel-cloud-1.4.0.tgz"
-  integrity sha512-4OBBs1d8IJMndThrDhfDyrZ2fZS/LukMTTsSC3yoOL6+o9aOA5YHuopb4Wxi2hJOA14GoFS0O5GYa8mkTvcrDg==
-  dependencies:
-    "@ray-js/panel-shared" "^1.3.0"
-
 "@ray-js/panel-cloud@^1.4.1":
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/@ray-js/panel-cloud/-/panel-cloud-1.4.4.tgz#00230b5c2763555118c374022fc59282f4a3ed35"
@@ -2686,28 +2846,13 @@
   dependencies:
     "@ray-js/panel-shared" "^1.3.0"
 
-"@ray-js/panel-sdk@^1.1.4", "@ray-js/panel-sdk@^1.2.2":
+"@ray-js/panel-sdk@^1.1.4", "@ray-js/panel-sdk@^1.13.1", "@ray-js/panel-sdk@^1.2.2":
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/@ray-js/panel-sdk/-/panel-sdk-1.13.1.tgz#5737d0863aaf83cd04d6e0610b80c3d8605f491d"
   integrity sha512-uwj/hKvtvtj3LW7irPxqEg6sKicjNhXaWaQ9y+qB+Elt2aS7Og016bi+XSOm4ctkptiX2+qGPYvJGooQ7hfC7A==
   dependencies:
     "@ray-core/runtime" "^0.3.6"
     "@ray-js/panel-cloud" "^1.4.1"
-    "@ray-js/panel-shared" "^1.3.0"
-    "@ray-js/tuya-dp-transform" "^0.0.2"
-    base64-browser "^1.0.1"
-    base64-js "^1.5.1"
-    events "^3.3.0"
-    lodash-es "^4.17.21"
-    use-context-selector "^1.4.1"
-
-"@ray-js/panel-sdk@^1.10.0":
-  version "1.10.1"
-  resolved "https://registry.npmjs.org/@ray-js/panel-sdk/-/panel-sdk-1.10.1.tgz"
-  integrity sha512-3Rw7p7ikq8gUyMmGZTMwiox0ICFqdRDvemxFUylTQlYyDvwDUmjA/fixJqV0Sb5JGvnw0ucvjAQpc29X88+UVA==
-  dependencies:
-    "@ray-core/runtime" "^0.3.6"
-    "@ray-js/panel-cloud" "^1.4.0"
     "@ray-js/panel-shared" "^1.3.0"
     "@ray-js/tuya-dp-transform" "^0.0.2"
     base64-browser "^1.0.1"
@@ -2747,17 +2892,17 @@
     "@ray-js/components" "^0.6.32"
     "@ray-js/framework" "^0.6.32"
 
-"@ray-js/ray@^1.4.60":
-  version "1.5.0"
-  resolved "https://registry.npmjs.org/@ray-js/ray/-/ray-1.5.0.tgz"
-  integrity sha512-hfYb5V45Z+WOskOs1sxDogAk0JTmV6Zx5cyKWqkN2XOvxo3yTeMBuwIiQzy2hZWTEGDnw0S1xV3chuAuV2uL6Q==
+"@ray-js/ray@^1.5.27":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/ray/-/ray-1.5.48.tgz#29ed1c1a577c838cb1ef4fc5b574303a75e2d990"
+  integrity sha512-iTih3Vh3XXiBonlzbq5Xhlj5so5GenzT96x67ADUJE0GFGcNPkq/j8AQMI4VWo7Ak6DuftjJRdrSgdmpRkVClg==
   dependencies:
-    "@ray-core/html2mini-plugin" "0.0.8"
-    "@ray-core/macro" "^0.4.0"
-    "@ray-js/api" "1.5.0"
-    "@ray-js/capability" "1.5.0"
-    "@ray-js/components" "1.5.0"
-    "@ray-js/framework" "1.5.0"
+    "@ray-core/html2mini-plugin" "^1.0.0"
+    "@ray-core/macro" "^0.4.8"
+    "@ray-js/api" "1.5.48"
+    "@ray-js/capability" "1.5.48"
+    "@ray-js/components" "1.5.48"
+    "@ray-js/framework" "1.5.48"
 
 "@ray-js/raypack@1.4.52":
   version "1.4.52"
@@ -2808,6 +2953,18 @@
     path-to-regexp "^6.2.1"
     slash "^5.1.0"
 
+"@ray-js/router-mp@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/router-mp/-/router-mp-1.5.48.tgz#79e1d47b95f5e019798cade94e18682c57dc2c1b"
+  integrity sha512-PJdGVxHc1b/iz25uSA5Xys4zXpLofSKQoU3dqZclnewAI5Ts8TxUN4QhZkp4gSG5m1almIefbHONEH+HR5Ny6w==
+  dependencies:
+    "@ray-js/env" "1.5.48"
+    "@ray-js/library" "1.5.48"
+    "@ray-js/types" "1.5.48"
+    "@react-navigation/core" "^6.4.17"
+    path-to-regexp "^6.3.0"
+    slash "^5.1.0"
+
 "@ray-js/router-mp@^0.6.32":
   version "0.6.32"
   resolved "https://registry.yarnpkg.com/@ray-js/router-mp/-/router-mp-0.6.32.tgz#b8126519cc6aee7a2ee269100d937774b1bc46a1"
@@ -2830,6 +2987,15 @@
     "@ray-js/types" "1.5.0"
     history "^4.10.1"
 
+"@ray-js/router@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/router/-/router-1.5.48.tgz#bfc9f00e2474208689472f5cdee74af643759b9b"
+  integrity sha512-oA+LyOHlJxQAsxK/B36UdAM0kiPgx4sfQVWYYLBZDIxziJfBs5GmBxy2XmclsecpoumxNj/My/2RVf1ShLFb2A==
+  dependencies:
+    "@ray-js/library" "1.5.48"
+    "@ray-js/types" "1.5.48"
+    history "^4.10.1"
+
 "@ray-js/router@^0.6.32":
   version "0.6.32"
   resolved "https://registry.yarnpkg.com/@ray-js/router/-/router-0.6.32.tgz#4725db00471504cf02c224f453827326e6ad9969"
@@ -2845,6 +3011,13 @@
   integrity sha512-3I9IPH6D3Rxga2NtzLW62UCDS1NRwsOuVin6rE20LHxKoVBt1If5g8/QceXzQZ6yq22sxnxq88h5JirZHaL5WA==
   dependencies:
     "@ray-core/runtime" "^0.4.0"
+
+"@ray-js/runtime@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/runtime/-/runtime-1.5.48.tgz#0abaa0122049e7d4b99c6ac61c0a73d2effeac33"
+  integrity sha512-rJMofGs2/6xDU/D2xsOE7s/M6C9i/dRVVqndRMqcPlWjIAh1upRNbrJMhq1QS/M84hAOGv9XE4O/Wx63oq2JfA==
+  dependencies:
+    "@ray-core/runtime" "^0.4.8"
 
 "@ray-js/runtime@^0.6.32":
   version "0.6.32"
@@ -2906,6 +3079,13 @@
   dependencies:
     path-to-regexp "^6.2.1"
 
+"@ray-js/types@1.5.48":
+  version "1.5.48"
+  resolved "https://registry.yarnpkg.com/@ray-js/types/-/types-1.5.48.tgz#1881d785b81508994b8efdcd10271e5df7924ab0"
+  integrity sha512-P2fYG7NAQ6QV9Jkh1qPAhEkYX5Q5BN6f7PX0M2Qb1G+0rYWbkx27rnkcK1BY8PnfSz0VGPMAWcLRKhhDUV75JQ==
+  dependencies:
+    path-to-regexp "^6.3.0"
+
 "@ray-js/types@^0.6.32":
   version "0.6.32"
   resolved "https://registry.yarnpkg.com/@ray-js/types/-/types-0.6.32.tgz#11a5d7faeba16717833cdddef6522a660b1f06b3"
@@ -2913,10 +3093,27 @@
   dependencies:
     path-to-regexp "^6.2.0"
 
+"@ray-js/wechat-assembly@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-assembly/-/wechat-assembly-0.2.19.tgz#880674d281c348eabc68a003b5237b1133ea6103"
+  integrity sha512-KROe3QHfOS/6TaMB9yAKjRxefeai+lQ/rhsTVWbEQPnKrMC20xd0r7OOWylAHg+6vGjalUMBbhuedXOqA8ytPQ==
+
 "@ray-js/wechat-assembly@^0.2.9":
   version "0.2.9"
   resolved "https://registry.npmjs.org/@ray-js/wechat-assembly/-/wechat-assembly-0.2.9.tgz"
   integrity sha512-116iZeaH/c0N9a0oNwqOZhuWB9vpetDiBfbrHPWTsMKp7qyKNFHNw3VwpUDoJiPar5ZvOK0nXM9GqqPgaebGQA==
+
+"@ray-js/wechat-bluetooth@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-bluetooth/-/wechat-bluetooth-0.2.19.tgz#10b4d8166970ac303b56593843c263bd148e2202"
+  integrity sha512-J9rbIH4mx9XzkHMmIqNBCjE06NhiNOqtQyg43rXDHNBI76wfYG2W89CZ97YWIBBB9tP+b9TUWacaKf9hszKp1w==
+  dependencies:
+    "@ray-js/wechat-debug" "^0.2.19"
+    "@ray-js/wechat-event" "^0.2.19"
+    "@ray-js/wechat-helper" "^0.2.19"
+    "@ray-js/wechat-tycrypto" "^0.2.19"
+    js-base64 "^3.7.2"
+    js-md5 "^0.7.3"
 
 "@ray-js/wechat-bluetooth@^0.2.9":
   version "0.2.9"
@@ -2930,10 +3127,30 @@
     js-base64 "^3.7.2"
     js-md5 "^0.7.3"
 
+"@ray-js/wechat-debug@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-debug/-/wechat-debug-0.2.19.tgz#c0ca4c495e09a9cbc39641ecaa2d703469f77ce0"
+  integrity sha512-IOK9ya3lJL5dOVBGGPGvoKxHo6ByrcTA9zBrBQPk8F6BI3E7d1xTXaVREvqr9p2/u3rQPHOlwJdHN1vSeGsoGg==
+
 "@ray-js/wechat-debug@^0.2.9":
   version "0.2.9"
   resolved "https://registry.npmjs.org/@ray-js/wechat-debug/-/wechat-debug-0.2.9.tgz"
   integrity sha512-iyE5Hp7HGjQYgscxHljOJpWmZ+MYnIFPADkE2ok+hpZ+mi1QAZSzIAR574RSwYVquLA72Pbvj5puzz0NnyLLRw==
+
+"@ray-js/wechat-device@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-device/-/wechat-device-0.2.19.tgz#d1ed707251c66156f83f3a7fbc2e98ce55612d7d"
+  integrity sha512-2uCwrdvxVwOX5CTUPCtN+mrBiPwDB+VDoM6oYIyds28EZ2WRmRpTnFfKnbGNxKmBGptvyDp1GU1Mrnevp+T18g==
+  dependencies:
+    "@ray-js/wechat-bluetooth" "^0.2.19"
+    "@ray-js/wechat-debug" "^0.2.19"
+    "@ray-js/wechat-event" "^0.2.19"
+    "@ray-js/wechat-helper" "^0.2.19"
+    "@ray-js/wechat-mqtt" "^0.2.19"
+    "@ray-js/wechat-request" "^0.2.19"
+    "@ray-js/wechat-tycrypto" "^0.2.19"
+    js-base64 "^3.7.2"
+    js-md5 "^0.7.3"
 
 "@ray-js/wechat-device@^0.2.9":
   version "0.2.9"
@@ -2949,6 +3166,13 @@
     js-base64 "^3.7.2"
     js-md5 "^0.7.3"
 
+"@ray-js/wechat-event@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-event/-/wechat-event-0.2.19.tgz#f33ad83a86896dd90e6797c6577753b637496645"
+  integrity sha512-TnaT+iLNAAVQ7Ipg5FRZBjsN93U/XyDbxpIfLKKaCpnQ0TwYr6fci0NX0K17usaOyLkKLthPFy+0HVDqaWSYAA==
+  dependencies:
+    "@ray-js/wechat-helper" "^0.2.19"
+
 "@ray-js/wechat-event@^0.2.9":
   version "0.2.9"
   resolved "https://registry.npmjs.org/@ray-js/wechat-event/-/wechat-event-0.2.9.tgz"
@@ -2956,10 +3180,23 @@
   dependencies:
     "@ray-js/wechat-helper" "^0.2.9"
 
+"@ray-js/wechat-helper@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-helper/-/wechat-helper-0.2.19.tgz#b9b53e00d9cd085946a883791643c16a41b7603b"
+  integrity sha512-f8RvrDmpjmVE6zuR9Z652JNSd3w1bm+cUdFblU4z0quu7IoSPk1WnxTAVHj3NLn8HQe5oE/HVsXhTENHHZiEGg==
+
 "@ray-js/wechat-helper@^0.2.9":
   version "0.2.9"
   resolved "https://registry.npmjs.org/@ray-js/wechat-helper/-/wechat-helper-0.2.9.tgz"
   integrity sha512-WVZhVmffpj0aGVUdg7NeejZdITThMyNHGI3bGiq0hJqG3psI7I/VQ0+nR+XVDvUVEp4e5MNfsmo8PTZKNI7yGQ==
+
+"@ray-js/wechat-mqtt@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-mqtt/-/wechat-mqtt-0.2.19.tgz#c632a1122a7e62803d4f3187f04c2522bd7ac3c9"
+  integrity sha512-i8lTCFAfODkuBrUbBcTv89tPzznwCi82p1zdYIbOHy2MrlcPuPFsAN9YaHLsxknY+k9yPP/Gq7ytbfIbq7kyKQ==
+  dependencies:
+    "@ray-js/wechat-event" "^0.2.19"
+    "@ray-js/wechat-helper" "^0.2.19"
 
 "@ray-js/wechat-mqtt@^0.2.9":
   version "0.2.9"
@@ -2969,6 +3206,15 @@
     "@ray-js/wechat-event" "^0.2.9"
     "@ray-js/wechat-helper" "^0.2.9"
 
+"@ray-js/wechat-network@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-network/-/wechat-network-0.2.19.tgz#bb92c74db97c8ead8584cb2008519df51066d0ea"
+  integrity sha512-R/IKCBDYfXkgk2Gi65W+sIxNngZOX8uKVWvj9Dy3IRrfkUuEFv24cXcK+DaPS4HgvuYNESYjcKBZ1EzwWAE4LA==
+  dependencies:
+    "@ray-js/wechat-assembly" "^0.2.19"
+    "@ray-js/wechat-event" "^0.2.19"
+    "@ray-js/wechat-helper" "^0.2.19"
+
 "@ray-js/wechat-network@^0.2.9":
   version "0.2.9"
   resolved "https://registry.npmjs.org/@ray-js/wechat-network/-/wechat-network-0.2.9.tgz"
@@ -2977,6 +3223,18 @@
     "@ray-js/wechat-assembly" "^0.2.9"
     "@ray-js/wechat-event" "^0.2.9"
     "@ray-js/wechat-helper" "^0.2.9"
+
+"@ray-js/wechat-request@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-request/-/wechat-request-0.2.19.tgz#43ed2dc6c1a23d523f57012a8ab3a139a8b94d5c"
+  integrity sha512-FB74hNZEInUj1aMbE6WzJ4S92zpgTj32RDeSkrfPh24c0ijznlVq1Q/5d0+nksO7xRnzGpZXMnWY7E+nSEdbEg==
+  dependencies:
+    "@ray-js/wechat-event" "^0.2.19"
+    "@ray-js/wechat-helper" "^0.2.19"
+    "@ray-js/wechat-rsa" "^0.2.19"
+    "@ray-js/wechat-tycrypto" "^0.2.19"
+    js-base64 "^3.7.2"
+    js-md5 "^0.7.3"
 
 "@ray-js/wechat-request@^0.2.9":
   version "0.2.9"
@@ -2990,15 +3248,38 @@
     js-base64 "^3.7.2"
     js-md5 "^0.7.3"
 
+"@ray-js/wechat-rsa@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-rsa/-/wechat-rsa-0.2.19.tgz#639ad905f6c17330a17e8a4efba9482f971b4883"
+  integrity sha512-uNGg5aLIyIBHA+wD2IK7/VNnp4NOI8jr6PmNkCbvD3EISv1wvTX/8cvr6tVNsLHGgJG9rdY3SNhRhNYIMc0anQ==
+
 "@ray-js/wechat-rsa@^0.2.9":
   version "0.2.9"
   resolved "https://registry.npmjs.org/@ray-js/wechat-rsa/-/wechat-rsa-0.2.9.tgz"
   integrity sha512-BI7vUZ+lN1DqRrP6dRHvu5AZtrZq7xh6lbNkMFvs53RD6PvDnonMzXEB5Nnde9gjnwACdt5KnDSlacERwKYE6Q==
 
+"@ray-js/wechat-tycrypto@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat-tycrypto/-/wechat-tycrypto-0.2.19.tgz#6fa2f6d290cfd973e1c65f21fd4e1790b0eff080"
+  integrity sha512-nLoACsFqF3Vy1ooEhHNhkC98M2KovFNOgqHYpDJAhBqnfQFbh6VPH0fSulJsA5gJuBArcu/6/1XqXQAY5eDtjw==
+
 "@ray-js/wechat-tycrypto@^0.2.9":
   version "0.2.9"
   resolved "https://registry.npmjs.org/@ray-js/wechat-tycrypto/-/wechat-tycrypto-0.2.9.tgz"
   integrity sha512-NHmQxFaoTeUa7ot3hioXdQv36soRzA7M4GkmYBSW3gUKqRTnUF92dykBVTvJq843wppAkBX8qTnIQwYvilK+Vg==
+
+"@ray-js/wechat@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@ray-js/wechat/-/wechat-0.2.19.tgz#93ede4af9548ff8c9497717aa02dfae00e67288e"
+  integrity sha512-xEkpn1Echs3MY8ZZM46ndUqHjI0i8bEsNi3jG38gCZVrDmqXASTyb8pgduyjBs5ctq/TXsNwFCxOxeijLdP2Kg==
+  dependencies:
+    "@ray-js/wechat-bluetooth" "^0.2.19"
+    "@ray-js/wechat-device" "^0.2.19"
+    "@ray-js/wechat-event" "^0.2.19"
+    "@ray-js/wechat-helper" "^0.2.19"
+    "@ray-js/wechat-network" "^0.2.19"
+    "@ray-js/wechat-request" "^0.2.19"
+    "@ray-js/wechat-rsa" "^0.2.19"
 
 "@ray-js/wechat@^0.2.8":
   version "0.2.9"
@@ -3043,7 +3324,7 @@
     query-string "^6.13.6"
     react-is "^16.13.0"
 
-"@react-navigation/core@^6.1.0":
+"@react-navigation/core@^6.1.0", "@react-navigation/core@^6.4.17":
   version "6.4.17"
   resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-6.4.17.tgz#f277a196b578c8a456efcc563d1c9bd87eb4ab04"
   integrity sha512-Nd76EpomzChWAosGqWOYE3ItayhDzIEzzZsT7PfGcRFDgW5miHV2t4MZcq9YIK4tzxZjVVpYbIynOOQQd1e0Cg==
@@ -3978,6 +4259,21 @@ ahooks@^3.5.2, ahooks@^3.7.1, ahooks@^3.7.10, ahooks@^3.7.11:
     dayjs "^1.9.1"
     intersection-observer "^0.12.0"
     js-cookie "^2.x.x"
+    lodash "^4.17.21"
+    react-fast-compare "^3.2.2"
+    resize-observer-polyfill "^1.5.1"
+    screenfull "^5.0.0"
+    tslib "^2.4.1"
+
+ahooks@^3.8.1:
+  version "3.8.4"
+  resolved "https://registry.yarnpkg.com/ahooks/-/ahooks-3.8.4.tgz#ee2a22d52b6ee57743a1f6ab51c91a7c36bcd7c6"
+  integrity sha512-39wDEw2ZHvypaT14EpMMk4AzosHWt0z9bulY0BeDsvc9PqJEV+Kjh/4TZfftSsotBMq52iYIOFPd3PR56e0ZJg==
+  dependencies:
+    "@babel/runtime" "^7.21.0"
+    dayjs "^1.9.1"
+    intersection-observer "^0.12.0"
+    js-cookie "^3.0.5"
     lodash "^4.17.21"
     react-fast-compare "^3.2.2"
     resize-observer-polyfill "^1.5.1"
@@ -5759,7 +6055,7 @@ core-js@^2.4.0, core-js@^2.5.0:
   resolved "https://registry.npmjs.org/core-js/-/core-js-2.6.12.tgz"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
-core-js@^3.19.1:
+core-js@^3.19.1, core-js@^3.39.0:
   version "3.39.0"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.39.0.tgz#57f7647f4d2d030c32a72ea23a0555b2eaa30f83"
   integrity sha512-raM0ew0/jJUqkJ0E6e8UDtl+y/7ktFivgWvqw8dNSQeNWoSDLvQ1H/RN3aPXB9tBd4/FhyR4RDPGhsNIMsAn7g==
@@ -6781,6 +7077,13 @@ es-to-primitive@^1.2.1:
     is-callable "^1.1.4"
     is-date-object "^1.0.1"
     is-symbol "^1.0.2"
+
+esbuild-external-global@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/esbuild-external-global/-/esbuild-external-global-1.0.1.tgz#fe31c145fd86546497d8f307a366e96215ca6978"
+  integrity sha512-w26g1kklSHBUchOls8NMZBom96IeFcCg0FTBsGteq4C2KDsK3eiAWW+bczEQ3ex1bGvCS9i6hYC5XNt6iPA1Vg==
+  dependencies:
+    fs-extra "^11.2.0"
 
 esbuild-plugin-auto-css-modules@^0.1.2:
   version "0.1.2"
@@ -9656,6 +9959,11 @@ js-cookie@^2.x.x:
   resolved "https://registry.npmjs.org/js-cookie/-/js-cookie-2.2.1.tgz"
   integrity sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==
 
+js-cookie@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-3.0.5.tgz#0b7e2fd0c01552c58ba86e0841f94dc2557dcdbc"
+  integrity sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==
+
 js-md5@^0.7.3:
   version "0.7.3"
   resolved "https://registry.npmjs.org/js-md5/-/js-md5-0.7.3.tgz"
@@ -11357,7 +11665,7 @@ path-to-regexp@^1.7.0:
   dependencies:
     isarray "0.0.1"
 
-path-to-regexp@^6.2.0:
+path-to-regexp@^6.2.0, path-to-regexp@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-6.3.0.tgz#2b6a26a337737a8e1416f9272ed0766b1c0389f4"
   integrity sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==

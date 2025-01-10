@@ -1,11 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { Switch, Text, View, ScrollView, navigateTo, Image, showModal, Button, Picker, getCurrentPages } from '@ray-js/ray';
+import { Switch, Text, View, ScrollView, navigateTo, Image, showModal, Button, Picker, getCurrentPages, router } from '@ray-js/ray';
 import { useActions, useDevInfo, useDpSchema, useProps } from "@ray-js/panel-sdk";
 import PressKey from '@ray-js/presskey';
 import { TopBar } from '@/components';
 import styles from './index.module.less';
 import Svg, { Icon } from '@ray-js/svg';
 import Strings from '@/i18n';
+import { FilterType } from './filter';
+import { filter } from 'lodash-es';
 
 /**
  * mini款400&600:   dknfai4pqtl1k2hf
@@ -16,11 +18,11 @@ import Strings from '@/i18n';
 
 var Model: 'G46'| 'G810' | 'F' | 'FH' = 'G46';
 
-function Divider() {
+export function Divider() {
   return (<View style={{height: '2px', width: '90%', backgroundColor: '#e9e9e9' }}></View>)
 }
 
-function Arrow() {
+export function Arrow() {
   return (
   <Svg style={{marginLeft: '-10', marginRight: '-40',  width: '49px', height:'19px'}} viewBox="0 0 5.17 9.44">
     <path fill='black' fill-rule='nonzero' d="M5.04 4.44l-4.56 -4.44 -0.47 0.48 4.37 4.24 -4.37 4.24 0.47 0.49 4.57 -4.45c0.02,-0.02 0.05,-0.05 0.06,-0.07 0.11,-0.18 0.07,-0.34 -0.07,-0.49z"/>
@@ -33,15 +35,15 @@ const heatLevels = [
   { text: "185℉", value: '3' },
   { text: "203℉", value: '4' },
 ];
-
-const seriesName = {
-  'WD600A0W': 'Pureflo Series 400GPD',
-  'WP600A0W': 'Pureflo Series 600GPD',
-  'WP800A1W': 'Megaflo Mini Series 800GPD',
-  'WP1000A1W':'Megaflo Mini Series 1000GPD',
-  'WP800A0G': 'Megaflo Series 800GPD',
-  'WP1000A0G':'Megaflo Series 1000GPD',
-  'WD800A0G': 'Megaflo HOT Series 800GPD',
+const models = {
+  'WD600A0W': {name: 'Pureflo Series 400GPD',       url: require('src/images/G400.png'), },
+  'WP600A0W': {name: 'Pureflo Series 600GPD',       url: require('src/images/G600.png')},
+  'WP800A1W': {name: 'Megaflo Mini Series 800GPD',  url: require('src/images/G800.png')},
+  'WP1000A1W':{name: 'Megaflo Mini Series 1000GPD', url: require('src/images/G1000.png')},
+  'WP800A0G': {name: 'Megaflo Series 800GPD',       url: require('src/images/F800.png')},
+  'WP1000A0G':{name: 'Megaflo Series 1000GPD',      url: require('src/images/F1000.png')},
+  'WD800A0G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
+  'default':  {name: '',                            url: require('src/images/FH.png')},
 }
 
 export function Home() {
@@ -96,11 +98,9 @@ export function Home() {
     if (fault !== 0) {
       
       if (binaryFault[0]==='1') {
-        title = "E8"//Strings.getLang('e1Title')
+        title = "E8"
       } else if (binaryFault[1]==='1') {
-        title = "E15"//Strings.getLang('e3Title')
-      } else if (binaryFault[2]==='1') {
-        // title = Strings.getLang('e4Title')
+        title = "E15"
       }
       showModal({title: title, showCancel: false, confirmText: Strings.getLang('confirm')})
     }
@@ -112,14 +112,7 @@ export function Home() {
     const mins = minutes % 60;
     return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
   }
-
-  // 将number转换为时间字符串
-  function formatDays(days) {
-    const years = Math.floor(days / 365);
-    const dayss = days % 365;
-    return `${years.toString()}年${dayss.toString()}天`;
-  }
-
+  
   // 将时间字符串转换为number
   function parseTimeToMinutes(timeStr) {
     const [hours, mins] = timeStr.split(':').map(Number);
@@ -129,26 +122,40 @@ export function Home() {
   // 跳转到历史界面
   function navigateToHistory() {
     const pages: Array<object> = getCurrentPages()
-    if (pages[pages.length-1].pageId === 'page_0') {
-      navigateTo({url: '/pages/history/index'})
+    if (pages.length>0) {
+      if (pages[pages.length-1].pageId === 'page_0') {
+        navigateTo({url: '/pages/history/index'})
+      }
     }
-    console.log(pages)
-    // navigateTo({url: '/pages/home/test/testConpoments'})
   }
 
+  // 跳转到滤芯界面
+  function navigateToFilter(filter: FilterType) {
+    const pages: Array<object> = getCurrentPages()
+    if (pages.length>0) {
+      if (pages[pages.length-1].pageId === 'page_0') {
+        navigateTo({url: '/pages/home/filter/index?type='+filter+'&model='+Model})
+      }
+    }
+  }
+
+  /// 此model用于获取图片与名称
+  const model = (modelStr in models)?models[modelStr]:models["default"]
+
+  // navigateToFilter(FilterType.pcf)
   return (
     <View className={styles.view}>
       <TopBar />
       <ScrollView scrollY={true} className={styles.content} refresherTriggered={false}>
         
         {/* 产品图片 */}
-        <Image src={require('src/images/F1000.png')}
+        <Image src={model.url}
           mode='aspectFit'
           style={{
             maxWidth: '100%',
             display: 'block',
             margin: '0 auto',
-            width: '40%'
+            width: '80%'
           }}
         />
 
@@ -161,17 +168,18 @@ export function Home() {
           marginBottom: '20px',
           color: 'white',
           fontWeight: 'bold'
-        }}>{seriesName[modelStr]}</View>
+        }}>{model.name}</View>
 
         {/* 水质与状态 */}
         {/* G810;F;FH */}
-        {Model!=='G46'&&<View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
+        {Model!=='G46'&&
+        <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
           
           <View className={styles.sectionTitle} id='水质'>
             <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 11.31 14.46">
               <path fill='black' fill-rule='nonzero' d="M3.05 3.15l5.21 0 0 0.96 -5.21 0 0 -0.96zm0 2.92l5.21 0 0 0.96 -5.21 0 0 -0.96zm0 2.92l3.8 0 0 0.96 -3.8 0 0 -0.96zm6.43 5.46l-7.65 0c-0.51,0 -0.96,-0.21 -1.29,-0.54 -0.33,-0.33 -0.54,-0.79 -0.54,-1.29l0 -10.79c0,-0.51 0.21,-0.96 0.54,-1.29 0.33,-0.33 0.79,-0.54 1.29,-0.54l7.65 0c0.51,0 0.96,0.21 1.29,0.54 0.33,0.33 0.54,0.79 0.54,1.29l0 10.79c0,0.51 -0.21,0.96 -0.54,1.29 -0.33,0.33 -0.79,0.54 -1.3,0.54zm-7.65 -13.49c-0.24,0 -0.46,0.1 -0.61,0.25 -0.16,0.16 -0.25,0.37 -0.25,0.61l0 10.79c0,0.24 0.1,0.46 0.25,0.61 0.16,0.16 0.37,0.25 0.61,0.25l7.65 0c0.24,0 0.46,-0.1 0.61,-0.25 0.16,-0.16 0.25,-0.37 0.25,-0.61l0 -10.79c0,-0.24 -0.1,-0.46 -0.25,-0.61 -0.16,-0.16 -0.37,-0.25 -0.61,-0.25l-7.65 0z"/>
             </Svg>
-            <View className={styles.sectionTitleText}>Water Quality & Status</View>
+            <View className={styles.sectionTitleText}>{Model === 'FH'?'Water Quality & Status':'Water Quality'}</View>
           </View>
 
           {/* F;FH */}
@@ -204,8 +212,11 @@ export function Home() {
         <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
 
           <View className={styles.sectionTitle} id='滤芯'>
-            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 11.31 14.46">
-              <path fill='black' fill-rule='nonzero' d="M3.05 3.15l5.21 0 0 0.96 -5.21 0 0 -0.96zm0 2.92l5.21 0 0 0.96 -5.21 0 0 -0.96zm0 2.92l3.8 0 0 0.96 -3.8 0 0 -0.96zm6.43 5.46l-7.65 0c-0.51,0 -0.96,-0.21 -1.29,-0.54 -0.33,-0.33 -0.54,-0.79 -0.54,-1.29l0 -10.79c0,-0.51 0.21,-0.96 0.54,-1.29 0.33,-0.33 0.79,-0.54 1.29,-0.54l7.65 0c0.51,0 0.96,0.21 1.29,0.54 0.33,0.33 0.54,0.79 0.54,1.29l0 10.79c0,0.51 -0.21,0.96 -0.54,1.29 -0.33,0.33 -0.79,0.54 -1.3,0.54zm-7.65 -13.49c-0.24,0 -0.46,0.1 -0.61,0.25 -0.16,0.16 -0.25,0.37 -0.25,0.61l0 10.79c0,0.24 0.1,0.46 0.25,0.61 0.16,0.16 0.37,0.25 0.61,0.25l7.65 0c0.24,0 0.46,-0.1 0.61,-0.25 0.16,-0.16 0.25,-0.37 0.25,-0.61l0 -10.79c0,-0.24 -0.1,-0.46 -0.25,-0.61 -0.16,-0.16 -0.37,-0.25 -0.61,-0.25l-7.65 0z"/>
+            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 20.83 20.83">
+              <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M20.26 10.41c0,5.44 -4.41,9.85 -9.85,9.85 -5.44,0 -9.85,-4.41 -9.85,-9.85 0,-5.44 4.41,-9.85 9.85,-9.85 5.44,0 9.85,4.41 9.85,9.85z"/>
+              <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M10.41 16.61l0 0c-1.44,0 -2.62,-1.18 -2.62,-2.62l0 -7.16c0,-1.44 1.18,-2.62 2.62,-2.62l0 0c1.44,0 2.62,1.18 2.62,2.62l0 7.16c0,1.44 -1.18,2.62 -2.62,2.62z"/>
+              <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M20.26 10.41c0,5.44 -4.41,9.85 -9.85,9.85 -5.44,0 -9.85,-4.41 -9.85,-9.85 0,-5.44 4.41,-9.85 9.85,-9.85 5.44,0 9.85,4.41 9.85,9.85z"/>
+              <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M10.41 16.61l0 0c-1.44,0 -2.62,-1.18 -2.62,-2.62l0 -7.16c0,-1.44 1.18,-2.62 2.62,-2.62l0 0c1.44,0 2.62,1.18 2.62,2.62l0 7.16c0,1.44 -1.18,2.62 -2.62,2.62z"/>
             </Svg>
             <View className={styles.sectionTitleText}>Filter Lifespan</View>
           </View>
@@ -213,7 +224,7 @@ export function Home() {
           <Button 
             className={styles.sectionItem} id='PCF'
             onClick={ () =>
-              showModal({title: 'PCF剩余天数',content: formatDays(pcfFiltertimeDay), cancelText: 'Cancel', confirmText: 'Confirm',})
+              navigateToFilter(FilterType.pcf)
             }
           >
             <View className={styles.sectionItemText}>PCF</View>
@@ -228,7 +239,7 @@ export function Home() {
           <Button 
             className={styles.sectionItem} id='RO'
             onClick={ () =>
-              showModal({title: 'RO剩余天数',content: formatDays(roFiltertimeDay)})
+              navigateToFilter(FilterType.ro)
             }
           >
             <View className={styles.sectionItemText}>RO</View>
@@ -310,11 +321,11 @@ export function Home() {
         {/* 冲洗模式 */}
         <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
           <View className={styles.sectionTitle} id='冲洗模式'>
-            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 13.95 15.48">
-            <g>
-              <path fill='black' fill-rule='nonzero' d="M6.87 1.87l7.08 0 0 1.01 -7.07 0c0.06,-0.15 0.09,-0.32 0.09,-0.49 0,-0.18 -0.03,-0.36 -0.1,-0.52zm-2.55 0c-0.06,0.16 -0.1,0.33 -0.1,0.52 0,0.17 0.03,0.34 0.09,0.49l-4.31 0 0 -1.01 4.32 0zm7.18 5.43l2.44 0 0 1.01 -2.44 0c0.06,-0.16 0.1,-0.33 0.1,-0.5 0,-0.17 -0.03,-0.35 -0.1,-0.51zm-2.56 0c-0.06,0.16 -0.1,0.33 -0.1,0.51 0,0.18 0.03,0.35 0.1,0.5l-8.94 0 0 -1.01 8.94 0zm-3.98 5.29l8.98 0 0 1.01 -8.98 0c0.06,-0.16 0.1,-0.33 0.1,-0.51 0,-0.18 -0.03,-0.35 -0.1,-0.51zm-2.56 0c-0.06,0.16 -0.1,0.33 -0.1,0.51 0,0.18 0.03,0.35 0.1,0.51l-2.41 0 0 -1.01 2.41 0z"/>
-              <path fill='black' fill-rule='nonzero' d="M6.97 2.39c0,-0.76 -0.61,-1.38 -1.37,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.62,1.38 1.37,1.38 0.76,0 1.37,-0.62 1.37,-1.38zm4.63 5.42c0,-0.76 -0.62,-1.38 -1.38,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.62,1.38 1.37,1.38 0.76,0 1.38,-0.62 1.38,-1.38zm-6.54 5.28c0,-0.76 -0.62,-1.38 -1.37,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.61,1.38 1.37,1.38 0.76,0 1.37,-0.62 1.37,-1.38zm2.92 -10.7c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39zm4.63 5.42c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39zm-6.54 5.28c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39z"/>
-            </g>
+            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 10.25 15">
+              <path fill='black' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
+              <path fill='black' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>
+              <path fill='black' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
+              <path fill='black' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>  
             </Svg>
             <View className={styles.sectionTitleText}>Flush Mode</View>
           </View>

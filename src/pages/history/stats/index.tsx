@@ -1,16 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  getStatisticsRangDay,
-  getStatisticsRangMonth,
-  showLoading,
-  hideLoading,
-  Picker,
-} from '@ray-js/ray';
+import {View,Text,Image,ScrollView,getStatisticsRangDay,getStatisticsRangMonth,showLoading,hideLoading,Picker,router} from '@ray-js/ray';
 import StatCharts from '@ray-js/stat-charts';
 import { useDevice, useProps } from '@ray-js/panel-sdk';
 import Strings from '@/i18n';
@@ -212,7 +202,7 @@ export function Stats() {
         dpId: totalWaterSchema.id,
         startDay: startDateFormated,
         endDay: endDateFormated,
-        type: 'minux',
+        type: 'sum',
       })
       .then(res => {
         console.log("day consumption: ", res)
@@ -230,7 +220,7 @@ export function Stats() {
         dpId: totalWaterSchema.id,
         startDay: startDateFormated,
         endDay: endDateFormated,
-        type: 'minux',
+        type: 'sum',
       }).then(res => {
         console.log("month consumption: ", res)
         const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
@@ -242,7 +232,7 @@ export function Stats() {
         dpId: totalWaterSchema.id,
         startMonth: startDateFormated,
         endMonth: endDateFormated,
-        type: 'minux',
+        type: 'sum',
       }).then(res => {
         console.log("year consumption: ", res)
         const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
@@ -250,6 +240,8 @@ export function Stats() {
       })
     }
   },[date,token,waterConsumption], { wait: 1000 })
+
+  console.log(router.href)
 
   return (
     <View className={styles.view}>
@@ -264,7 +256,7 @@ export function Stats() {
             unit={waterUnit}
             range={range}
             // @ts-ignore
-            type='minux'
+            type='sum'
             startDate={startDateFormated}
             endDate={endDateFormated}
             chartType="bar"
