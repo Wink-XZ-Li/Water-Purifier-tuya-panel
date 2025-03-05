@@ -75,6 +75,13 @@
   color: black;
 }
 
+.infoItem {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .arrowText {
   position: relative;
   display: flex;
@@ -107,4 +114,34 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+.infoSection {
+  align-self: 'stretch';
+  border-block-width: 1;
+  border-color: '#eee';
+  padding-left: 6;
+  padding-right: 6;
+  padding-top: 3;
+  padding-bottom: 3;
+}
+.infoSectionTitle {
+  font-size: 16;
+  font-weight: '600';
+  color: '#333';
+  margin-bottom: 8
+}
+.infoBodyText {
+  font-size: 14;
+  line-height: 2;  // 增加行高提升可读性
+  color: '#666'
+}
+.infoHighlight {
+  color: '#1890ff'; // 品牌色高亮关键数据
+  font-weight: '500'
+}
+.infoFeatureCard {
+  background-color: '#f8f9fa';
+  border-radius: 8;
+  border-bottom-width: 0 // 覆盖默认边框
 }

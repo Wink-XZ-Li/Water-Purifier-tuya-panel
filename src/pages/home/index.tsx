@@ -7,6 +7,7 @@ import styles from './index.module.less';
 import Svg, { Icon } from '@ray-js/svg';
 import Strings from '@/i18n';
 import { FilterType } from './filter';
+import ActionSheet from '@ray-js/components-ty-actionsheet';
 
 /**
  * mini款400&600:   dknfai4pqtl1k2hf
@@ -70,11 +71,19 @@ export function Home() {
   const roFiltertime = dpState['ro_filtertime'];
   const pcfFiltertime = dpState['cbpa_filtertime'];
   const fault = dpState['fault'];
-  const roFiltertimeDay = dpState['ro_filtertime_day'];
-  const pcfFiltertimeDay = dpState['cbpa_filtertime_day'];
-  const roState = dpState['ro_state'];
-  const pcfState = dpState['pcf_state'];
-  const washState = dpState['wash_state'];
+
+  var roColor = "";
+  var pcfColor = "";
+  if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk') { 
+    roColor = roFiltertime>5?'black':'red'
+    pcfColor = pcfFiltertime>5?'black':'red'
+  }
+  else if (pid === 'ptrtzvzn3e7u8ijm') { 
+      roColor = roFiltertime>10?'black':'red'
+      pcfColor = pcfFiltertime>10?'black':'red'
+  }
+
+  // const washState = dpState['wash_state'];
   const modelStr = dpState['model'];
   const flushTimer = dpState['flush_timer'];
 
@@ -102,17 +111,22 @@ export function Home() {
   React.useEffect(() => {
     const binaryFault = fault.toString(2).split('').reverse()
     var title = ""
+    var content = ""
     if (fault !== 0) {
       
       if (binaryFault[0]==='1') {
-        title = "E8"
+        title = "Error Code : E8"
+        content = "Faucet and water purifier communication failure. Please check the connection."
       } else if (binaryFault[1]==='1') {
-        title = "E15"
+        title = "Error Code : E15"
+        content = "System timeout protection activated after 2 hours of continuous operation."
       }
-      showModal({title: title, showCancel: false, confirmText: Strings.getLang('confirm')})
+      showModal({title: title, content: content, showCancel: false, confirmText: Strings.getLang('confirm')})
     }
   }, [dpState['fault']]);
-  
+
+  const Popup1 = ActionSheet.createPopup();
+  const Popup2 = ActionSheet.createPopup();
   // 将number转换为时间字符串
   function formatTime(minutes) {
     const hours = Math.floor(minutes / 60);
@@ -144,7 +158,7 @@ export function Home() {
         navigateTo({url: '/pages/home/filter/index?type='+filter})
       }
     }
-  }
+  } 
 
   /// 此model用于获取图片与名称
   const model = (modelStr in models)?models[modelStr]:models["default"]
@@ -162,7 +176,8 @@ export function Home() {
             maxWidth: '100%',
             display: 'block',
             margin: '0 auto',
-            width: '80%'
+            width: '80%',
+            padding: '6%'
           }}
         />
 
@@ -189,17 +204,34 @@ export function Home() {
             <View className={styles.sectionTitleText}>{Model === 'FH'?'Water Quality & Status':'Water Quality'}</View>
           </View>
 
-          {/* F;FH */}
-          {(Model==='F'||Model==='FH')&&<View className={styles.sectionItem} id='TDS值'>
+          <View className={styles.sectionItem} id='TDS值'>
             <View className={styles.sectionItemText}>TDS Value</View>
             <View className={styles.sectionItemText}>{tdsOut} ppm</View>
-          </View>}
+          </View>
 
-          {/* G810;F;FH */}
-          {Model!=='G810'&&<Divider/>}
+          <Divider/>
 
           <View className={styles.sectionItem} id='水质'>
-            <View className={styles.sectionItemText}>Water Quality</View>
+            <View className={styles.infoItem} onClick={() => {
+              Popup1.open({
+                header: 'Water Quality Score',
+                headerStyle: {fontSize: 'large'},
+                okText: '',
+                cancelText: 'OK',
+                content: (
+                  <View style={{ padding: 16 , alignItems: 'center', flexDirection: 'column', display: 'flex'}}>
+                    <Text className={styles.infoBodyText}>{"Good: TDS Reduction >90%;\nBad: TDS Reduction <90%"} </Text>
+                  </View>
+                ),
+              })
+            }}>
+              <View className={styles.sectionItemText}>Pure Water Quality</View>
+              <Svg style={{marginLeft: '5px'}} width='30' height='30' viewBox="0 0 1024 1024">
+                <path fill='black' fill-rule='nonzero' d="M512 0C229.23 0 0 229.23 0 512s229.23 512 512 512 512-229.23 512-512S794.77 0 512 0zM512 928c-229.75 0-416-186.25-416-416S282.25 96 512 96s416 186.25 416 416S741.75 928 512 928z" p-id="2360"></path>
+                <path fill='black' fill-rule='nonzero' d="M537.64 343.452c47.074 0 83.266-37.528 83.266-78.072 0-32.46-20.832-60.878-62.496-60.878-54.816 0-82.178 44.618-82.178 77.11C475.144 320.132 498.152 343.452 537.64 343.452z" p-id="2361"></path>
+                <path fill='black' fill-rule='nonzero' d="M533.162 728.934c-7.648 0-10.914-10.136-3.264-39.55l43.25-166.406c16.386-60.848 10.944-100.398-21.92-100.398-39.456 0-131.458 39.83-211.458 107.798l16.416 27.392c25.246-17.256 67.906-34.762 77.792-34.762 7.648 0 6.56 10.168 0 35.508l-37.746 158.292c-23.008 89.266 1.088 109.538 33.984 109.538 32.864 0 117.808-30.47 195.57-109.632l-18.656-25.34C575.354 716.714 543.05 728.934 533.162 728.934z" p-id="2362"></path>
+              </Svg>
+            </View>
             {(waterQuality === 'good')&&<View className={`${styles.sectionItemText} ${styles.blueText}`}>Good</View>}
             {(waterQuality === 'bad')&&<View className={`${styles.sectionItemText} ${styles.redText}`}>Bad</View>}
           </View>
@@ -228,30 +260,30 @@ export function Home() {
             <View className={styles.sectionTitleText}>Filter Lifespan</View>
           </View>
 
-          <Button 
-            className={styles.sectionItem} id='PCF'
+          <Button  id='PCF'
+            className={styles.sectionItem}
             onClick={ () =>
               navigateToFilter(FilterType.pcf)
             }
           >
             <View className={styles.sectionItemText}>PCF</View>
             <View className={styles.arrowText}>
-              <View className={styles.sectionItemText} style={{color: pcfState==='red'?'red':'black'}}>{pcfFiltertime} %</View>
+              <View className={styles.sectionItemText} style={{color: pcfColor}}>{pcfFiltertime} %</View>
               <Arrow/>
             </View>
           </Button>
 
           <Divider/>
           
-          <Button 
-            className={styles.sectionItem} id='RO'
+          <Button id='RO'
+            className={styles.sectionItem}
             onClick={ () =>
               navigateToFilter(FilterType.ro)
             }
           >
             <View className={styles.sectionItemText}>RO</View>
             <View className={styles.arrowText}>
-              <View className={styles.sectionItemText} style={{color: roState==='red'?'red':'black'}}>{roFiltertime} %</View>
+              <View className={styles.sectionItemText} style={{color: roColor}}>{roFiltertime} %</View>
               <Arrow/>
             </View>
           </Button>
@@ -328,19 +360,62 @@ export function Home() {
         {/* 冲洗模式 */}
         <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
           <View className={styles.sectionTitle} id='冲洗模式'>
-            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 10.25 15">
+            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 10.25 15" >
               <path fill='black' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
               <path fill='black' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>
               <path fill='black' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
               <path fill='black' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>  
             </Svg>
-            <View className={styles.sectionTitleText}>Flush Mode</View>
+            <View className={styles.infoItem} onClick={() => {
+              Popup2.open({
+                header: 'Smart Flush',
+                headerStyle: {fontSize: 'large'},
+                okText: '',
+                cancelText: 'OK',
+                content: (
+                  <View style={{ padding: 16 , alignItems: 'flex-start', flexDirection: 'column', display: 'flex'}}>
+                    
+                    <View className={styles.infoSection}>
+                      <Text className={styles.infoSectionTitle}>Why Flush? 🔄\n</Text>
+                      <Text className={styles.infoBodyText}>
+                        The reverse osmosis membrane filters contaminants down to 0.0001 microns. Flush mode clears accumulated contaminants, extending filter lifespan by up to 30%.
+                      </Text>
+                    </View>
+
+                    {(Model==='F'||Model==='FH') && (
+                      <View className={styles.infoSection}>
+                        <Text className={styles.infoSectionTitle}>Recycled Flushing 🌱\n</Text>
+                        <Text className={styles.infoBodyText}>
+                          Automatically recycles water 10 minutes post-use, eliminating stagnant water for healthier hydration.
+                        </Text>
+                      </View>
+                    )}
+
+                    <View className={styles.infoSection}>
+                      <Text className={styles.infoSectionTitle}>Scheduled Flushing ⏰\n</Text>
+                      <Text className={styles.infoBodyText}>
+                        Automatic 300-second flush every 24h to maintain peak filter performance.
+                      </Text>
+                    </View>
+                  </View>
+                ),
+              })
+            }}>
+              <View className={styles.sectionTitleText}>Flush Mode</View>
+              <Svg style={{marginLeft: '5px'}} width='30' height='30' viewBox="0 0 1024 1024">
+                <path fill='black' fill-rule='nonzero' d="M512 0C229.23 0 0 229.23 0 512s229.23 512 512 512 512-229.23 512-512S794.77 0 512 0zM512 928c-229.75 0-416-186.25-416-416S282.25 96 512 96s416 186.25 416 416S741.75 928 512 928z" p-id="2360"></path>
+                <path fill='black' fill-rule='nonzero' d="M537.64 343.452c47.074 0 83.266-37.528 83.266-78.072 0-32.46-20.832-60.878-62.496-60.878-54.816 0-82.178 44.618-82.178 77.11C475.144 320.132 498.152 343.452 537.64 343.452z" p-id="2361"></path>
+                <path fill='black' fill-rule='nonzero' d="M533.162 728.934c-7.648 0-10.914-10.136-3.264-39.55l43.25-166.406c16.386-60.848 10.944-100.398-21.92-100.398-39.456 0-131.458 39.83-211.458 107.798l16.416 27.392c25.246-17.256 67.906-34.762 77.792-34.762 7.648 0 6.56 10.168 0 35.508l-37.746 158.292c-23.008 89.266 1.088 109.538 33.984 109.538 32.864 0 117.808-30.47 195.57-109.632l-18.656-25.34C575.354 716.714 543.05 728.934 533.162 728.934z" p-id="2362"></path>
+              </Svg>
+            </View>
           </View>
 
           {/* F;FH */}
           {(Model==='F'||Model==='FH')&&<>
           <View className={styles.sectionItem} id='零陈水'>
-            <View className={styles.sectionItemText}>Recycled Flushing</View>
+            <View className={styles.infoItem}>
+              <View className={styles.sectionItemText}>Recycled Flushing</View>
+            </View>
             <Switch 
               color={buttonColor}
               checked={recycledFlushing}
@@ -350,11 +425,9 @@ export function Home() {
               }
             />
           </View>
-          <Text style={{width: '90%', fontSize: '10px', opacity: '0.6',marginBottom: '5px'}}>Automatically recycles flushing after 10 minutes of water dispensing to ensure fresh, healthy water.</Text>
-          
           
           <Divider/></>}
-
+          
           <Picker mode='time' style={{width: '100%', marginLeft: '10%'}}
             onChange={(e) => {
               const time = parseTimeToMinutes(e.detail.value)
@@ -372,13 +445,9 @@ export function Home() {
               </View>
             </View>
           </Picker>
-          <Text style={{width: '90%', fontSize: '10px', opacity: '0.6',marginBottom: '5px'}}>To maintain and extend the life expectancy of the filters, the system will be automatically flushed for 300 seconds per 24 hours.</Text>
         </View>
 
-        {/* 备注 */}
-        <Text style={{marginLeft: '26px' , marginRight: '26px', marginBottom: '18px', fontSize: '10px', opacity: '0.6', display: 'flex', position: 'relative'}}>NOTICE:\nThe reverse osmosis membrane filters contaminants down to 0.0001 microns. The flush mode helps expel accumulated contaminants from the membrane, ensuring a longer filter lifespan and delivering purer water.</Text>
-        {/* 使用报告 */}
-        
+        {/* 使用报告 */}        
         <View className={`${styles.stateAndControlSection} ${styles.baseSection}`} style={{marginTop: '15px'}}>
           <Button 
             className={styles.sectionBtn}
@@ -400,6 +469,8 @@ export function Home() {
             
           </Button>
         </View>
+        <Popup1.Container />
+        <Popup2.Container />
       </ScrollView>
     </View>
     );

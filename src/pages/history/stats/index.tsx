@@ -207,10 +207,10 @@ export function Stats() {
       .then(res => {
         console.log("day consumption: ", res)
         if (token==='day') {
-          setWaterTotal((parseFloat(res[startDateFormated])).toString())
+          setWaterTotal((parseFloat(res[startDateFormated]).toFixed(2)).toString())
         } else if (token==='week') {
           const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
-          setWaterTotal((parseFloat(total)).toString())
+          setWaterTotal((parseFloat(total).toFixed(2)).toString())
         }
       })
 
@@ -224,7 +224,7 @@ export function Stats() {
       }).then(res => {
         console.log("month consumption: ", res)
         const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
-        setWaterTotal((parseFloat(total)).toString())
+        setWaterTotal((parseFloat(total).toFixed(2)).toString())
       })
     } else if (token==='year') {
       getStatisticsRangMonth({
@@ -236,10 +236,10 @@ export function Stats() {
       }).then(res => {
         console.log("year consumption: ", res)
         const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
-        setWaterTotal((parseFloat(total)).toString())
+        setWaterTotal((parseFloat(total).toFixed(2)).toString())
       })
     }
-  },[date,token,waterConsumption], { wait: 1000 })
+  },[date,token,waterConsumption], { wait: 100 })
 
   console.log(router.href)
 

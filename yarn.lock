@@ -2495,6 +2495,14 @@
   dependencies:
     clsx "^1.1.1"
 
+"@ray-js/components-ty-actionsheet@^0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@ray-js/components-ty-actionsheet/-/components-ty-actionsheet-0.0.26.tgz#b747ec70254902968af6e9b1852f796c13e45bf7"
+  integrity sha512-3ClEjK8eWWrHsX2L+y09QvVA0TANkSEbjHF1YJ3tqQ0VW2oDB/6EMnYFdqbZ+AqMqG0D7IppHeYmvz++bSp1cA==
+  dependencies:
+    "@ray-js/components-ty-config-provider" "0.0.9"
+    clsx "^1.1.1"
+
 "@ray-js/components-ty-alert@0.0.2":
   version "0.0.2"
   resolved "https://registry.npmjs.org/@ray-js/components-ty-alert/-/components-ty-alert-0.0.2.tgz"
@@ -2509,7 +2517,7 @@
   dependencies:
     classnames "^2.3.1"
 
-"@ray-js/components-ty-config-provider@^0.0.9":
+"@ray-js/components-ty-config-provider@0.0.9", "@ray-js/components-ty-config-provider@^0.0.9":
   version "0.0.9"
   resolved "https://registry.npmjs.org/@ray-js/components-ty-config-provider/-/components-ty-config-provider-0.0.9.tgz"
   integrity sha512-VzTgCJbt03Jr60jpEekzKrUnl6gFdgiiPihg6MnDdUfeEBiV07JGSLMvQMcNxQHwqLKnYFu+Cp6gG+gCQkYAwA==
@@ -2534,10 +2542,17 @@
   resolved "https://registry.npmjs.org/@ray-js/components-ty-picker/-/components-ty-picker-0.1.2.tgz"
   integrity sha512-3+YcEQr4u7bmyAeYzL1VSeH+Lfnp1CfJxyKH9iCYUcuZab5C24WmyvAElmxDbHFvRup+W7cO0fgUKsf3FOVVIw==
 
-"@ray-js/components-ty-popover@0.1.0":
+"@ray-js/components-ty-popover@0.1.0", "@ray-js/components-ty-popover@^0.1.0":
   version "0.1.0"
   resolved "https://registry.npmjs.org/@ray-js/components-ty-popover/-/components-ty-popover-0.1.0.tgz"
   integrity sha512-ELMw0az8NqFwQVnsx7JfrH9NQqhABbPLj1sQ0o/OK/0JZgMhM6hKOz0NpImQJev3cIIacxAMOlq+ndI1TV7fSg==
+
+"@ray-js/components-ty-popup@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@ray-js/components-ty-popup/-/components-ty-popup-1.0.4.tgz#bbc5cbff9c41273d3cba68670bc28ad0c61e72ba"
+  integrity sha512-YOy73LNyvGf3hTBVJeXExU/gbcDmWtwzSk42XMsvlHXiFAsytfiQ5N+mIepjYk/9m4PlkV/axF0dbTyC2KFc3w==
+  dependencies:
+    clsx "^1.2.1"
 
 "@ray-js/components-ty-progress-bar@0.0.7":
   version "0.0.7"

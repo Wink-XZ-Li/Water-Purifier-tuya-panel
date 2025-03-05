@@ -6,10 +6,10 @@
   "description": "",
   "miniprogramRoot": "./dist/tuya",
   "dependencies": {
-    "BaseKit": "3.0.0",
-    "MiniKit": "3.0.1",
-    "DeviceKit": "3.5.1",
-    "BizKit": "3.4.2"
+    "BaseKit": "3.0.6",
+    "MiniKit": "3.0.7",
+    "DeviceKit": "4.0.8",
+    "BizKit": "4.2.0"
   },
   "baseversion": "2.13.3",
   "projectname": "Water-Purifier-tuya-panel-MIZUDO",

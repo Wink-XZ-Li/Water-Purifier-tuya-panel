@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { Text, View, setNavigationBarColor, setNavigationBarTitle, Button, openInnerH5, openURL, showActionSheet, showModal } from '@ray-js/ray';
+import { View, setNavigationBarTitle, Button, openURL, showActionSheet, showModal, Image } from '@ray-js/ray';
 import { useActions, useDevInfo, useDpSchema, useProps } from "@ray-js/panel-sdk";
 import styles from './index.module.less';
 import Svg from '@ray-js/svg';
 import { Arrow, Divider } from '..';
+import ActionSheet from '@ray-js/components-ty-actionsheet';
 
 
 export enum FilterType{ro, pcf};
@@ -59,7 +60,12 @@ const roFilters = {
     },
 }
 
+var resetImageUrl = '';
+
 export function FilterManage(props) {
+    const devInfo = useDevInfo();
+    const pid = devInfo['productId'];
+
     const dpState = useProps(state => state);
     const roFiltertime = dpState['ro_filtertime'];
     const pcfFiltertime = dpState['cbpa_filtertime'];
@@ -69,8 +75,35 @@ export function FilterManage(props) {
     const modelStr = dpState['model'];
 
     const title = type === "0"?'RO Filter':'PCF Filter';
+    const typeStr = type === "0"?'RO':'PCF';
     const filterTime = type === "0"?roFiltertime:pcfFiltertime;
     const filterDays = type === "0"?roFiltertimeDay:pcfFiltertimeDay;
+
+/**
+ * mini款400&600:   dknfai4pqtl1k2hf
+ * mini款800&1000:  kaaz0cxdgvroa6qp
+ * F款:             wcssrdbcufckhbzk
+ * 净热款:           ptrtzvzn3e7u8ijm
+ */
+    
+    if (pid === 'dknfai4pqtl1k2hf') { resetImageUrl = require('src/images/G46-reset.png')}
+    else if (pid === 'kaaz0cxdgvroa6qp') { resetImageUrl = require('src/images/G810-reset.png')}
+    else if (pid === 'wcssrdbcufckhbzk') { resetImageUrl = require('src/images/F-reset.png')}
+    else if (pid === 'ptrtzvzn3e7u8ijm') { resetImageUrl = require('src/images/FH-reset.png')}
+
+    var roColor = "";
+    var pcfColor = "";
+    if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk') { 
+        roColor = roFiltertime>5?'black':'red'
+        pcfColor = pcfFiltertime>5?'black':'red'
+    }
+    else if (pid === 'ptrtzvzn3e7u8ijm') { 
+        roColor = roFiltertime>10?'black':'red'
+        pcfColor = pcfFiltertime>10?'black':'red'
+    }
+    const timeColor = type === "0"?roColor:pcfColor
+    
+    const Popup = ActionSheet.createPopup();
 
     function getFilterLink(model: string): { amazon: string; fogatti: string } | null {
         const filters = (type === "0")?roFilters:pcfFilters
@@ -87,9 +120,20 @@ export function FilterManage(props) {
 
     // 将number转换为时间字符串
     function formatDays(days) {
-        const years = Math.floor(days / 365);
-        const dayss = days % 365;
-        return `${years.toString()}y ${dayss.toString()}d`;
+        // 由于days是剩余天数，需转换为使用天数
+        var realDays = 0
+        if (type === "0") {
+            // RO
+            if (pid === 'dknfai4pqtl1k2hf') {
+                realDays = 721-days
+            } else {
+                realDays = 1081-days
+            }
+        } else {
+            // PCF
+            realDays = 361-days
+        }
+        return `${realDays} Days of Pure Water – Powered by ${title}`;
     }
 
     setNavigationBarTitle({title: title});
@@ -120,13 +164,13 @@ export function FilterManage(props) {
                 </View>
                 <View className={styles.times}>
                     <View className={styles.tempUnit} style={{opacity: '0'}}>%</View>
-                    <View className={styles.tempNum}>{filterTime}</View>
-                    <View className={styles.tempUnit}>%</View>
+                    <View className={styles.tempNum} style={{color: timeColor}}>{filterTime}</View>
+                    <View className={styles.tempUnit} style={{color: timeColor}}>%</View>
                 </View>
             </View>
             
             <View style={{fontSize: '15px', backgroundColor: '#f0f0f0', padding: '10px',borderRadius: '8px',}}>
-                {"Remaining: "+formatDays(filterDays)}
+                {formatDays(filterDays)}
             </View>
 
             <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
@@ -135,7 +179,7 @@ export function FilterManage(props) {
                     disabled={getFilterLink(modelStr)===null}
                     onClick={ () => {
                         showActionSheet({
-                            itemList: ['amazon', 'fogatti.com'],
+                            itemList: ['Amazon', 'MIZUDO Store'],
                             success(params) {
                                 const url = getFilterLink(modelStr)
                                 if (url !== null) {
@@ -168,7 +212,18 @@ export function FilterManage(props) {
                 
                 <Button className={styles.sectionItem} id='RO'
                     onClick={ () => {
-                        showModal({title: '敬请期待'})
+                        Popup.open({
+                            header: 'Reset Guide',
+                            headerStyle: {fontSize: 'large'},
+                            okText: '',
+                            cancelText: 'OK',
+                            content: (
+                              <View style={{ padding: 16 , alignItems: 'center', flexDirection: 'column', display: 'flex'}}>
+                                <View  className={styles.infoBodyText}>{`Press and hold the ${typeStr} button for 3 seconds to reset the filter lifetime.`}</View>
+                                <Image src={resetImageUrl} style={{margin: '0 auto'}}/>
+                              </View>
+                            ),
+                          })
                     }}
                 >
                     <View className={styles.arrowText}>
@@ -181,6 +236,7 @@ export function FilterManage(props) {
                     <Arrow/>
                     
                 </Button>
+                <Popup.Container />
             </View>
         </View>
     )
