@@ -60,6 +60,19 @@ const roFilters = {
     },
 }
 
+export function getFilterLink(model: string, type: string): { amazon: string; fogatti: string } | null {
+    const filters = (type === "0")?roFilters:pcfFilters
+    for (const filterKey in filters) {
+        if (filters[filterKey].models.includes(model)) {
+            return {
+                amazon: filters[filterKey].amazon,
+                fogatti: filters[filterKey].fogatti,
+            };
+        }
+    }
+    return null; // 如果没有找到对应的编码
+}
+
 var resetImageUrl = '';
 
 export function FilterManage(props) {
@@ -104,19 +117,6 @@ export function FilterManage(props) {
     const timeColor = type === "0"?roColor:pcfColor
     
     const Popup = ActionSheet.createPopup();
-
-    function getFilterLink(model: string): { amazon: string; fogatti: string } | null {
-        const filters = (type === "0")?roFilters:pcfFilters
-        for (const filterKey in filters) {
-            if (filters[filterKey].models.includes(model)) {
-                return {
-                    amazon: filters[filterKey].amazon,
-                    fogatti: filters[filterKey].fogatti,
-                };
-            }
-        }
-        return null; // 如果没有找到对应的编码
-    }
 
     // 将number转换为时间字符串
     function formatDays(days) {
@@ -176,10 +176,10 @@ export function FilterManage(props) {
             <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
                 <Button 
                     className={styles.sectionItem} id='PCF'
-                    disabled={getFilterLink(modelStr)===null}
+                    disabled={getFilterLink(modelStr,type)===null}
                     onClick={ () => {
                         /// 暂时只支持独立张商城，后续需要增加亚马逊链接再加入
-                        const url = getFilterLink(modelStr)
+                        const url = getFilterLink(modelStr,type)
                         openURL({url:url.fogatti})
                         // showActionSheet({
                         //     itemList: ['Amazon', 'MIZUDO Store'],

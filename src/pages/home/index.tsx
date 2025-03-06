@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Switch, Text, View, ScrollView, navigateTo, Image, showModal, Button, Picker, getCurrentPages, router } from '@ray-js/ray';
+import { Switch, Text, View, ScrollView, navigateTo, Image, showModal, Button, Picker, getCurrentPages, router, setStorage, clearStorage, getStorage, openURL, showActionSheet } from '@ray-js/ray';
 import { useActions, useDevInfo, useDpSchema, useProps } from "@ray-js/panel-sdk";
 import PressKey from '@ray-js/presskey';
 import { TopBar } from '@/components';
@@ -8,6 +8,7 @@ import Svg, { Icon } from '@ray-js/svg';
 import Strings from '@/i18n';
 import { FilterType } from './filter';
 import ActionSheet from '@ray-js/components-ty-actionsheet';
+import { getFilterLink } from './filter';
 
 /**
  * mini款400&600:   dknfai4pqtl1k2hf
@@ -126,8 +127,9 @@ export function Home() {
     }
   }, [dpState['fault']]);
 
-  const Popup1 = ActionSheet.createPopup();
-  const Popup2 = ActionSheet.createPopup();
+  const popupPureWaterInfo = ActionSheet.createPopup();
+  const popupFlushMode = ActionSheet.createPopup();
+  const popupFilterInfo = ActionSheet.createPopup();
   // 将number转换为时间字符串
   function formatTime(minutes) {
     const hours = Math.floor(minutes / 60);
@@ -153,6 +155,130 @@ export function Home() {
 
   /// 此model用于获取图片与名称
   const model = (modelStr in models)?models[modelStr]:models["default"]
+
+  /// 判断是否要弹出滤芯提醒
+  // clearStorage()
+  // 获取是否已经弹出过滤芯购买弹窗
+  if (roFiltertime<=10||pcfFiltertime<=10) {
+    const now = new Date();
+    // 设置滤芯的info并更新日期
+    function updatePopFilterDate() {
+      setStorage({key: "popFilterDate", data: JSON.stringify({date: now.toISOString()})})
+    }
+    getStorage({
+      key: 'popFilterDate',
+      success: (res) => {
+        if (res.data) {
+          const lastPopTime = JSON.parse(res.data).date;
+          const lastPopDate = new Date(lastPopTime);
+          const diff = now.getTime() - lastPopDate.getTime();
+          // 大于15天提示并更新日期
+          if (diff > 1000*3600*24*15) {
+          // if (diff > 1000*3) {
+            updatePopFilterDate()
+            setTimeout(() => {
+              popupFlushMode.open({
+                header: '🔔 Filter Alert',
+                headerStyle: {fontSize: 'large'},
+                okText: 'Buy Now',
+                cancelText: 'OK',
+                onOk() {
+                  const roUrl = getFilterLink(modelStr, '0').fogatti;
+                  const pcfUrl = getFilterLink(modelStr, '1').fogatti;
+                  if ((roFiltertime <= 10)&&(pcfFiltertime <= 10)) {
+                    // 弹出选择按钮
+                    showActionSheet({
+                      itemList: ['PCF Filter', 'RO Filter'],
+                      success(params) {
+                        if (params.tapIndex===0) {
+                          openURL({url: pcfUrl})
+                        } else if (params.tapIndex===1) {
+                          openURL({url: roUrl})
+                        }
+                      },
+                    })
+                  } else {
+                    if (roFiltertime <= 10) {
+                      openURL({url: roUrl})
+                    } else {
+                      openURL({url: pcfUrl})
+                    }
+                  }
+                  popupFlushMode.close()
+                },
+                content: (
+                  <View style={{ padding: 16 , alignItems: 'flex-start', flexDirection: 'column', display: 'flex'}}>
+                    <Text className={styles.infoSectionTitle}>
+                    {(() => {
+                      // 获取需要提示的滤芯列表
+                      const expiringFilters = [];
+                      const expiredFilters = [];
+                      
+                      // 检查PCF状态
+                      if (pcfFiltertime === 0) {
+                        expiredFilters.push("PCF");
+                      } else if (pcfFiltertime <= 10) {
+                        expiringFilters.push(`PCF (${pcfFiltertime}%)`);
+                      }
+                      
+                      // 检查RO状态
+                      if (roFiltertime === 0) {
+                        expiredFilters.push("RO");
+                      } else if (roFiltertime <= 10) {
+                        expiringFilters.push(`RO (${roFiltertime}%)`);
+                      }
+
+                      // 构建提示语句
+                      let message = [];
+                      
+                      // 过期滤芯提示
+                      if (expiredFilters.length > 0) {
+                        message.push(
+                          `${expiredFilters.join(" and ")} filter${expiredFilters.length > 1 ? 's have' : ' has'} expired.`
+                        );
+                      }
+                      
+                      // 即将过期提示
+                      if (expiringFilters.length > 0) {
+                        message.push(
+                          `${expiringFilters.join(" and ")} filter${expiringFilters.length > 1 ? 's have' : ' has'} low lifespan.`
+                        );
+                      }
+                      
+                      // 合并最终提示
+                      return message.join(" ") + " Replace now for optimal performance.";
+                      })()}
+                    </Text>
+                  </View>
+                  )
+              })
+            }, 1000);
+          }
+        }
+        else {
+          updatePopFilterDate()
+        }
+      }
+    });
+    // getStorage({
+    //   key: 'roPCFinfo',
+    //   success: (res) => {
+    //     if (res.data) {
+    //       const lastPopTime = JSON.parse(res.data).showDate;
+    //       const lastPopDate = new Date(lastPopTime);
+    //       const diff = now.getTime() - lastPopDate.getTime();
+    //       // 大于30天提示并更新日期
+    //       // if (diff > 1000*3600*24*30) {
+    //       if (diff > 1) {
+    //         setROandUpdate()
+    //       }
+    //     }
+    //     else {
+    //       setROandUpdate()
+    //     }
+    //   }
+    // });
+  }
 
   return (
     <View className={styles.view}>
@@ -203,7 +329,7 @@ export function Home() {
 
           <View className={styles.sectionItem} id='水质'>
             <View className={styles.infoItem} onClick={() => {
-              Popup1.open({
+              popupPureWaterInfo.open({
                 header: 'Water Quality Score',
                 headerStyle: {fontSize: 'large'},
                 okText: '',
@@ -357,7 +483,7 @@ export function Home() {
               <path fill='black' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>  
             </Svg>
             <View className={styles.infoItem} onClick={() => {
-              Popup2.open({
+              popupFlushMode.open({
                 header: 'Smart Flush',
                 headerStyle: {fontSize: 'large'},
                 okText: '',
@@ -459,8 +585,9 @@ export function Home() {
             
           </Button>
         </View>
-        <Popup1.Container />
-        <Popup2.Container />
+        <popupPureWaterInfo.Container />
+        <popupFlushMode.Container />
+        <popupFilterInfo.Container />
       </ScrollView>
     </View>
     );
