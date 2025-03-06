@@ -178,21 +178,24 @@ export function FilterManage(props) {
                     className={styles.sectionItem} id='PCF'
                     disabled={getFilterLink(modelStr)===null}
                     onClick={ () => {
-                        showActionSheet({
-                            itemList: ['Amazon', 'MIZUDO Store'],
-                            success(params) {
-                                const url = getFilterLink(modelStr)
-                                if (url !== null) {
-                                    if (params.tapIndex===0) {
-                                        openURL({url:url.amazon})
-                                    } else if (params.tapIndex===1) {
-                                        openURL({url:url.fogatti})
-                                    }
-                                } else {
-                                    // TODO: 提示没有对应滤芯
-                                }
-                            },
-                        })
+                        /// 暂时只支持独立张商城，后续需要增加亚马逊链接再加入
+                        const url = getFilterLink(modelStr)
+                        openURL({url:url.fogatti})
+                        // showActionSheet({
+                        //     itemList: ['Amazon', 'MIZUDO Store'],
+                        //     success(params) {
+                        //         const url = getFilterLink(modelStr)
+                        //         if (url !== null) {
+                        //             if (params.tapIndex===0) {
+                        //                 openURL({url:url.amazon})
+                        //             } else if (params.tapIndex===1) {
+                        //                 openURL({url:url.fogatti})
+                        //             }
+                        //         } else {
+                        //             // TODO: 提示没有对应滤芯
+                        //         }
+                        //     },
+                        // })
                     }}
                 >
                     <View className={styles.arrowText}>

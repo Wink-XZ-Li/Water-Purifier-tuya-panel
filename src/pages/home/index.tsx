@@ -48,6 +48,7 @@ const models = {
   'WP800A1G': {name: 'Megaflo Series 800GPD',       url: require('src/images/F800.png')},
   // 'WP1000A0G':{name: 'Megaflo Series 1000GPD',      url: require('src/images/F1000.png')},
   'WP1000A1G':{name: 'Megaflo Series 1000GPD',      url: require('src/images/F1000.png')},
+  'WP1200A1G':{name: 'Megaflo Series 1200GPD',      url: require('src/images/F1200.png')},
   // 'WD800A0G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
   'WD800A1G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
 
@@ -142,28 +143,17 @@ export function Home() {
 
   // 跳转到历史界面
   function navigateToHistory() {
-    const pages: Array<object> = getCurrentPages()
-    if (pages.length>0) {
-      if (pages[pages.length-1].pageId === 'page_0') {
-        navigateTo({url: '/pages/history/index'})
-      }
-    }
+    navigateTo({url: '/pages/history/index'})
   }
 
   // 跳转到滤芯界面
   function navigateToFilter(filter: FilterType) {
-    const pages: Array<object> = getCurrentPages()
-    if (pages.length>0) {
-      if (pages[pages.length-1].pageId === 'page_0') {
-        navigateTo({url: '/pages/home/filter/index?type='+filter})
-      }
-    }
+    navigateTo({url: '/pages/home/filter/index?type='+filter})
   } 
 
   /// 此model用于获取图片与名称
   const model = (modelStr in models)?models[modelStr]:models["default"]
 
-  // navigateToFilter(FilterType.pcf)
   return (
     <View className={styles.view}>
       <TopBar />
@@ -257,7 +247,7 @@ export function Home() {
               <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M20.26 10.41c0,5.44 -4.41,9.85 -9.85,9.85 -5.44,0 -9.85,-4.41 -9.85,-9.85 0,-5.44 4.41,-9.85 9.85,-9.85 5.44,0 9.85,4.41 9.85,9.85z"/>
               <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M10.41 16.61l0 0c-1.44,0 -2.62,-1.18 -2.62,-2.62l0 -7.16c0,-1.44 1.18,-2.62 2.62,-2.62l0 0c1.44,0 2.62,1.18 2.62,2.62l0 7.16c0,1.44 -1.18,2.62 -2.62,2.62z"/>
             </Svg>
-            <View className={styles.sectionTitleText}>Filter Lifespan</View>
+            <View className={styles.sectionTitleText}>Filter Life Remaining</View>
           </View>
 
           <Button  id='PCF'
@@ -268,7 +258,7 @@ export function Home() {
           >
             <View className={styles.sectionItemText}>PCF</View>
             <View className={styles.arrowText}>
-              <View className={styles.sectionItemText} style={{color: pcfColor}}>{pcfFiltertime} %</View>
+              <View className={styles.sectionItemText} style={{color: pcfColor}}>{pcfFiltertime}%</View>
               <Arrow/>
             </View>
           </Button>
@@ -283,7 +273,7 @@ export function Home() {
           >
             <View className={styles.sectionItemText}>RO</View>
             <View className={styles.arrowText}>
-              <View className={styles.sectionItemText} style={{color: roColor}}>{roFiltertime} %</View>
+              <View className={styles.sectionItemText} style={{color: roColor}}>{roFiltertime}%</View>
               <Arrow/>
             </View>
           </Button>
