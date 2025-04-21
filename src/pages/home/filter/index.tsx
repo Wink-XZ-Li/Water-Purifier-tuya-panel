@@ -133,7 +133,7 @@ export function FilterManage(props) {
             // PCF
             realDays = 361-days
         }
-        return `${realDays} Days of Pure Water – Powered by ${title}`;
+        return `${realDays} Days of Purified Water – Powered by ${title}`;
     }
 
     setNavigationBarTitle({title: title});

@@ -121,7 +121,7 @@ export function Home() {
         content = "Faucet and water purifier communication failure. Please check the connection."
       } else if (binaryFault[1]==='1') {
         title = "Error Code : E15"
-        content = "System timeout protection activated after 2 hours of continuous operation."
+        content = "System overrun protection activated after 2 hours of continuous operation."
       }
       showModal({title: title, content: content, showCancel: false, confirmText: Strings.getLang('confirm')})
     }
@@ -173,13 +173,13 @@ export function Home() {
           const lastPopDate = new Date(lastPopTime);
           const diff = now.getTime() - lastPopDate.getTime();
           // 大于15天提示并更新日期
-          if (diff > 1000*3600*24*15) {
-          // if (diff > 1000*3) {
+          // if (diff > 1000*3600*24*15) {
+          if (diff > 1000*3) {
             updatePopFilterDate()
             setTimeout(() => {
               popupFlushMode.open({
                 header: '🔔 Filter Alert',
-                headerStyle: {fontSize: 'large'},
+                headerStyle: {textAlign: 'center', whiteSpace: 'nowrap'},
                 okText: 'Buy Now',
                 cancelText: 'OK',
                 onOk() {
@@ -218,14 +218,14 @@ export function Home() {
                       if (pcfFiltertime === 0) {
                         expiredFilters.push("PCF");
                       } else if (pcfFiltertime <= 10) {
-                        expiringFilters.push(`PCF (${pcfFiltertime}%)`);
+                        expiringFilters.push("PCF");
                       }
                       
                       // 检查RO状态
                       if (roFiltertime === 0) {
                         expiredFilters.push("RO");
                       } else if (roFiltertime <= 10) {
-                        expiringFilters.push(`RO (${roFiltertime}%)`);
+                        expiringFilters.push("RO");
                       }
 
                       // 构建提示语句
@@ -241,7 +241,7 @@ export function Home() {
                       // 即将过期提示
                       if (expiringFilters.length > 0) {
                         message.push(
-                          `${expiringFilters.join(" and ")} filter${expiringFilters.length > 1 ? 's have' : ' has'} low lifespan.`
+                          `${expiringFilters.join(" and ")} filter life remaining(≤10%).`
                         );
                       }
                       
@@ -317,11 +317,11 @@ export function Home() {
             <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 11.31 14.46">
               <path fill='black' fill-rule='nonzero' d="M3.05 3.15l5.21 0 0 0.96 -5.21 0 0 -0.96zm0 2.92l5.21 0 0 0.96 -5.21 0 0 -0.96zm0 2.92l3.8 0 0 0.96 -3.8 0 0 -0.96zm6.43 5.46l-7.65 0c-0.51,0 -0.96,-0.21 -1.29,-0.54 -0.33,-0.33 -0.54,-0.79 -0.54,-1.29l0 -10.79c0,-0.51 0.21,-0.96 0.54,-1.29 0.33,-0.33 0.79,-0.54 1.29,-0.54l7.65 0c0.51,0 0.96,0.21 1.29,0.54 0.33,0.33 0.54,0.79 0.54,1.29l0 10.79c0,0.51 -0.21,0.96 -0.54,1.29 -0.33,0.33 -0.79,0.54 -1.3,0.54zm-7.65 -13.49c-0.24,0 -0.46,0.1 -0.61,0.25 -0.16,0.16 -0.25,0.37 -0.25,0.61l0 10.79c0,0.24 0.1,0.46 0.25,0.61 0.16,0.16 0.37,0.25 0.61,0.25l7.65 0c0.24,0 0.46,-0.1 0.61,-0.25 0.16,-0.16 0.25,-0.37 0.25,-0.61l0 -10.79c0,-0.24 -0.1,-0.46 -0.25,-0.61 -0.16,-0.16 -0.37,-0.25 -0.61,-0.25l-7.65 0z"/>
             </Svg>
-            <View className={styles.sectionTitleText}>{Model === 'FH'?'Water Quality & Status':'Water Quality'}</View>
+            <View className={styles.sectionTitleText}>{Model === 'FH'?Strings.getLang('waterQualityFH'):Strings.getLang('waterQuality')}</View>
           </View>
 
           <View className={styles.sectionItem} id='TDS值'>
-            <View className={styles.sectionItemText}>TDS Value</View>
+            <View className={styles.sectionItemText}>{Strings.getLang('tdsVal')}</View>
             <View className={styles.sectionItemText}>{tdsOut} ppm</View>
           </View>
 
@@ -330,26 +330,26 @@ export function Home() {
           <View className={styles.sectionItem} id='水质'>
             <View className={styles.infoItem} onClick={() => {
               popupPureWaterInfo.open({
-                header: 'Water Quality Score',
-                headerStyle: {fontSize: 'large'},
+                header: 'Water Quality Classification',
+                headerStyle: {textAlign: 'center', whiteSpace: 'nowrap'},
                 okText: '',
                 cancelText: 'OK',
                 content: (
                   <View style={{ padding: 16 , alignItems: 'center', flexDirection: 'column', display: 'flex'}}>
-                    <Text className={styles.infoBodyText}>{"Good: TDS Reduction >90%;\nBad: TDS Reduction <90%"} </Text>
+                    <Text className={styles.infoBodyText}>{"Good: TDS Reduction >75%;\nPoor: TDS Reduction ≤75%"} </Text>
                   </View>
                 ),
               })
             }}>
-              <View className={styles.sectionItemText}>Pure Water Quality</View>
+              <View className={styles.sectionItemText}>{Strings.getLang('pureWaterQuality')}</View>
               <Svg style={{marginLeft: '5px'}} width='30' height='30' viewBox="0 0 1024 1024">
                 <path fill='black' fill-rule='nonzero' d="M512 0C229.23 0 0 229.23 0 512s229.23 512 512 512 512-229.23 512-512S794.77 0 512 0zM512 928c-229.75 0-416-186.25-416-416S282.25 96 512 96s416 186.25 416 416S741.75 928 512 928z" p-id="2360"></path>
                 <path fill='black' fill-rule='nonzero' d="M537.64 343.452c47.074 0 83.266-37.528 83.266-78.072 0-32.46-20.832-60.878-62.496-60.878-54.816 0-82.178 44.618-82.178 77.11C475.144 320.132 498.152 343.452 537.64 343.452z" p-id="2361"></path>
                 <path fill='black' fill-rule='nonzero' d="M533.162 728.934c-7.648 0-10.914-10.136-3.264-39.55l43.25-166.406c16.386-60.848 10.944-100.398-21.92-100.398-39.456 0-131.458 39.83-211.458 107.798l16.416 27.392c25.246-17.256 67.906-34.762 77.792-34.762 7.648 0 6.56 10.168 0 35.508l-37.746 158.292c-23.008 89.266 1.088 109.538 33.984 109.538 32.864 0 117.808-30.47 195.57-109.632l-18.656-25.34C575.354 716.714 543.05 728.934 533.162 728.934z" p-id="2362"></path>
               </Svg>
             </View>
-            {(waterQuality === 'good')&&<View className={`${styles.sectionItemText} ${styles.blueText}`}>Good</View>}
-            {(waterQuality === 'bad')&&<View className={`${styles.sectionItemText} ${styles.redText}`}>Bad</View>}
+            {(waterQuality === 'good')&&<View className={`${styles.sectionItemText} ${styles.blueText}`}>{Strings.getLang('good')}</View>}
+            {(waterQuality === 'bad')&&<View className={`${styles.sectionItemText} ${styles.redText}`}>{Strings.getLang('bad')}</View>}
           </View>
 
           {/* FH */}
@@ -373,7 +373,7 @@ export function Home() {
               <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M20.26 10.41c0,5.44 -4.41,9.85 -9.85,9.85 -5.44,0 -9.85,-4.41 -9.85,-9.85 0,-5.44 4.41,-9.85 9.85,-9.85 5.44,0 9.85,4.41 9.85,9.85z"/>
               <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M10.41 16.61l0 0c-1.44,0 -2.62,-1.18 -2.62,-2.62l0 -7.16c0,-1.44 1.18,-2.62 2.62,-2.62l0 0c1.44,0 2.62,1.18 2.62,2.62l0 7.16c0,1.44 -1.18,2.62 -2.62,2.62z"/>
             </Svg>
-            <View className={styles.sectionTitleText}>Filter Life Remaining</View>
+            <View className={styles.sectionTitleText}>{Strings.getLang('filterLife')}</View>
           </View>
 
           <Button  id='PCF'
@@ -485,7 +485,7 @@ export function Home() {
             <View className={styles.infoItem} onClick={() => {
               popupFlushMode.open({
                 header: 'Smart Flush',
-                headerStyle: {fontSize: 'large'},
+                headerStyle: {textAlign: 'center', whiteSpace: 'nowrap'},
                 okText: '',
                 cancelText: 'OK',
                 content: (
@@ -502,7 +502,7 @@ export function Home() {
                       <View className={styles.infoSection}>
                         <Text className={styles.infoSectionTitle}>Recycled Flushing 🌱\n</Text>
                         <Text className={styles.infoBodyText}>
-                          Automatically recycles water 10 minutes post-use, eliminating stagnant water for healthier hydration.
+                        Automatically cycles standing water after 10 minutes of inactivity, eliminates stagnation, promotes healthier hydration.
                         </Text>
                       </View>
                     )}
@@ -510,14 +510,14 @@ export function Home() {
                     <View className={styles.infoSection}>
                       <Text className={styles.infoSectionTitle}>Scheduled Flushing ⏰\n</Text>
                       <Text className={styles.infoBodyText}>
-                        Automatic 300-second flush every 24h to maintain peak filter performance.
+                      Auto-flushes for 30 seconds daily to keep your filter at peak performance.
                       </Text>
                     </View>
                   </View>
                 ),
               })
             }}>
-              <View className={styles.sectionTitleText}>Flush Mode</View>
+              <View className={styles.sectionTitleText}>{Strings.getLang('flushMode')}</View>
               <Svg style={{marginLeft: '5px'}} width='30' height='30' viewBox="0 0 1024 1024">
                 <path fill='black' fill-rule='nonzero' d="M512 0C229.23 0 0 229.23 0 512s229.23 512 512 512 512-229.23 512-512S794.77 0 512 0zM512 928c-229.75 0-416-186.25-416-416S282.25 96 512 96s416 186.25 416 416S741.75 928 512 928z" p-id="2360"></path>
                 <path fill='black' fill-rule='nonzero' d="M537.64 343.452c47.074 0 83.266-37.528 83.266-78.072 0-32.46-20.832-60.878-62.496-60.878-54.816 0-82.178 44.618-82.178 77.11C475.144 320.132 498.152 343.452 537.64 343.452z" p-id="2361"></path>
@@ -530,7 +530,7 @@ export function Home() {
           {(Model==='F'||Model==='FH')&&<>
           <View className={styles.sectionItem} id='零陈水'>
             <View className={styles.infoItem}>
-              <View className={styles.sectionItemText}>Recycled Flushing</View>
+              <View className={styles.sectionItemText}>{Strings.getLang('recycledFlushing')}</View>
             </View>
             <Switch 
               color={buttonColor}
@@ -554,7 +554,7 @@ export function Home() {
             cancelText='Cancel'
           >
             <View className={styles.sectionItem} id='timer'>
-              <View className={styles.sectionItemText}>Scheduled Flushing / 24h</View>
+              <View className={styles.sectionItemText}>{Strings.getLang('scheduledFlushing')}</View>
               <View className={styles.arrowText}>
                 <View className={styles.sectionItemText}>{formatTime(flushTimer)}</View>
                 <Arrow/>
@@ -576,7 +576,7 @@ export function Home() {
                 <path fill='black' fill-rule='nonzero' d="M14.83 13.75l-13.71 0 0 -13.7 -1.12 -0.05 0 14.36c0.03,0.28 0.27,0.51 0.56,0.51 0.01,0 0.02,0 0.03,-0l14.24 0 0 -1.12z"/>
                 <path fill='black' fill-rule='nonzero' d="M11.67 2.65l1.8 0 0 10.33 -1.8 0 0 -10.33zm-3.17 4.63l1.8 0 0 5.7 -1.8 0 0 -5.7zm-3.17 -1.46l1.8 0 0 7.16 -1.8 0 0 -7.16zm-3.17 3.41l1.8 0 0 3.75 -1.8 0 0 -3.75z"/>
               </Svg>
-              <Text className={styles.sectionTitleText}>Consumption Report</Text>
+              <Text className={styles.sectionTitleText}>{Strings.getLang('consumptionReport')}</Text>
             </View>
 
             <Svg style={{marginRight: '0',  width: '49px', height:'19px'}} viewBox="0 0 5.17 9.44">
