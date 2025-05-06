@@ -11,6 +11,7 @@ export default {
     recycledFlushing:'Recycled Flushing',
     scheduledFlushing:'Scheduled Flushing / 24h',
     consumptionReport:'Consumption Report',
+    flush:'Flush Now',
   },
   zh: {
     // waterQuality:'净水水质',

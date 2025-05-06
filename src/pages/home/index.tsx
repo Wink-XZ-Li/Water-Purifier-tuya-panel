@@ -81,11 +81,14 @@ export function Home() {
     pcfColor = pcfFiltertime>5?'black':'red'
   }
   else if (pid === 'ptrtzvzn3e7u8ijm') { 
-      roColor = roFiltertime>10?'black':'red'
-      pcfColor = pcfFiltertime>10?'black':'red'
+      roColor = roFiltertime>5?'black':'red'
+      pcfColor = pcfFiltertime>5?'black':'red'
   }
 
-  // const washState = dpState['wash_state'];
+  // 冲洗开关
+  const wash = dpState['wash'];
+  // 冲洗状态
+  const washState = dpState['wash_state'];
   const modelStr = dpState['model'];
   const flushTimer = dpState['flush_timer'];
 
@@ -115,14 +118,60 @@ export function Home() {
     var title = ""
     var content = ""
     if (fault !== 0) {
-      
-      if (binaryFault[0]==='1') {
-        title = "Error Code : E8"
-        content = "Faucet and water purifier communication failure. Please check the connection."
-      } else if (binaryFault[1]==='1') {
-        title = "Error Code : E15"
-        content = "System overrun protection activated after 2 hours of continuous operation."
+      if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk') { 
+        if (binaryFault[0]==='1') {
+          title = "Error Code : E8"
+          content = "Faucet and water purifier communication failure. Please check the connection."
+        } else if (binaryFault[1]==='1') {
+          title = "Error Code : E15"
+          content = "System overrun protection activated after 2 hours of continuous operation."
+        }
       }
+      else if (pid === 'ptrtzvzn3e7u8ijm') { 
+        console.log(binaryFault)
+        if (binaryFault[0]==='1') {
+          title = "Error Code : E1"
+          content = ""
+        } else if (binaryFault[1]==='1') {
+          title = "Error Code : E2"
+          content = ""
+        } else if (binaryFault[2]==='1') {
+          title = "Error Code : E3"
+          content = ""
+        } else if (binaryFault[3]==='1') {
+          title = "Error Code : E4"
+          content = ""
+        } else if (binaryFault[4]==='1') {
+          title = "Error Code : E6"
+          content = ""
+        } else if (binaryFault[5]==='1') {
+          title = "Error Code : E7"
+          content = ""
+        } else if (binaryFault[6]==='1') {
+          title = "Error Code : E8"
+          content = ""
+        } else if (binaryFault[7]==='1') {
+          title = "Error Code : E9"
+          content = ""
+        } else if (binaryFault[8]==='1') {
+          title = "Error Code : F0"
+          content = ""
+        } else if (binaryFault[9]==='1') {
+          title = "Error Code : F1"
+          content = ""
+        } else if (binaryFault[10]==='1') {
+          title = "Error Code : F2"
+          content = ""
+        } else if (binaryFault[11]==='1') {
+          title = "Error Code : F3"
+          content = ""
+        } else if (binaryFault[12]==='1') {
+          title = "Error Code : F4"
+          content = ""
+        }
+        
+      }
+      
       showModal({title: title, content: content, showCancel: false, confirmText: Strings.getLang('confirm')})
     }
   }, [dpState['fault']]);
@@ -173,8 +222,8 @@ export function Home() {
           const lastPopDate = new Date(lastPopTime);
           const diff = now.getTime() - lastPopDate.getTime();
           // 大于15天提示并更新日期
-          // if (diff > 1000*3600*24*15) {
-          if (diff > 1000*3) {
+          if (diff > 1000*3600*24*15) {
+          // if (diff > 1000*3) {
             updatePopFilterDate()
             setTimeout(() => {
               popupFlushMode.open({
@@ -525,6 +574,26 @@ export function Home() {
               </Svg>
             </View>
           </View>
+
+          {/* F;FH */}
+          {(Model==='FH')&&<>
+          <View className={styles.sectionItem} id='手动冲洗'>
+            <View className={styles.infoItem}>
+              <View className={styles.sectionItemText}>Clean Filter</View>
+            </View>
+            {!washState&&!wash&&
+            <Button
+            onClick={() => {
+              actions['wash'].set(true)
+            }}
+            >{Strings.getLang('flush')}</Button>
+            }
+            {!(!washState&&!wash)&&
+            <View>flushing</View>
+            }
+          </View>
+          
+          <Divider/></>}
 
           {/* F;FH */}
           {(Model==='F'||Model==='FH')&&<>
