@@ -6,11 +6,10 @@ import Strings from '@/i18n';
 
 export default function History() {
     
-    setNavigationBarTitle({title: Strings.getLang('usageReport')})
+    setNavigationBarTitle({title: "Consumption Report"})
     return (
         <View className={styles.chart}>
             <Stats/>
-            {/* <TestTemperatureView/> */}
         </View>
     )
 }

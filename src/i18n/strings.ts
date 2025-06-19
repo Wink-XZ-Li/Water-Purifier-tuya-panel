@@ -1,12 +1,12 @@
 export default {
   en: {
-    waterQuality:'Water Quality',
+    waterQuality:'Purified Water',
     waterQualityFH:'Water Quality & Status',
     tdsVal:'TDS Value',
-    pureWaterQuality:'Purified Water Status',
+    pureWaterQuality:'Water Quality',
     good:'Good',
     bad:'Poor',
-    filterLife:'Filter Life Remaining',
+    filterLife:'Filter Status',
     flushMode:'Flush Mode',
     recycledFlushing:'Recycled Flushing',
     scheduledFlushing:'Scheduled Flushing / 24h',

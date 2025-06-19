@@ -93,27 +93,35 @@ export function FilterManage(props) {
     const filterDays = type === "0"?roFiltertimeDay:pcfFiltertimeDay;
 
 /**
+ * MIZUDO：
  * mini款400&600:   dknfai4pqtl1k2hf
  * mini款800&1000:  kaaz0cxdgvroa6qp
  * F款:             wcssrdbcufckhbzk
  * 净热款:           ptrtzvzn3e7u8ijm
+ * 
+ * 伊莱克斯：
+ * F款:             z0xsaptrkwdyjy9i
  */
     
-    if (pid === 'dknfai4pqtl1k2hf') { resetImageUrl = require('src/images/G46-reset.png')}
-    else if (pid === 'kaaz0cxdgvroa6qp') { resetImageUrl = require('src/images/G810-reset.png')}
-    else if (pid === 'wcssrdbcufckhbzk') { resetImageUrl = require('src/images/F-reset.png')}
-    else if (pid === 'ptrtzvzn3e7u8ijm') { resetImageUrl = require('src/images/FH-reset.png')}
+    if (pid === 'dknfai4pqtl1k2hf') { resetImageUrl = type === "0"?require('src/images/G46-reset-ro.png'):require('src/images/G46-reset-pcf.png')}
+    else if (pid === 'kaaz0cxdgvroa6qp') { resetImageUrl = type === "0"?require('src/images/G810-reset-ro.png'):require('src/images/G810-reset-pcf.png')}
+    else if (pid === 'wcssrdbcufckhbzk') { resetImageUrl = type === "0"?require('src/images/F-reset-ro.png'):require('src/images/F-reset-pcf.png')}
+    // TODO: 图片待替换
+    else if (pid === 'z0xsaptrkwdyjy9i') { resetImageUrl = type === "0"?require('src/images/F-reset-ro.png'):require('src/images/F-reset-pcf.png')}
+    else if (pid === 'ptrtzvzn3e7u8ijm') { resetImageUrl = type === "0"?require('src/images/FH-reset-ro.png'):require('src/images/FH-reset-pcf.png')}
 
-    var roColor = "";
-    var pcfColor = "";
-    if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk') { 
-        roColor = roFiltertime>5?'black':'red'
-        pcfColor = pcfFiltertime>5?'black':'red'
-    }
-    else if (pid === 'ptrtzvzn3e7u8ijm') { 
-        roColor = roFiltertime>10?'black':'red'
-        pcfColor = pcfFiltertime>10?'black':'red'
-    }
+    const roColor = roFiltertime>5?'black':'red'
+    const pcfColor = pcfFiltertime>5?'black':'red'
+    // var roColor = "";
+    // var pcfColor = "";
+    // if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk') { 
+    //     roColor = roFiltertime>5?'black':'red'
+    //     pcfColor = pcfFiltertime>5?'black':'red'
+    // }
+    // else if (pid === 'ptrtzvzn3e7u8ijm') { 
+    //     roColor = roFiltertime>10?'black':'red'
+    //     pcfColor = pcfFiltertime>10?'black':'red'
+    // }
     const timeColor = type === "0"?roColor:pcfColor
     
     const Popup = ActionSheet.createPopup();
@@ -121,6 +129,10 @@ export function FilterManage(props) {
     // 将number转换为时间字符串
     function formatDays(days) {
         // 由于days是剩余天数，需转换为使用天数
+        if (days === 0) {
+            return 'Filter life ended. Replace soon.';
+        }
+
         var realDays = 0
         if (type === "0") {
             // RO
@@ -133,7 +145,9 @@ export function FilterManage(props) {
             // PCF
             realDays = 361-days
         }
-        return `${realDays} Days of Purified Water – Powered by ${title}`;
+        return `${realDays} Days Used`;
+
+        
     }
 
     setNavigationBarTitle({title: title});
@@ -216,13 +230,13 @@ export function FilterManage(props) {
                 <Button className={styles.sectionItem} id='RO'
                     onClick={ () => {
                         Popup.open({
-                            header: 'Reset Guide',
-                            headerStyle: {fontSize: 'large'},
+                            header: 'How to reset filter lifetime',
+                            headerStyle: {fontSize: 'large', whiteSpace: 'nowrap'},
                             okText: '',
                             cancelText: 'OK',
                             content: (
                               <View style={{ padding: 16 , alignItems: 'center', flexDirection: 'column', display: 'flex'}}>
-                                <View  className={styles.infoBodyText}>{`Press and hold the ${typeStr} button for 3 seconds to reset the filter lifetime.`}</View>
+                                <View className={styles.infoBodyText}>{`Press and hold the ${typeStr} button for 3 seconds to reset the filter lifetime.`}</View>
                                 <Image src={resetImageUrl} style={{margin: '0 auto'}}/>
                               </View>
                             ),

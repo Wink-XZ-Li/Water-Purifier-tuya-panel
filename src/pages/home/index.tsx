@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { Switch, Text, View, ScrollView, navigateTo, Image, showModal, Button, Picker, getCurrentPages, router, setStorage, clearStorage, getStorage, openURL, showActionSheet } from '@ray-js/ray';
+import React, { useEffect, useRef, useState } from 'react';
+import { Switch, Text, View, ScrollView, navigateTo, Image, showModal, Button, Picker, getCurrentPages, router, setStorage, clearStorage, getStorage, openURL, showActionSheet, showToast, hideToast } from '@ray-js/ray';
 import { useActions, useDevInfo, useDpSchema, useProps } from "@ray-js/panel-sdk";
 import PressKey from '@ray-js/presskey';
 import { TopBar } from '@/components';
@@ -9,12 +9,17 @@ import Strings from '@/i18n';
 import { FilterType } from './filter';
 import ActionSheet from '@ray-js/components-ty-actionsheet';
 import { getFilterLink } from './filter';
+import Loading from '@ray-js/components-ty-loading';
 
 /**
+ * MIZUDO：
  * mini款400&600:   dknfai4pqtl1k2hf
  * mini款800&1000:  kaaz0cxdgvroa6qp
  * F款:             wcssrdbcufckhbzk
  * 净热款:           ptrtzvzn3e7u8ijm
+ * 
+ * 伊莱克斯：
+ * F款:             z0xsaptrkwdyjy9i
  */
 
 var Model: 'G46'| 'G810' | 'F' | 'FH' = 'G46';
@@ -53,6 +58,12 @@ const models = {
   // 'WD800A0G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
   'WD800A1G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
 
+
+  // TODO: 图片与文字待替换
+  'EWP600A0W': {name: '600GPD RO Water Filtration System',   url: require('src/images/E_F800.png')},
+  'EWP800A0W': {name: '800GPD RO Water Filtration System',   url: require('src/images/E_F800.png')},
+  'EWP1000A0W': {name: '1000GPD RO Water Filtration System',   url: require('src/images/E_F800.png')},
+
   'default':  {name: '',                            url: require('src/images/FH.png')},
 }
 
@@ -65,7 +76,7 @@ export function Home() {
   const pid = devInfo['productId'];
   if (pid === 'dknfai4pqtl1k2hf') { Model = 'G46'}
   else if (pid === 'kaaz0cxdgvroa6qp') { Model = 'G810'}
-  else if (pid === 'wcssrdbcufckhbzk') { Model = 'F'}
+  else if (pid === 'wcssrdbcufckhbzk' || pid === 'z0xsaptrkwdyjy9i') { Model = 'F'}
   else if (pid === 'ptrtzvzn3e7u8ijm') { Model = 'FH'}
 
   // 产品属性
@@ -74,16 +85,16 @@ export function Home() {
   const pcfFiltertime = dpState['cbpa_filtertime'];
   const fault = dpState['fault'];
 
-  var roColor = "";
-  var pcfColor = "";
-  if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk') { 
-    roColor = roFiltertime>5?'black':'red'
-    pcfColor = pcfFiltertime>5?'black':'red'
-  }
-  else if (pid === 'ptrtzvzn3e7u8ijm') { 
-      roColor = roFiltertime>5?'black':'red'
-      pcfColor = pcfFiltertime>5?'black':'red'
-  }
+  // var roColor = "";
+  // var pcfColor = "";
+  // if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk') { 
+  const roColor = roFiltertime>5?'black':'red'
+  const pcfColor = pcfFiltertime>5?'black':'red'
+  // }
+  // else if (pid === 'ptrtzvzn3e7u8ijm') { 
+  //     roColor = roFiltertime>5?'black':'red'
+  //     pcfColor = pcfFiltertime>5?'black':'red'
+  // }
 
   // 冲洗开关
   const wash = dpState['wash'];
@@ -118,7 +129,7 @@ export function Home() {
     var title = ""
     var content = ""
     if (fault !== 0) {
-      if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk') { 
+      if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk' || pid === 'z0xsaptrkwdyjy9i') { 
         if (binaryFault[0]==='1') {
           title = "Error Code : E8"
           content = "Faucet and water purifier communication failure. Please check the connection."
@@ -332,19 +343,47 @@ export function Home() {
   return (
     <View className={styles.view}>
       <TopBar />
+      {/* <View style={{width: '100%', height: '100%', position: 'relative'}}> */}
+      {/* {washState&&<View className={styles.tip} >
+        <Svg width='35' height='35' viewBox="0 0 10.25 15" >
+          <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
+          <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>
+          <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
+          <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>  
+        </Svg>
+        <Text style={{display: 'flex'}}>Flushing</Text>
+        </View>} */}
+      
       <ScrollView scrollY={true} className={styles.content} refresherTriggered={false}>
         
+        <View 
+        style={{position: 'relative' , alignItems: 'center', display: 'flex', }}
+        >
+          {washState&&
+          <View 
+          className={styles.tip}
+          >
+          <Svg width='35' height='35' viewBox="0 0 10.25 15" >
+            <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
+            <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>
+            <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
+            <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>  
+          </Svg>
+          <Text style={{display: 'flex'}}>Flushing</Text>
+          </View>}
+          <Image src={model.url}
+            mode='aspectFit'
+            style={{
+              maxWidth: '100%',
+              display: 'block',
+              margin: '0 auto',
+              width: '80%',
+              padding: '6%',
+            }}
+          />
+        </View>
         {/* 产品图片 */}
-        <Image src={model.url}
-          mode='aspectFit'
-          style={{
-            maxWidth: '100%',
-            display: 'block',
-            margin: '0 auto',
-            width: '80%',
-            padding: '6%'
-          }}
-        />
+        
 
         {/* 产品名称 */}
         <View style={{
@@ -385,7 +424,7 @@ export function Home() {
                 cancelText: 'OK',
                 content: (
                   <View style={{ padding: 16 , alignItems: 'center', flexDirection: 'column', display: 'flex'}}>
-                    <Text className={styles.infoBodyText}>{"Good: TDS Reduction >75%;\nPoor: TDS Reduction ≤75%"} </Text>
+                    <Text className={styles.infoBodyText}>{"TDS: Total Dissolved Solids\n\nGood: TDS Reduction ≥ 75%;\nPoor: TDS Reduction < 75%"} </Text>
                   </View>
                 ),
               })
@@ -543,15 +582,15 @@ export function Home() {
                     <View className={styles.infoSection}>
                       <Text className={styles.infoSectionTitle}>Why Flush? 🔄\n</Text>
                       <Text className={styles.infoBodyText}>
-                        The reverse osmosis membrane filters contaminants down to 0.0001 microns. Flush mode clears accumulated contaminants, extending filter lifespan by up to 30%.
+                      The reverse osmosis membrane features a filtration capacity as fine as 0.0001 microns, effectively removing contaminants. The flush mode helps expel accumulated contaminants from the membrane, ensuring a longer filter lifespan and delivering purer water.
                       </Text>
                     </View>
 
-                    {(Model==='F'||Model==='FH') && (
+                    {(Model==='F'|| Model==='FH') && (
                       <View className={styles.infoSection}>
                         <Text className={styles.infoSectionTitle}>Recycled Flushing 🌱\n</Text>
                         <Text className={styles.infoBodyText}>
-                        Automatically cycles standing water after 10 minutes of inactivity, eliminates stagnation, promotes healthier hydration.
+                        The recycled flushing function ensures that each cup of water is fresh and healthy. The system will automatically recycle fresh water and start flushing after it has dispensed water for over 10 minutes.
                         </Text>
                       </View>
                     )}
@@ -559,7 +598,7 @@ export function Home() {
                     <View className={styles.infoSection}>
                       <Text className={styles.infoSectionTitle}>Scheduled Flushing ⏰\n</Text>
                       <Text className={styles.infoBodyText}>
-                      Auto-flushes for 30 seconds daily to keep your filter at peak performance.
+                      To maintain and extend the life expectancy of the filters, the system will be automatically flushed for 300 seconds per 24 hours.
                       </Text>
                     </View>
                   </View>
@@ -575,7 +614,7 @@ export function Home() {
             </View>
           </View>
 
-          {/* F;FH */}
+          {/* FH */}
           {(Model==='FH')&&<>
           <View className={styles.sectionItem} id='手动冲洗'>
             <View className={styles.infoItem}>
@@ -589,7 +628,9 @@ export function Home() {
             >{Strings.getLang('flush')}</Button>
             }
             {!(!washState&&!wash)&&
-            <View>flushing</View>
+            <View className={styles.arrowText}>
+              <View className={styles.flushingText}>Flushing</View>
+            </View>
             }
           </View>
           
@@ -658,6 +699,7 @@ export function Home() {
         <popupFlushMode.Container />
         <popupFilterInfo.Container />
       </ScrollView>
+      {/* </View> */}
     </View>
     );
 }

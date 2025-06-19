@@ -9,6 +9,33 @@
   background:linear-gradient(to bottom, rgb(100,175,210), rgb(238,241,240))
 }
 
+.tip {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  text-align: center;
+  position: absolute;
+  pointer-events: none;
+  margin: 5% 35% 0 35%;
+  height: 40px;
+  background-color: white;
+  width: 30%;
+  border-radius: 10px;
+  box-shadow: 0px 0px 2px 2px rgba(168, 164, 164, 0.2);
+  opacity: 0.7;
+  animation: blinktip 1s infinite alternate;
+  // z-index: 10;
+  
+}
+@keyframes blinktip {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0.7;
+  }
+}
+
 .content {
   // position: relative;
   display: flex;
@@ -16,7 +43,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
 .stateAndControlSection {
@@ -96,6 +123,19 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.flushingText {
+  animation: blinkflushing 1.5s infinite alternate;
+}
+
+@keyframes blinkflushing {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .sectionItemText {

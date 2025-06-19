@@ -65,19 +65,19 @@ export function Stats() {
       const tk = 'YYYYMMDD';
       isAddDisabled = date.add(1, 'day').format(tk) > maxDate['day'].format(tk); // 大于今天则不允许点击
       isMinusDisabled = date.format(tk) <= minDate['day'].format(tk); // 最多只能展示近30天的数据
-      readableFormatToken = 'YYYY/MM/DD';
+      readableFormatToken = 'MM/DD/YYYY';
     }
     else if (token === 'week') {
       const tk = 'YYYYMMDD';
       isAddDisabled = date.add(1, 'day').format(tk) > maxDate['week'].format(tk); // 大于今天则不允许点击
       isMinusDisabled = date.format(tk) <= minDate['week'].format(tk); // 最多只能展示近50个周的数据
-      readableFormatToken = 'YYYY/MM/DD';
+      readableFormatToken = 'MM/DD/YYYY';
     }
     else if (token === 'month') {
       const tk = 'YYYYMM';
       isAddDisabled = date.add(1, 'month').format(tk) > maxDate['month'].format(tk); // 大于本月则不允许点击
       isMinusDisabled = date.format(tk) <= minDate['month'].format(tk); // 最多只能展示近12个月的数据
-      readableFormatToken = 'YYYY.MM';
+      readableFormatToken = 'MM.YYYY';
     }
     else if (token === 'year') {
       const tk = 'YYYY';
@@ -131,10 +131,10 @@ export function Stats() {
             show2sLoading();
           }}
         >
-          <Tabs.TabPanel tabKey="day" tab={Strings.getLang('day')} />
-          <Tabs.TabPanel tabKey="week" tab={Strings.getLang('week')} />
-          <Tabs.TabPanel tabKey="month" tab={Strings.getLang('month')} />
-          <Tabs.TabPanel tabKey="year" tab={Strings.getLang('year')} />
+          <Tabs.TabPanel tabKey="day" tab={'Day'} />
+          <Tabs.TabPanel tabKey="week" tab={'Week'} />
+          <Tabs.TabPanel tabKey="month" tab={'Month'} />
+          <Tabs.TabPanel tabKey="year" tab={'Year'} />
         </Tabs.SegmentedPicker>
         <View className={styles['date-selector-content']}>
           <View
@@ -169,7 +169,7 @@ export function Stats() {
             <View style={{fontSize: 'large'}}>
               {token === 'week' 
               // start date - end date
-                ? startDate.format('YYYY/MM/DD') +' - '+ endDate.format('YYYY/MM/DD')
+                ? startDate.format('MM/DD/YYYY') +' - '+ endDate.format('MM/DD/YYYY')
                 : date.format(readableFormatToken)
               }
             </View>
@@ -210,7 +210,7 @@ export function Stats() {
           setWaterTotal((parseFloat(res[startDateFormated]).toFixed(2)).toString())
         } else if (token==='week') {
           const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
-          setWaterTotal((parseFloat(total).toFixed(2)).toString())
+          setWaterTotal((parseFloat(total).toFixed(0)).toString())
         }
       })
 
@@ -224,7 +224,7 @@ export function Stats() {
       }).then(res => {
         console.log("month consumption: ", res)
         const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
-        setWaterTotal((parseFloat(total).toFixed(2)).toString())
+        setWaterTotal((parseFloat(total).toFixed(0)).toString())
       })
     } else if (token==='year') {
       getStatisticsRangMonth({
@@ -236,7 +236,7 @@ export function Stats() {
       }).then(res => {
         console.log("year consumption: ", res)
         const total = Object.values(res).reduce((previousValue: string, currentValue: string) => (parseFloat(previousValue) + parseFloat(currentValue)).toString())
-        setWaterTotal((parseFloat(total).toFixed(2)).toString())
+        setWaterTotal((parseFloat(total).toFixed(0)).toString())
       })
     }
   },[date,token,waterConsumption], { wait: 100 })
@@ -252,7 +252,7 @@ export function Stats() {
           <StatCharts
             style={{ width: '686rpx', padding: '0' }}
             devIdList={[devId]}
-            dpList={[{ id: totalWaterSchema.id, name: Strings.getLang('waterConsumption') }]}
+            dpList={[{ id: totalWaterSchema.id, name: '' }]}
             unit={waterUnit}
             range={range}
             // @ts-ignore
@@ -273,18 +273,18 @@ export function Stats() {
                 <Text style={{paddingLeft: '4px'}}>
                   <Text style={{fontSize: '20px', paddingLeft: 8}}>You've used </Text>
                   <Text style={{color: "#00B7FB", fontSize: '25px', paddingLeft:10, paddingRight:10, fontWeight: 'bold'}}>{waterTotal}</Text>
-                  <Text style={{fontSize: '20px'}}>Gallon</Text>
+                  <Text style={{fontSize: '20px'}}>Gallons</Text>
                 </Text>
               </View>
               )
             }}
-            renderFooter={() => {
-              return (
-                <View style={{padding: '8px'}}>
-                  <Text style={{fontSize: '13px', color: '#999'}}>Under normal operation, there’s a ±15% tolerance in water consumption monitoring.</Text>
-                </View>
-              )
-            }}
+            // renderFooter={() => {
+            //   return (
+            //     <View style={{padding: '8px'}}>
+            //       <Text style={{fontSize: '13px', color: '#999'}}>Under normal operation, there’s a ±15% tolerance in water consumption monitoring.</Text>
+            //     </View>
+            //   )
+            // }}
             colors={['#00B7FB']}
             debug={false}
           />
