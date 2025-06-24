@@ -9,7 +9,8 @@ import Strings from '@/i18n';
 import { FilterType } from './filter';
 import ActionSheet from '@ray-js/components-ty-actionsheet';
 import { getFilterLink } from './filter';
-import Loading from '@ray-js/components-ty-loading';
+import productConfig from '../../configuration/productConfig.json';
+import filterConfig from '../../configuration/filterConfig.json';
 
 /**
  * MIZUDO：
@@ -22,8 +23,24 @@ import Loading from '@ray-js/components-ty-loading';
  * F款:             z0xsaptrkwdyjy9i
  */
 
-var Model: 'G46'| 'G810' | 'F' | 'FH' = 'G46';
-
+const images = {
+  'src/images/G400.png': require('src/images/G400.png'),
+  'src/images/G600.png': require('src/images/G600.png'),
+  'src/images/G800.png': require('src/images/G800.png'),
+  'src/images/G1000.png': require('src/images/G1000.png'),
+  'src/images/F800.png': require('src/images/F800.png'),
+  'src/images/F1000.png': require('src/images/F1000.png'),
+  'src/images/F1200.png': require('src/images/F1200.png'),
+  'src/images/FH.png': require('src/images/FH.png'),
+  'src/images/E_F800.png': require('src/images/E_F800.png'),
+  // '': require(''),
+  // '': require(''),
+  // '': require(''),
+  // '': require(''),
+  // '': require(''),
+  // '': require(''),
+  // '': require('')
+}
 export function Divider() {
   return (<View style={{height: '2px', width: '90%', backgroundColor: '#e9e9e9' }}></View>)
 }
@@ -41,31 +58,6 @@ const heatLevels = [
   { text: "185℉", value: '3' },
   { text: "203℉", value: '4' },
 ];
-const models = {
-  // 'WD600A0W': {name: 'Pureflo Series 400GPD',       url: require('src/images/G400.png'),},
-  'WD600A2W': {name: 'Pureflo Series 400GPD',       url: require('src/images/G400.png'),},
-  // 'WP600A0W': {name: 'Pureflo Series 600GPD',       url: require('src/images/G600.png')},
-  'WP600A2W': {name: 'Pureflo Series 600GPD',       url: require('src/images/G600.png')},
-  // 'WP800A1W': {name: 'Megaflo Mini Series 800GPD',  url: require('src/images/G800.png')},
-  'WP800A2W': {name: 'Megaflo Mini Series 800GPD',  url: require('src/images/G800.png')},
-  // 'WP1000A1W':{name: 'Megaflo Mini Series 1000GPD', url: require('src/images/G1000.png')},
-  'WP1000A2W':{name: 'Megaflo Mini Series 1000GPD', url: require('src/images/G1000.png')},
-  // 'WP800A0G': {name: 'Megaflo Series 800GPD',       url: require('src/images/F800.png')},
-  'WP800A1G': {name: 'Megaflo Series 800GPD',       url: require('src/images/F800.png')},
-  // 'WP1000A0G':{name: 'Megaflo Series 1000GPD',      url: require('src/images/F1000.png')},
-  'WP1000A1G':{name: 'Megaflo Series 1000GPD',      url: require('src/images/F1000.png')},
-  'WP1200A1G':{name: 'Megaflo Series 1200GPD',      url: require('src/images/F1200.png')},
-  // 'WD800A0G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
-  'WD800A1G': {name: 'Megaflo HOT Series 800GPD',   url: require('src/images/FH.png')},
-
-
-  // TODO: 图片与文字待替换
-  'EWP600A0W': {name: '600GPD RO Water Filtration System',   url: require('src/images/E_F800.png')},
-  'EWP800A0W': {name: '800GPD RO Water Filtration System',   url: require('src/images/E_F800.png')},
-  'EWP1000A0W': {name: '1000GPD RO Water Filtration System',   url: require('src/images/E_F800.png')},
-
-  'default':  {name: '',                            url: require('src/images/FH.png')},
-}
 
 export function Home() {
   const dpSchema = useDpSchema();
@@ -74,10 +66,6 @@ export function Home() {
   const actions = useActions();
 
   const pid = devInfo['productId'];
-  if (pid === 'dknfai4pqtl1k2hf') { Model = 'G46'}
-  else if (pid === 'kaaz0cxdgvroa6qp') { Model = 'G810'}
-  else if (pid === 'wcssrdbcufckhbzk' || pid === 'z0xsaptrkwdyjy9i') { Model = 'F'}
-  else if (pid === 'ptrtzvzn3e7u8ijm') { Model = 'FH'}
 
   // 产品属性
   // 通用
@@ -85,16 +73,8 @@ export function Home() {
   const pcfFiltertime = dpState['cbpa_filtertime'];
   const fault = dpState['fault'];
 
-  // var roColor = "";
-  // var pcfColor = "";
-  // if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk') { 
   const roColor = roFiltertime>5?'black':'red'
   const pcfColor = pcfFiltertime>5?'black':'red'
-  // }
-  // else if (pid === 'ptrtzvzn3e7u8ijm') { 
-  //     roColor = roFiltertime>5?'black':'red'
-  //     pcfColor = pcfFiltertime>5?'black':'red'
-  // }
 
   // 冲洗开关
   const wash = dpState['wash'];
@@ -115,6 +95,25 @@ export function Home() {
   const heat = dpState['heat'];
   const heatingState = dpState['heating_state'];
   const heatLevel = dpState['level'];
+
+  // 获取产品配置
+  const configuration = productConfig[pid]
+  // 产品配置
+  const product_config = configuration.productConfig[modelStr];
+  console.log("Product Config:", product_config)
+  // 获取失败，提示故障
+  if (product_config===undefined) {
+    console.error("Product or filter configuration not found for productId:", pid);
+    return <View><Text style={{"fontSize": "40px"}}>Error: 未找到配置, 请检查device_model上报(id: 140), 确认正确后, 重新进入此页面</Text></View>;
+  }
+  // UI功能配置
+  const mainUiConfig = configuration.mainUiConfig;
+  const image = images[product_config.imageUrl];
+  // 滤芯配置
+  const pcf_config = filterConfig.pcf[product_config.pcfFilter];
+  const ro_config = filterConfig.ro[product_config.roFilter];
+
+  
 
   // 计算属性
   const disableHeat =  (fault !== 0)
@@ -214,7 +213,7 @@ export function Home() {
   } 
 
   /// 此model用于获取图片与名称
-  const model = (modelStr in models)?models[modelStr]:models["default"]
+  // const model = (modelStr in models)?models[modelStr]:models["default"]
 
   /// 判断是否要弹出滤芯提醒
   // clearStorage()
@@ -343,22 +342,10 @@ export function Home() {
   return (
     <View className={styles.view}>
       <TopBar />
-      {/* <View style={{width: '100%', height: '100%', position: 'relative'}}> */}
-      {/* {washState&&<View className={styles.tip} >
-        <Svg width='35' height='35' viewBox="0 0 10.25 15" >
-          <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
-          <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>
-          <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
-          <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>  
-        </Svg>
-        <Text style={{display: 'flex'}}>Flushing</Text>
-        </View>} */}
-      
       <ScrollView scrollY={true} className={styles.content} refresherTriggered={false}>
         
-        <View 
-        style={{position: 'relative' , alignItems: 'center', display: 'flex', }}
-        >
+        {/* 产品图片 */}
+        <View style={{position: 'relative' , alignItems: 'center', display: 'flex', }}>
           {washState&&
           <View 
           className={styles.tip}
@@ -371,7 +358,7 @@ export function Home() {
           </Svg>
           <Text style={{display: 'flex'}}>Flushing</Text>
           </View>}
-          <Image src={model.url}
+          <Image src={image}
             mode='aspectFit'
             style={{
               maxWidth: '100%',
@@ -381,9 +368,7 @@ export function Home() {
               padding: '6%',
             }}
           />
-        </View>
-        {/* 产品图片 */}
-        
+        </View>  
 
         {/* 产品名称 */}
         <View style={{
@@ -394,27 +379,28 @@ export function Home() {
           marginBottom: '20px',
           color: 'white',
           fontWeight: 'bold'
-        }}>{model.name}</View>
+        }}>{product_config.serialName}</View>
 
         {/* 水质与状态 */}
-        {/* G810;F;FH */}
-        {Model!=='G46'&&
+        {(mainUiConfig.waterTDS || mainUiConfig.waterQuality || mainUiConfig.hotWaterTemp) &&
         <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
           
           <View className={styles.sectionTitle} id='水质'>
             <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 11.31 14.46">
               <path fill='black' fill-rule='nonzero' d="M3.05 3.15l5.21 0 0 0.96 -5.21 0 0 -0.96zm0 2.92l5.21 0 0 0.96 -5.21 0 0 -0.96zm0 2.92l3.8 0 0 0.96 -3.8 0 0 -0.96zm6.43 5.46l-7.65 0c-0.51,0 -0.96,-0.21 -1.29,-0.54 -0.33,-0.33 -0.54,-0.79 -0.54,-1.29l0 -10.79c0,-0.51 0.21,-0.96 0.54,-1.29 0.33,-0.33 0.79,-0.54 1.29,-0.54l7.65 0c0.51,0 0.96,0.21 1.29,0.54 0.33,0.33 0.54,0.79 0.54,1.29l0 10.79c0,0.51 -0.21,0.96 -0.54,1.29 -0.33,0.33 -0.79,0.54 -1.3,0.54zm-7.65 -13.49c-0.24,0 -0.46,0.1 -0.61,0.25 -0.16,0.16 -0.25,0.37 -0.25,0.61l0 10.79c0,0.24 0.1,0.46 0.25,0.61 0.16,0.16 0.37,0.25 0.61,0.25l7.65 0c0.24,0 0.46,-0.1 0.61,-0.25 0.16,-0.16 0.25,-0.37 0.25,-0.61l0 -10.79c0,-0.24 -0.1,-0.46 -0.25,-0.61 -0.16,-0.16 -0.37,-0.25 -0.61,-0.25l-7.65 0z"/>
             </Svg>
-            <View className={styles.sectionTitleText}>{Model === 'FH'?Strings.getLang('waterQualityFH'):Strings.getLang('waterQuality')}</View>
+            <View className={styles.sectionTitleText}>{mainUiConfig.hotWaterTemp?Strings.getLang('waterQualityFH'):Strings.getLang('waterQuality')}</View>
           </View>
 
+          {mainUiConfig.waterTDS &&
           <View className={styles.sectionItem} id='TDS值'>
             <View className={styles.sectionItemText}>{Strings.getLang('tdsVal')}</View>
             <View className={styles.sectionItemText}>{tdsOut} ppm</View>
-          </View>
+          </View>}
 
           <Divider/>
 
+          {mainUiConfig.waterQuality &&
           <View className={styles.sectionItem} id='水质'>
             <View className={styles.infoItem} onClick={() => {
               popupPureWaterInfo.open({
@@ -438,10 +424,9 @@ export function Home() {
             </View>
             {(waterQuality === 'good')&&<View className={`${styles.sectionItemText} ${styles.blueText}`}>{Strings.getLang('good')}</View>}
             {(waterQuality === 'bad')&&<View className={`${styles.sectionItemText} ${styles.redText}`}>{Strings.getLang('bad')}</View>}
-          </View>
+          </View>}
 
-          {/* FH */}
-          {Model==='FH'&&<>
+          {mainUiConfig.hotWaterTemp&&<>
           <Divider/>
 
           <View className={styles.sectionItem} id='热水水温'>
@@ -464,7 +449,8 @@ export function Home() {
             <View className={styles.sectionTitleText}>{Strings.getLang('filterLife')}</View>
           </View>
 
-          <Button  id='PCF'
+          {mainUiConfig.pcf &&
+          <Button id='PCF'
             className={styles.sectionItem}
             onClick={ () =>
               navigateToFilter(FilterType.pcf)
@@ -475,10 +461,11 @@ export function Home() {
               <View className={styles.sectionItemText} style={{color: pcfColor}}>{pcfFiltertime}%</View>
               <Arrow/>
             </View>
-          </Button>
+          </Button>}
 
-          <Divider/>
+          {mainUiConfig.pcf && <Divider/>}
           
+          {mainUiConfig.ro &&
           <Button id='RO'
             className={styles.sectionItem}
             onClick={ () =>
@@ -490,12 +477,11 @@ export function Home() {
               <View className={styles.sectionItemText} style={{color: roColor}}>{roFiltertime}%</View>
               <Arrow/>
             </View>
-          </Button>
+          </Button>}
         </View>
         
         {/* 水温管理 */}
-        {/* FH */}
-        {Model==='FH'&&<>
+        {(mainUiConfig.heatingSwitch || mainUiConfig.heatingTemp || mainUiConfig.heatingTimer) &&
         <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
           <View className={styles.sectionTitle} id='水温管理'>
             <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 13.95 15.48">
@@ -506,7 +492,8 @@ export function Home() {
             </Svg>
             <View className={styles.sectionTitleText}>Water Temp. Management</View>
           </View>
-
+          
+          {mainUiConfig.heatingSwitch &&
           <View className={styles.sectionItem} id='电源'>
             <View className={styles.sectionItemText}>Heating ON/OFF</View>
             <Switch 
@@ -517,10 +504,10 @@ export function Home() {
                 actions['heat'].set(e.detail.value)
               }
             />
-          </View>
+          </View>}
 
           <Divider/>
-
+          {mainUiConfig.heatingTemp && <>
           <View className={styles.sectionItem} id='调温'>
             <View className={styles.sectionItemText}>Temp. Regulation</View>
           </View>
@@ -547,9 +534,10 @@ export function Home() {
           ))}
           </View>
 
-          <View style={{height: '8px', width: '10',display: 'flex'}}/>
+          <View style={{height: '8px', width: '10',display: 'flex'}}/></>}
           <Divider/>
           
+          {mainUiConfig.heatingTimer && 
           <Button 
             className={styles.sectionItem} id='RO'
             onClick={ () =>
@@ -558,10 +546,11 @@ export function Home() {
           >
             <View className={styles.sectionItemText}>Time Setting</View>
             <Arrow/>
-          </Button>
-        </View></>}
+          </Button>}
+        </View>}
         
         {/* 冲洗模式 */}
+        {(mainUiConfig.cleanFilter || mainUiConfig.recycledFlushing || mainUiConfig.scheduledFlushing) &&
         <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
           <View className={styles.sectionTitle} id='冲洗模式'>
             <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 10.25 15" >
@@ -586,7 +575,7 @@ export function Home() {
                       </Text>
                     </View>
 
-                    {(Model==='F'|| Model==='FH') && (
+                    {mainUiConfig.recycledFlushing && (
                       <View className={styles.infoSection}>
                         <Text className={styles.infoSectionTitle}>Recycled Flushing 🌱\n</Text>
                         <Text className={styles.infoBodyText}>
@@ -613,9 +602,8 @@ export function Home() {
               </Svg>
             </View>
           </View>
-
-          {/* FH */}
-          {(Model==='FH')&&<>
+          
+          {mainUiConfig.cleanFilter&&<>
           <View className={styles.sectionItem} id='手动冲洗'>
             <View className={styles.infoItem}>
               <View className={styles.sectionItemText}>Clean Filter</View>
@@ -636,8 +624,7 @@ export function Home() {
           
           <Divider/></>}
 
-          {/* F;FH */}
-          {(Model==='F'||Model==='FH')&&<>
+          {mainUiConfig.recycledFlushing&&<>
           <View className={styles.sectionItem} id='零陈水'>
             <View className={styles.infoItem}>
               <View className={styles.sectionItemText}>{Strings.getLang('recycledFlushing')}</View>
@@ -654,6 +641,7 @@ export function Home() {
           
           <Divider/></>}
           
+          {mainUiConfig.scheduledFlushing&&
           <Picker mode='time' style={{width: '100%', marginLeft: '10%'}}
             onChange={(e) => {
               const time = parseTimeToMinutes(e.detail.value)
@@ -670,8 +658,8 @@ export function Home() {
                 <Arrow/>
               </View>
             </View>
-          </Picker>
-        </View>
+          </Picker>}
+        </View>}
 
         {/* 使用报告 */}        
         <View className={`${styles.stateAndControlSection} ${styles.baseSection}`} style={{marginTop: '15px'}}>
@@ -681,7 +669,7 @@ export function Home() {
               navigateToHistory()
             }
           >
-            <View className={styles.sectionTitle} style={{marginBottom: '5%'}}>
+            <View className={styles.sectionTitle} style={{marginBottom: '5%', marginLeft: '20px'}}>
               <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 14.83 14.86">
                 <path fill='black' fill-rule='nonzero' d="M14.83 13.75l-13.71 0 0 -13.7 -1.12 -0.05 0 14.36c0.03,0.28 0.27,0.51 0.56,0.51 0.01,0 0.02,0 0.03,-0l14.24 0 0 -1.12z"/>
                 <path fill='black' fill-rule='nonzero' d="M11.67 2.65l1.8 0 0 10.33 -1.8 0 0 -10.33zm-3.17 4.63l1.8 0 0 5.7 -1.8 0 0 -5.7zm-3.17 -1.46l1.8 0 0 7.16 -1.8 0 0 -7.16zm-3.17 3.41l1.8 0 0 3.75 -1.8 0 0 -3.75z"/>
@@ -689,7 +677,7 @@ export function Home() {
               <Text className={styles.sectionTitleText}>{Strings.getLang('consumptionReport')}</Text>
             </View>
 
-            <Svg style={{marginRight: '0',  width: '49px', height:'19px'}} viewBox="0 0 5.17 9.44">
+            <Svg style={{marginRight: '6px',  width: '49px', height:'19px'}} viewBox="0 0 5.17 9.44">
               <path fill='black' fill-rule='nonzero' d="M5.04 4.44l-4.56 -4.44 -0.47 0.48 4.37 4.24 -4.37 4.24 0.47 0.49 4.57 -4.45c0.02,-0.02 0.05,-0.05 0.06,-0.07 0.11,-0.18 0.07,-0.34 -0.07,-0.49z"/>
             </Svg>
             
@@ -699,7 +687,6 @@ export function Home() {
         <popupFlushMode.Container />
         <popupFilterInfo.Container />
       </ScrollView>
-      {/* </View> */}
     </View>
     );
 }

@@ -1,0 +1,260 @@
+{
+    "default": {
+
+    },
+    "dknfai4pqtl1k2hf": {
+        "brand": "MIZUDO",
+        "productConfig": {
+            "WD600A2W": {
+                "serialName": "Pureflo Series 400GPD",
+                "imageUrl": "src/images/G400.png",
+                "pcfFilter": "RP010A0N",
+                "roFilter": "RP011A0N"
+            },
+            "WP600A2W": {
+                "serialName": "Pureflo Series 600GPD",
+                "imageUrl": "src/images/G600.png",
+                "pcfFilter": "RP010A0N",
+                "roFilter": "RP012A0N"
+            }
+        },
+        "mainUiConfig": {
+            "waterTDS": false,
+            "waterQuality": false,
+            "hotWaterTemp": false,
+
+            "pcf": true,
+            "ro": true,
+
+            "heatingSwitch": false,
+            "heatingTemp": false,
+            "heatingTimer": false,
+
+            "cleanFilter": false,
+            "recycledFlushing": false,
+            "scheduledFlushing": true,
+            
+            "consumptionReport": true
+        }
+    },
+
+    "kaaz0cxdgvroa6qp": {
+        "brand": "MIZUDO",
+        "productConfig": {
+            "WP800A2W": {
+                "serialName": "Megaflo Mini Series 800GPD",
+                "imageUrl": "src/images/G800.png",
+                "pcfFilter": "RP010A0N",
+                "roFilter": "RP013A0N"
+            },
+            "WP1000A2W": {
+                "serialName": "Megaflo Mini Series 1000GPD",
+                "imageUrl": "src/images/G1000.png",
+                "pcfFilter": "RP010A0N",
+                "roFilter": "RP014A0N"
+            }
+        },
+        "mainUiConfig": {
+            "waterTDS": true,
+            "waterQuality": true,
+            "hotWaterTemp": false,
+
+            "pcf": true,
+            "ro": true,
+
+            "heatingSwitch": false,
+            "heatingTemp": false,
+            "heatingTimer": false,
+
+            "cleanFilter": false,
+            "recycledFlushing": false,
+            "scheduledFlushing": true,
+            
+            "consumptionReport": false
+        }
+    },
+
+    "wcssrdbcufckhbzk": {
+        "brand": "MIZUDO",
+        "productConfig": {
+            "WP800A1G": {
+                "serialName": "Megaflo Series 800GPD",
+                "imageUrl": "src/images/F800.png",
+                "pcfFilter": "RP009A0N",
+                "roFilter": "RP007A0N"
+            },
+            "WP1000A1G": {
+                "serialName": "Megaflo Series 1000GPD",
+                "imageUrl": "src/images/F1000.png",
+                "pcfFilter": "RP009A0N",
+                "roFilter": "RP008A0N"
+            },
+            "WP1200A1G": {
+                "serialName": "Megaflo Series 1200GPD",
+                "imageUrl": "src/images/F1200.png",
+                "pcfFilter": "RP009A0N",
+                "roFilter": "RP015A0N"
+            }
+        },
+        
+        "mainUiConfig": {
+            "waterTDS": true,
+            "waterQuality": true,
+            "hotWaterTemp": false,
+
+            "pcf": true,
+            "ro": true,
+
+            "heatingSwitch": false,
+            "heatingTemp": false,
+            "heatingTimer": false,
+
+            "cleanFilter": false,
+            "recycledFlushing": true,
+            "scheduledFlushing": true,
+            
+            "consumptionReport": true
+        }
+    },
+    "ptrtzvzn3e7u8ijm": {
+        "brand": "MIZUDO",
+        "productConfig": {
+            "WD800A1G": {
+                "serialName": "Megaflo HOT Series 800GPD",
+                "imageUrl": "src/images/FH.png",
+                "pcfFilter": "RP009A0N",
+                "roFilter": "RP007A0N"
+            }
+        },
+        
+        "mainUiConfig": {
+            "waterTDS": true,
+            "waterQuality": true,
+            "hotWaterTemp": true,
+
+            "pcf": true,
+            "ro": true,
+
+            "heatingSwitch": true,
+            "heatingTemp": true,
+            "heatingTimer": true,
+
+            "cleanFilter": true,
+            "recycledFlushing": true,
+            "scheduledFlushing": true,
+            
+            "consumptionReport": true
+        }
+    },
+
+    "z0xsaptrkwdyjy9i": {
+        "brand": "Electrolux",
+        "productConfig": {
+            "EWP600A0W": {
+                "serialName": "600GPD RO Water Filtration System",
+                "imageUrl": "src/images/E_F800.png",
+                "pcfFilter": "ERP001A0N",
+                "roFilter": "ERP002A0N"
+            },
+            "EWP800A0W": {
+                "serialName": "800GPD RO Water Filtration System",
+                "imageUrl": "src/images/E_F800.png",
+                "pcfFilter": "ERP001A0N",
+                "roFilter": "ERP003A0N"
+            },
+            "EWP1000A0W": {
+                "serialName": "1000GPD RO Water Filtration System",
+                "imageUrl": "src/images/E_F800.png",
+                "pcfFilter": "ERP001A0N",
+                "roFilter": "ERP004A0N"
+            }
+        },
+        
+        "mainUiConfig": {
+            "waterTDS": true,
+            "waterQuality": true,
+            "hotWaterTemp": false,
+
+            "pcf": true,
+            "ro": true,
+
+            "heatingSwitch": false,
+            "heatingTemp": false,
+            "heatingTimer": false,
+
+            "cleanFilter": false,
+            "recycledFlushing": true,
+            "scheduledFlushing": true,
+            
+            "consumptionReport": true
+        }
+    },
+    
+    "rdrqs27qctf11vmn": {
+        "brand": "Electrolux",
+        "productConfig": {
+            "EWP1200C0W": {
+                "serialName": "1200GPD RO Water Filtration System",
+                "imageUrl": "src/images/E_F800.png",
+                "pcfFilter": null,
+                "roFilter": "ERP007A0N"
+            }
+        },
+        
+        "mainUiConfig": {
+            "waterTDS": true,
+            "waterQuality": true,
+            "hotWaterTemp": false,
+
+            "pcf": false,
+            "ro": true,
+
+            "heatingSwitch": false,
+            "heatingTemp": false,
+            "heatingTimer": false,
+
+            "cleanFilter": false,
+            "recycledFlushing": true,
+            "scheduledFlushing": true,
+            
+            "consumptionReport": true
+        }
+    },
+
+    "yhk26gfskjuyafgh": {
+        "brand": "Electrolux",
+        "productConfig": {
+            "EWD600A0W": {
+                "serialName": "600GPD RO Instant Hot Water Dispenser System",
+                "imageUrl": "",
+                "pcfFilter": null,
+                "roFilter": "ERP010A0N"
+            },
+            "EWD800A0W": {
+                "serialName": "800GPD RO Instant Hot Water Dispenser System",
+                "imageUrl": "",
+                "pcfFilter": null,
+                "roFilter": "ERP011A0N"
+            }
+        },
+        
+        "mainUiConfig": {
+            "waterTDS": true,
+            "waterQuality": true,
+            "hotWaterTemp": true,
+
+            "pcf": true,
+            "ro": true,
+
+            "heatingSwitch": true,
+            "heatingTemp": true,
+            "heatingTimer": true,
+
+            "cleanFilter": true,
+            "recycledFlushing": true,
+            "scheduledFlushing": true,
+            
+            "consumptionReport": true
+        }
+    }
+}
