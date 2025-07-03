@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Switch, Text, View, ScrollView, navigateTo, Image, showModal, Button, Picker, getCurrentPages, router, setStorage, clearStorage, getStorage, openURL, showActionSheet, showToast, hideToast } from '@ray-js/ray';
+import { Switch, Text, View, ScrollView, navigateTo, Image, showModal, Button, Picker, getCurrentPages, router, setStorage, clearStorage, getStorage, openURL, showActionSheet, showToast, hideToast, openTimerPage, getLaunchOptionsSync } from '@ray-js/ray';
 import { useActions, useDevInfo, useDpSchema, useProps } from "@ray-js/panel-sdk";
 import PressKey from '@ray-js/presskey';
 import { TopBar } from '@/components';
@@ -33,8 +33,8 @@ const images = {
   'src/images/F1200.png': require('src/images/F1200.png'),
   'src/images/FH.png': require('src/images/FH.png'),
   'src/images/E_F800.png': require('src/images/E_F800.png'),
-  // '': require(''),
-  // '': require(''),
+  'src/images/E_one.png': require('src/images/E_one.png'),
+  'src/images/E_H.png': require('src/images/E_H.png'),
   // '': require(''),
   // '': require(''),
   // '': require(''),
@@ -66,6 +66,9 @@ const flushType = {
 
 export function Home() {
   const dpSchema = useDpSchema();
+  const {
+        query: { deviceId }
+      } = getLaunchOptionsSync();
   const devInfo = useDevInfo();
   const dpState = useProps(state => state);
   const actions = useActions();
@@ -119,8 +122,6 @@ export function Home() {
   // 滤芯配置
   const pcf_config = filterConfig.pcf[product_config.pcfFilter];
   const ro_config = filterConfig.ro[product_config.roFilter];
-
-  
 
   // 计算属性
   const disableHeat =  (fault !== 0)
@@ -222,6 +223,30 @@ export function Home() {
   function navigateToFilter(filter: FilterType) {
     navigateTo({url: '/pages/home/filter/index?type='+filter})
   } 
+
+  function myOpenTimerPage() {
+    const tempKeys = 
+    openTimerPage({
+      deviceId,
+      category: 'timer',
+      data: [
+        {
+          dpName: 'Heating',
+          dpId: 1,
+          rangeKeys: [true, false],
+          selected: heat?0:1,
+          rangeValues: ['On', 'Off']
+        },
+        {
+          dpName: 'Water Temperature',
+          dpId: 105,
+          rangeKeys: ['1', '2', '3', '4'],
+          selected: ['1', '2', '3', '4'].findIndex(item=>item===heatLevel),
+          rangeValues: ["113℉", "167℉", "185℉", "203℉"]
+        }
+      ]
+    })
+  }
 
   /// 此model用于获取图片与名称
   // const model = (modelStr in models)?models[modelStr]:models["default"]
@@ -569,7 +594,7 @@ export function Home() {
           <Button 
             className={styles.sectionItem} id='RO'
             onClick={ () =>
-              console.log('review ro state')
+              myOpenTimerPage()
             }
           >
             <View className={styles.sectionItemText}>Time Setting</View>

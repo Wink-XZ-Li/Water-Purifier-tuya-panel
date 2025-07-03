@@ -195,7 +195,7 @@
         "productConfig": {
             "EWP1200C0W": {
                 "serialName": "1200GPD RO Water Filtration System",
-                "imageUrl": "src/images/E_F800.png",
+                "imageUrl": "src/images/E_one.png",
                 "pcfFilter": null,
                 "roFilter": "ERP007A0N"
             }
@@ -226,13 +226,13 @@
         "productConfig": {
             "EWD600A0W": {
                 "serialName": "600GPD RO Instant Hot Water Dispenser System",
-                "imageUrl": "",
+                "imageUrl": "src/images/E_H.png",
                 "pcfFilter": null,
                 "roFilter": "ERP010A0N"
             },
             "EWD800A0W": {
                 "serialName": "800GPD RO Instant Hot Water Dispenser System",
-                "imageUrl": "",
+                "imageUrl": "src/images/E_H.png",
                 "pcfFilter": null,
                 "roFilter": "ERP011A0N"
             }
