@@ -109,6 +109,7 @@ export function Home() {
   // 获取产品配置
   const configuration = productConfig[pid]
   // 产品配置
+  // const product_config = configuration.productConfig['WD800A1G'];
   const product_config = configuration.productConfig[modelStr];
   console.log("Product Config:", product_config)
   // 获取失败，提示故障
@@ -232,7 +233,7 @@ export function Home() {
       data: [
         {
           dpName: 'Heating',
-          dpId: 1,
+          dpId: 103,
           rangeKeys: [true, false],
           selected: heat?0:1,
           rangeValues: ['On', 'Off']
