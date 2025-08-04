@@ -5,6 +5,7 @@ import styles from './index.module.less';
 import Svg from '@ray-js/svg';
 import { Arrow, Divider } from '..';
 import ActionSheet from '@ray-js/components-ty-actionsheet';
+import productConfig from '../../../configuration/productConfig.json';
 
 
 export enum FilterType{ro, pcf};
@@ -92,6 +93,8 @@ export function FilterManage(props) {
     const filterTime = type === "0"?roFiltertime:pcfFiltertime;
     const filterDays = type === "0"?roFiltertimeDay:pcfFiltertimeDay;
 
+    const mainUiConfig = productConfig[pid].mainUiConfig
+
 /**
  * MIZUDO：
  * mini款400&600:   dknfai4pqtl1k2hf
@@ -136,7 +139,7 @@ export function FilterManage(props) {
         var realDays = 0
         if (type === "0") {
             // RO
-            if (pid === 'dknfai4pqtl1k2hf') {
+            if (pid === 'dknfai4pqtl1k2hf' || pid === 'rdrqs27qctf11vmn') {
                 realDays = 721-days
             } else {
                 realDays = 1081-days
@@ -153,7 +156,7 @@ export function FilterManage(props) {
     setNavigationBarTitle({title: title});
 
     return (
-        <View className={styles.view}>
+        <View className={styles.view} style={{fontFamily: mainUiConfig.font}}>
             
             <View className={styles.newTempView}>
                 <View 

@@ -11,7 +11,7 @@
     "DeviceKit": "4.0.8",
     "BizKit": "4.2.0"
   },
-  "baseversion": "2.13.3",
+  "baseversion": "2.27.0",
   "projectname": "Water-Purifier-tuya-panel-MIZUDO",
   "devMode": "ray",
   "compileType": "miniprogram",
