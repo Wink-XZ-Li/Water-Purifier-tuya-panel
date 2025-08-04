@@ -1,8 +1,6 @@
 {
-    "default": {
-
-    },
     "dknfai4pqtl1k2hf": {
+        "note": "MIZUDO Pureflo Mini",
         "brand": "MIZUDO",
         "productConfig": {
             "WD600A2W": {
@@ -16,9 +14,19 @@
                 "imageUrl": "src/images/G600.png",
                 "pcfFilter": "RP010A0N",
                 "roFilter": "RP012A0N"
+            },
+            "default": {
+                "serialName": "model未正确上报，请检查",
+                "imageUrl": "src/images/G600.png",
+                "pcfFilter": null,
+                "roFilter": null
             }
         },
         "mainUiConfig": {
+            "titleColor":"#000000",
+            "bgColor":"linear-gradient(to bottom, rgb(100,175,210), rgb(238,241,240))", 
+            "font": "Mizudo",
+
             "waterTDS": false,
             "waterQuality": false,
             "hotWaterTemp": false,
@@ -27,7 +35,8 @@
             "ro": true,
 
             "heatingSwitch": false,
-            "heatingTemp": false,
+            "heatingTemp4": false,
+            "heatingTemp6": false,
             "heatingTimer": false,
 
             "cleanFilter": false,
@@ -39,6 +48,7 @@
     },
 
     "kaaz0cxdgvroa6qp": {
+        "note": "MIZUDO Megaflo Mini",
         "brand": "MIZUDO",
         "productConfig": {
             "WP800A2W": {
@@ -52,9 +62,19 @@
                 "imageUrl": "src/images/G1000.png",
                 "pcfFilter": "RP010A0N",
                 "roFilter": "RP014A0N"
+            },
+            "default": {
+                "serialName": "model未正确上报，请检查",
+                "imageUrl": "src/images/G1000.png",
+                "pcfFilter": null,
+                "roFilter": null
             }
         },
         "mainUiConfig": {
+            "titleColor":"#000000",
+            "bgColor":"linear-gradient(to bottom, rgb(100,175,210), rgb(238,241,240))", 
+            "font": "Mizudo",
+            
             "waterTDS": true,
             "waterQuality": true,
             "hotWaterTemp": false,
@@ -63,7 +83,8 @@
             "ro": true,
 
             "heatingSwitch": false,
-            "heatingTemp": false,
+            "heatingTemp4": false,
+            "heatingTemp6": false,
             "heatingTimer": false,
 
             "cleanFilter": false,
@@ -75,6 +96,7 @@
     },
 
     "wcssrdbcufckhbzk": {
+        "note": "MIZUDO Megaflo",
         "brand": "MIZUDO",
         "productConfig": {
             "WP800A1G": {
@@ -94,10 +116,20 @@
                 "imageUrl": "src/images/F1200.png",
                 "pcfFilter": "RP009A0N",
                 "roFilter": "RP015A0N"
+            },
+            "default": {
+                "serialName": "model未正确上报，请检查",
+                "imageUrl": "src/images/F1200.png",
+                "pcfFilter": null,
+                "roFilter": null
             }
         },
         
         "mainUiConfig": {
+            "titleColor":"#000000",
+            "bgColor":"linear-gradient(to bottom, rgb(100,175,210), rgb(238,241,240))", 
+            "font": "Mizudo",
+            
             "waterTDS": true,
             "waterQuality": true,
             "hotWaterTemp": false,
@@ -106,7 +138,8 @@
             "ro": true,
 
             "heatingSwitch": false,
-            "heatingTemp": false,
+            "heatingTemp4": false,
+            "heatingTemp6": false,
             "heatingTimer": false,
 
             "cleanFilter": false,
@@ -117,6 +150,7 @@
         }
     },
     "ptrtzvzn3e7u8ijm": {
+        "note": "MIZUDO 净热",
         "brand": "MIZUDO",
         "productConfig": {
             "WD800A1G": {
@@ -124,10 +158,26 @@
                 "imageUrl": "src/images/FH.png",
                 "pcfFilter": "RP009A0N",
                 "roFilter": "RP007A0N"
+            },
+            "WD1000A1G": {
+                "serialName": "Megaflo HOT Series 1000GPD",
+                "imageUrl": "src/images/FH.png",
+                "pcfFilter": null,
+                "roFilter": null
+            },
+            "default": {
+                "serialName": "model未正确上报，请检查",
+                "imageUrl": "src/images/FH.png",
+                "pcfFilter": null,
+                "roFilter": null
             }
         },
         
         "mainUiConfig": {
+            "titleColor":"#000000",
+            "bgColor":"linear-gradient(to bottom, rgb(100,175,210), rgb(238,241,240))", 
+            "font": "Mizudo",
+            
             "waterTDS": true,
             "waterQuality": true,
             "hotWaterTemp": true,
@@ -136,7 +186,8 @@
             "ro": true,
 
             "heatingSwitch": true,
-            "heatingTemp": true,
+            "heatingTemp4": true,
+            "heatingTemp6": false,
             "heatingTimer": true,
 
             "cleanFilter": true,
@@ -148,29 +199,40 @@
     },
 
     "z0xsaptrkwdyjy9i": {
+        "note": "Electrolux G Pro",
         "brand": "Electrolux",
         "productConfig": {
             "EWP600A0W": {
-                "serialName": "600GPD RO Water Filtration System",
+                "serialName": "PureEssence 600",
                 "imageUrl": "src/images/E_F800.png",
                 "pcfFilter": "ERP001A0N",
                 "roFilter": "ERP002A0N"
             },
             "EWP800A0W": {
-                "serialName": "800GPD RO Water Filtration System",
+                "serialName": "PureEssence 800",
                 "imageUrl": "src/images/E_F800.png",
                 "pcfFilter": "ERP001A0N",
                 "roFilter": "ERP003A0N"
             },
             "EWP1000A0W": {
-                "serialName": "1000GPD RO Water Filtration System",
+                "serialName": "PureEssence 1000",
                 "imageUrl": "src/images/E_F800.png",
                 "pcfFilter": "ERP001A0N",
                 "roFilter": "ERP004A0N"
+            },
+            "default": {
+                "serialName": "model未正确上报，请检查",
+                "imageUrl": "src/images/E_F800.png",
+                "pcfFilter": null,
+                "roFilter": null
             }
         },
         
         "mainUiConfig": {
+            "titleColor":"#FFFFFF",
+            "bgColor":"linear-gradient(to bottom, rgb(3,28,81), rgb(78,91,114))", 
+            "font": "Electrolux",
+            
             "waterTDS": true,
             "waterQuality": true,
             "hotWaterTemp": false,
@@ -179,7 +241,8 @@
             "ro": true,
 
             "heatingSwitch": false,
-            "heatingTemp": false,
+            "heatingTemp4": false,
+            "heatingTemp6": false,
             "heatingTimer": false,
 
             "cleanFilter": false,
@@ -191,6 +254,7 @@
     },
     
     "rdrqs27qctf11vmn": {
+        "note": "Electrolux All in one",
         "brand": "Electrolux",
         "productConfig": {
             "EWP1200C0W": {
@@ -198,10 +262,20 @@
                 "imageUrl": "src/images/E_one.png",
                 "pcfFilter": null,
                 "roFilter": "ERP007A0N"
+            },
+            "default": {
+                "serialName": "model未正确上报，请检查",
+                "imageUrl": "src/images/E_one.png",
+                "pcfFilter": null,
+                "roFilter": null
             }
         },
         
         "mainUiConfig": {
+            "titleColor":"#FFFFFF",
+            "bgColor":"linear-gradient(to bottom, rgb(3,28,81), rgb(78,91,114))", 
+            "font": "Electrolux",
+            
             "waterTDS": true,
             "waterQuality": true,
             "hotWaterTemp": false,
@@ -210,7 +284,8 @@
             "ro": true,
 
             "heatingSwitch": false,
-            "heatingTemp": false,
+            "heatingTemp4": false,
+            "heatingTemp6": false,
             "heatingTimer": false,
 
             "cleanFilter": false,
@@ -222,6 +297,7 @@
     },
 
     "yhk26gfskjuyafgh": {
+        "note": "Electrolux净热",
         "brand": "Electrolux",
         "productConfig": {
             "EWD600A0W": {
@@ -235,24 +311,38 @@
                 "imageUrl": "src/images/E_H.png",
                 "pcfFilter": null,
                 "roFilter": "ERP011A0N"
+            },
+            "default": {
+                "serialName": "model未正确上报，请检查",
+                "imageUrl": "src/images/E_H.png",
+                "pcfFilter": null,
+                "roFilter": null
             }
         },
         
         "mainUiConfig": {
+            "titleColor":"#FFFFFF",
+            "bgColor":"linear-gradient(to bottom, rgb(3,28,81), rgb(78,91,114))", 
+            "font": "Electrolux",
+            
             "waterTDS": true,
             "waterQuality": true,
             "hotWaterTemp": true,
-
-            "pcf": true,
+            "powerSaving": true,
+            
+            "pcf": false,
             "ro": true,
 
+            "flow": true,
+
             "heatingSwitch": true,
-            "heatingTemp": true,
+            "heatingTemp4": false,
+            "heatingTemp6": true,
             "heatingTimer": true,
 
-            "cleanFilter": true,
+            "cleanFilter": false,
             "recycledFlushing": true,
-            "scheduledFlushing": true,
+            "scheduledFlushing": false,
             
             "consumptionReport": true
         }

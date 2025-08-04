@@ -52,12 +52,28 @@ export function Arrow() {
   </Svg>)
 }
 
-const heatLevels = [
+const heatLevels4 = [
   { text: "113℉", value: '1' },
   { text: "167℉", value: '2' },
   { text: "185℉", value: '3' },
   { text: "203℉", value: '4' },
 ];
+
+var heatLevels6 = [
+  { text: "45℃", value: '1' },
+  { text: "55℃", value: '2' },
+  { text: "65℃", value: '3' },
+  { text: "75℃", value: '4' },
+  { text: "85℃", value: '5' },
+  { text: "95℃", value: '6' },
+];
+
+const cupSizes = [
+  { text: "8 oz", value: '8oz' },
+  { text: "16 oz", value: '16oz' },
+  { text: "32 oz", value: '32oz' },
+  { text: "Unlimited", value: 'unlimit' },
+]
 
 const flushType = {
   normal_flushing:"Regular Flushing",
@@ -99,6 +115,20 @@ export function Home() {
   // F款
   const tdsOut = dpState['tds_out'];
   const recycledFlushing = dpState['recycled_flushing'];
+  const holidayMdoe = dpState['holiday_mdoe'];
+
+  const flow = dpState['flow'];
+
+  const powerSaving = dpState['power_saving'];
+
+  const highAltitude = dpState['high_altitude'];
+  if (highAltitude !== undefined) {
+    if (highAltitude) {
+      heatLevels6[5].text = '87℃'
+    } else {
+      heatLevels6[5].text = '95℃'
+    }
+  }
 
   // 净热款
   const tempCurrent = dpState['temp_current'];
@@ -109,8 +139,7 @@ export function Home() {
   // 获取产品配置
   const configuration = productConfig[pid]
   // 产品配置
-  // const product_config = configuration.productConfig['WD800A1G'];
-  const product_config = configuration.productConfig[modelStr];
+  const product_config = configuration.productConfig[modelStr]!==undefined ? configuration.productConfig[modelStr]:configuration.productConfig['default'];
   console.log("Product Config:", product_config)
   // 获取失败，提示故障
   if (product_config===undefined) {
@@ -137,7 +166,7 @@ export function Home() {
     var title = ""
     var content = ""
     if (fault !== 0) {
-      if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk' || pid === 'z0xsaptrkwdyjy9i') { 
+      if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk' || pid === 'z0xsaptrkwdyjy9i' || pid === 'rdrqs27qctf11vmn') { 
         if (binaryFault[0]==='1') {
           title = "Error Code : E8"
           content = "Faucet and water purifier communication failure. Please check the connection."
@@ -194,6 +223,39 @@ export function Home() {
         }
         
       }
+      else if (pid === 'yhk26gfskjuyafgh') { 
+        if (binaryFault[0]==='1') {
+          title = "Error Code : E0"
+          content = ""
+        } else if (binaryFault[1]==='1') {
+          title = "Error Code : E1"
+          content = ""
+        } else if (binaryFault[2]==='1') {
+          title = "Error Code : E2"
+          content = ""
+        } else if (binaryFault[3]==='1') {
+          title = "Error Code : E3"
+          content = ""
+        } else if (binaryFault[4]==='1') {
+          title = "Error Code : E4"
+          content = ""
+        } else if (binaryFault[5]==='1') {
+          title = "Error Code : E5"
+          content = ""
+        } else if (binaryFault[6]==='1') {
+          title = "Error Code : E6"
+          content = ""
+        } else if (binaryFault[7]==='1') {
+          title = "Error Code : E7"
+          content = ""
+        } else if (binaryFault[8]==='1') {
+          title = "Error Code : E8"
+          content = ""
+        } else if (binaryFault[9]==='1') {
+          title = "Error Code : E9"
+          content = ""
+        }
+      }
       
       showModal({title: title, content: content, showCancel: false, confirmText: Strings.getLang('confirm')})
     }
@@ -226,27 +288,54 @@ export function Home() {
   } 
 
   function myOpenTimerPage() {
-    const tempKeys = 
-    openTimerPage({
-      deviceId,
-      category: 'timer',
-      data: [
-        {
-          dpName: 'Heating',
-          dpId: 103,
-          rangeKeys: [true, false],
-          selected: heat?0:1,
-          rangeValues: ['On', 'Off']
-        },
-        {
-          dpName: 'Water Temperature',
-          dpId: 105,
-          rangeKeys: ['1', '2', '3', '4'],
-          selected: ['1', '2', '3', '4'].findIndex(item=>item===heatLevel),
-          rangeValues: ["113℉", "167℉", "185℉", "203℉"]
-        }
-      ]
-    })
+    const temp4 = {
+      dpName: 'Water Temperature',
+      dpId: 105,
+      rangeKeys: ['1', '2', '3', '4'],
+      selected: ['1', '2', '3', '4'].findIndex(item=>item===heatLevel),
+      rangeValues: ["113℉", "167℉", "185℉", "203℉"]
+    }
+
+    const temp6 = {
+      dpName: 'Water Temperature',
+      dpId: 105,
+      rangeKeys: ['1', '2', '3', '4', '5', '6'],
+      selected: ['1', '2', '3', '4', '5', '6'].findIndex(item=>item===heatLevel),
+      rangeValues: ["45℃", "55℃", "65℃", "75℃", "85℃", "95℃"]
+    }
+    
+    if (mainUiConfig.heatingTemp4) {
+      openTimerPage({
+        deviceId,
+        category: 'timer',
+        data: [
+          {
+            dpName: 'Heating',
+            dpId: 103,
+            rangeKeys: [true, false],
+            selected: heat?0:1,
+            rangeValues: ['On', 'Off']
+          },
+          temp4
+        ]
+      })
+    } else if (mainUiConfig.heatingTemp6) {
+      openTimerPage({
+        deviceId,
+        category: 'timer',
+        data: [
+          {
+            dpName: 'Heating',
+            dpId: 103,
+            rangeKeys: [true, false],
+            selected: heat?0:1,
+            rangeValues: ['On', 'Off']
+          },
+          temp6
+        ]
+      })
+    }
+    
   }
 
   /// 此model用于获取图片与名称
@@ -377,7 +466,7 @@ export function Home() {
   }
 
   return (
-    <View className={styles.view}>
+    <View className={styles.view} style={{background: mainUiConfig.bgColor, fontFamily: mainUiConfig.font}}>
       <TopBar />
       <ScrollView scrollY={true} className={styles.content} refresherTriggered={false}>
         
@@ -488,6 +577,23 @@ export function Home() {
             <View className={`${styles.sectionItemText} ${styles.redText}`}>{tempCurrent+' '+'℉'}</View>
           </View></>}
 
+          {mainUiConfig.powerSaving&&<>
+          <Divider/>
+          <View className={styles.sectionItem} id='省电模式'>
+            <View className={styles.infoItem}>
+              <View className={styles.sectionItemText}>Power Saving</View>
+            </View>
+            <Switch 
+              color={buttonColor}
+              checked={powerSaving}
+              // disabled={disableHeat}
+              onChange={ e =>
+                actions['power_saving'].set(e.detail.value)
+              }
+            />
+          </View></>
+          }
+
         </View>}
 
         {/* 滤芯管理 */}
@@ -533,9 +639,51 @@ export function Home() {
             </View>
           </Button>}
         </View>
+
+        {/* 杯量管理 */}
+        {(mainUiConfig.flow) &&
+        <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
+          <View className={styles.sectionTitle} id='杯量管理'>
+            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 13.95 15.48">
+            <g>
+              <path fill='black' fill-rule='nonzero' d="M6.87 1.87l7.08 0 0 1.01 -7.07 0c0.06,-0.15 0.09,-0.32 0.09,-0.49 0,-0.18 -0.03,-0.36 -0.1,-0.52zm-2.55 0c-0.06,0.16 -0.1,0.33 -0.1,0.52 0,0.17 0.03,0.34 0.09,0.49l-4.31 0 0 -1.01 4.32 0zm7.18 5.43l2.44 0 0 1.01 -2.44 0c0.06,-0.16 0.1,-0.33 0.1,-0.5 0,-0.17 -0.03,-0.35 -0.1,-0.51zm-2.56 0c-0.06,0.16 -0.1,0.33 -0.1,0.51 0,0.18 0.03,0.35 0.1,0.5l-8.94 0 0 -1.01 8.94 0zm-3.98 5.29l8.98 0 0 1.01 -8.98 0c0.06,-0.16 0.1,-0.33 0.1,-0.51 0,-0.18 -0.03,-0.35 -0.1,-0.51zm-2.56 0c-0.06,0.16 -0.1,0.33 -0.1,0.51 0,0.18 0.03,0.35 0.1,0.51l-2.41 0 0 -1.01 2.41 0z"/>
+              <path fill='black' fill-rule='nonzero' d="M6.97 2.39c0,-0.76 -0.61,-1.38 -1.37,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.62,1.38 1.37,1.38 0.76,0 1.37,-0.62 1.37,-1.38zm4.63 5.42c0,-0.76 -0.62,-1.38 -1.38,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.62,1.38 1.37,1.38 0.76,0 1.38,-0.62 1.38,-1.38zm-6.54 5.28c0,-0.76 -0.62,-1.38 -1.37,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.61,1.38 1.37,1.38 0.76,0 1.37,-0.62 1.37,-1.38zm2.92 -10.7c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39zm4.63 5.42c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39zm-6.54 5.28c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39z"/>
+            </g>
+            </Svg>
+            <View className={styles.sectionTitleText}>Cup Volume Selection</View>
+          </View>
+
+          {/* <View className={styles.sectionItem} id='调温'>
+            <View className={styles.sectionItemText}>Temp. Regulation</View>
+          </View> */}
+          <View style={{height: '8px', width: '10',display: 'flex'}}/>
+          <View className={styles.sectionItem} id='杯量'>
+          {cupSizes.map(({ text, value }) => (
+            <PressKey
+              key={value}
+              text={text}
+              status
+              padding={0}
+              height={30}
+              width={60}
+              radius={10}
+              contentStyle={{ fontSize: '13px' }}
+              bgColor={flow === value ? buttonColor : buttonDisableColor}
+              contentColor={flow === value ? 'white' : 'black'}
+              onPress={() => {
+                if (flow !== value && !disableHeat) {
+                  actions['flow'].set(value);
+                }
+              }}
+            />
+          ))}
+          </View>
+
+          <View style={{height: '8px', width: '10',display: 'flex'}}/>
+        </View>}
         
         {/* 水温管理 */}
-        {(mainUiConfig.heatingSwitch || mainUiConfig.heatingTemp || mainUiConfig.heatingTimer) &&
+        {(mainUiConfig.heatingSwitch || mainUiConfig.heatingTemp4 || mainUiConfig.heatingTemp6 || mainUiConfig.heatingTimer) &&
         <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
           <View className={styles.sectionTitle} id='水温管理'>
             <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 13.95 15.48">
@@ -561,13 +709,14 @@ export function Home() {
           </View>}
 
           <Divider/>
-          {mainUiConfig.heatingTemp && <>
+          {/* 4档调温 */}
+          {mainUiConfig.heatingTemp4 && <>
           <View className={styles.sectionItem} id='调温'>
             <View className={styles.sectionItemText}>Temp. Regulation</View>
           </View>
 
           <View className={styles.sectionItem} id='调温'>
-          {heatLevels.map(({ text, value }) => (
+          {heatLevels4.map(({ text, value }) => (
             <PressKey
               key={value}
               text={text}
@@ -588,7 +737,38 @@ export function Home() {
           ))}
           </View>
 
-          <View style={{height: '8px', width: '10',display: 'flex'}}/></>}
+          <View style={{height: '8px', width: '10',display: 'flex'}}/></>
+          }
+          {/* 6档调温 */}
+          {mainUiConfig.heatingTemp6 && <>
+          <View className={styles.sectionItem} id='调温'>
+            <View className={styles.sectionItemText}>Temp. Regulation</View>
+          </View>
+
+          <View className={styles.sectionItem} id='调温'>
+          {heatLevels6.map(({ text, value }) => (
+            <PressKey
+              key={value}
+              text={text}
+              status
+              padding={0}
+              height={30}
+              width={40}
+              radius={10}
+              contentStyle={{ fontSize: '13px' }}
+              bgColor={heatLevel === value ? buttonColor : buttonDisableColor}
+              contentColor={heatLevel === value ? 'white' : 'black'}
+              onPress={() => {
+                if (heatLevel !== value && !disableHeat) {
+                  actions['level'].set(value);
+                }
+              }}
+            />
+          ))}
+          </View>
+
+          <View style={{height: '8px', width: '10',display: 'flex'}}/></>
+          }
           <Divider/>
           
           {mainUiConfig.heatingTimer && 
@@ -721,8 +901,8 @@ export function Home() {
               }
             />
           </View>
-          
-          <Divider/></>}
+          {(mainUiConfig.scheduledFlushing||mainUiConfig.holidayMdoe)&&<Divider/>}
+          </>}
           
           {mainUiConfig.scheduledFlushing&&
           <Picker mode='time' style={{width: '100%', marginLeft: '10%'}}
@@ -742,6 +922,22 @@ export function Home() {
               </View>
             </View>
           </Picker>}
+
+          {mainUiConfig.holidayMdoe&&
+          <View className={styles.sectionItem} id='假日模式'>
+            <View className={styles.infoItem}>
+              <View className={styles.sectionItemText}>Holiday Mode</View>
+            </View>
+            <Switch 
+              color={buttonColor}
+              checked={holidayMdoe}
+              // disabled={disableHeat}
+              onChange={ e =>
+                actions['holiday_mdoe'].set(e.detail.value)
+              }
+            />
+          </View>
+          }
         </View>}
 
         {/* 使用报告 */}        
