@@ -2466,10 +2466,10 @@
   dependencies:
     "@ray-js/api" "1.5.48"
 
-"@ray-js/circle-progress@0.0.10-beta-1":
-  version "0.0.10-beta-1"
-  resolved "https://registry.yarnpkg.com/@ray-js/circle-progress/-/circle-progress-0.0.10-beta-1.tgz#a9a6485f95e01248dd100eb3de079857c4701ca8"
-  integrity sha512-qgftdUHcF3v1/oscH+bjNeGTCKaM6U7FN07xTHQMZ/uMExhL0hIKDciuPHCuZ01LN8wYTCSz83j1jpVagWBzcQ==
+"@ray-js/circle-progress@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@ray-js/circle-progress/-/circle-progress-0.1.3.tgz#771e9a7c286a84a4361e4627f7a6fb7ca5ce2a9f"
+  integrity sha512-w0TGAv3KpUfXNH1s+Lj9RoLmjYgiqU5X9/VAHXxWvRnsB8e/nkEqz0ZNo+D81hWZxCN9pS7hSuVF1FNTemSEQA==
 
 "@ray-js/cli@^1.4.45":
   version "1.4.52"
@@ -2605,10 +2605,10 @@
   dependencies:
     ahooks "^3.5.2"
 
-"@ray-js/components-ty-tabs@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.npmjs.org/@ray-js/components-ty-tabs/-/components-ty-tabs-0.0.14.tgz"
-  integrity sha512-CEa+CeOs8EHAyVHVh8EgOAX96WXAohYmXnmbLfAmwv9SZ0XX9HmGqC8PUtPd0shqzSXKqvuQ6U2xlPW58EA/IA==
+"@ray-js/components-ty-tabs@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@ray-js/components-ty-tabs/-/components-ty-tabs-0.0.18.tgz#f421ee5b5e891d29c815cf8e60166b1e15a88629"
+  integrity sha512-pXSmDmPu+ojiJdYPkwC7YhGgJD70pAL/nAHovy/ChZuncMrPtNoGcwqiS0wUylBX4lGtZPOuWeadrZ4OAxtMqQ==
   dependencies:
     "@ray-js/components-ty-config-provider" "^0.0.9"
 

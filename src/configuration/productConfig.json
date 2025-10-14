@@ -25,7 +25,9 @@
     "mainUiConfig": {
       "titleColor": "#000000",
       "bgColor": "linear-gradient(to bottom, rgb(100,175,210), rgb(238,241,240))",
+      "themeColor":"rgb(100,175,210)",
       "font": "Mizudo",
+      "sectionBorder": false,
 
       "waterTDS": false,
       "waterQuality": false,
@@ -73,7 +75,9 @@
     "mainUiConfig": {
       "titleColor": "#000000",
       "bgColor": "linear-gradient(to bottom, rgb(100,175,210), rgb(238,241,240))",
+      "themeColor":"rgb(100,175,210)",
       "font": "Mizudo",
+      "sectionBorder": false,
 
       "waterTDS": true,
       "waterQuality": true,
@@ -128,7 +132,9 @@
     "mainUiConfig": {
       "titleColor": "#000000",
       "bgColor": "linear-gradient(to bottom, rgb(100,175,210), rgb(238,241,240))",
+      "themeColor":"rgb(100,175,210)",
       "font": "Mizudo",
+      "sectionBorder": false,
 
       "waterTDS": true,
       "waterQuality": true,
@@ -176,7 +182,9 @@
     "mainUiConfig": {
       "titleColor": "#000000",
       "bgColor": "linear-gradient(to bottom, rgb(100,175,210), rgb(238,241,240))",
+      "themeColor":"rgb(100,175,210)",
       "font": "Mizudo",
+      "sectionBorder": false,
 
       "waterTDS": true,
       "waterQuality": true,
@@ -231,7 +239,9 @@
     "mainUiConfig": {
       "titleColor": "#FFFFFF",
       "bgColor": "linear-gradient(to bottom, rgb(3,28,81), rgb(78,91,114))",
+      "themeColor":"rgb(3,28,81)",
       "font": "Electrolux",
+      "sectionBorder": true,
 
       "waterTDS": true,
       "waterQuality": true,
@@ -274,7 +284,9 @@
     "mainUiConfig": {
       "titleColor": "#FFFFFF",
       "bgColor": "linear-gradient(to bottom, rgb(3,28,81), rgb(78,91,114))",
+      "themeColor":"rgb(3,28,81)",
       "font": "Electrolux",
+      "sectionBorder": true,
 
       "waterTDS": true,
       "waterQuality": true,
@@ -323,7 +335,9 @@
     "mainUiConfig": {
       "titleColor": "#FFFFFF",
       "bgColor": "linear-gradient(to bottom, rgb(3,28,81), rgb(78,91,114))",
+      "themeColor":"rgb(3,28,81)",
       "font": "Electrolux",
+      "sectionBorder": true,
 
       "waterTDS": true,
       "waterQuality": true,

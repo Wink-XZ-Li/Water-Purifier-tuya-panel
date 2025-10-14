@@ -12,14 +12,14 @@
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx --fix"
   },
   "dependencies": {
-    "@ray-js/circle-progress": "0.0.10-beta-1",
+    "@ray-js/circle-progress": "^0.1.3",
     "@ray-js/components": "1.5.0",
     "@ray-js/components-ty": "^0.1.2",
     "@ray-js/components-ty-actionsheet": "^0.0.26",
     "@ray-js/components-ty-loading": "^0.1.1",
     "@ray-js/components-ty-popover": "^0.1.0",
     "@ray-js/components-ty-popup": "^1.0.4",
-    "@ray-js/components-ty-tabs": "0.0.14",
+    "@ray-js/components-ty-tabs": "^0.0.18",
     "@ray-js/framework": "1.5.0",
     "@ray-js/panel-sdk": "^1.13.1",
     "@ray-js/presskey": "^1.0.1",

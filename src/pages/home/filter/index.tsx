@@ -141,7 +141,11 @@ export function FilterManage(props) {
             // RO
             if (pid === 'dknfai4pqtl1k2hf' || pid === 'rdrqs27qctf11vmn') {
                 realDays = 721-days
-            } else {
+            }
+            else if (pid === 'yhk26gfskjuyafgh') {
+                realDays = 731-days
+            }
+            else {
                 realDays = 1081-days
             }
         } else {

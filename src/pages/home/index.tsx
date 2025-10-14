@@ -11,6 +11,7 @@ import ActionSheet from '@ray-js/components-ty-actionsheet';
 import { getFilterLink } from './filter';
 import productConfig from '../../configuration/productConfig.json';
 import filterConfig from '../../configuration/filterConfig.json';
+import Tabs from '@ray-js/components-ty-tabs';
 
 /**
  * MIZUDO：
@@ -60,12 +61,12 @@ const heatLevels4 = [
 ];
 
 var heatLevels6 = [
-  { text: "45℃", value: '1' },
-  { text: "55℃", value: '2' },
-  { text: "65℃", value: '3' },
-  { text: "75℃", value: '4' },
-  { text: "85℃", value: '5' },
-  { text: "95℃", value: '6' },
+  { text: "113℉", value: '1' },
+  { text: "131℉", value: '2' },
+  { text: "149℉", value: '3' },
+  { text: "167℉", value: '4' },
+  { text: "185℉", value: '5' },
+  { text: "203℉", value: '6' },
 ];
 
 const cupSizes = [
@@ -97,9 +98,6 @@ export function Home() {
   const pcfFiltertime = dpState['cbpa_filtertime'];
   const fault = dpState['fault'];
 
-  const roColor = roFiltertime>5?'black':'red'
-  const pcfColor = pcfFiltertime>5?'black':'red'
-
   // 冲洗开关
   const wash = dpState['wash'];
   // 冲洗状态
@@ -117,6 +115,7 @@ export function Home() {
   const recycledFlushing = dpState['recycled_flushing'];
   const holidayMdoe = dpState['holiday_mdoe'];
 
+  // 杯量
   const flow = dpState['flow'];
 
   const powerSaving = dpState['power_saving'];
@@ -124,9 +123,9 @@ export function Home() {
   const highAltitude = dpState['high_altitude'];
   if (highAltitude !== undefined) {
     if (highAltitude) {
-      heatLevels6[5].text = '87℃'
+      heatLevels6[5].text = '189℉'
     } else {
-      heatLevels6[5].text = '95℃'
+      heatLevels6[5].text = '203℉'
     }
   }
 
@@ -141,11 +140,7 @@ export function Home() {
   // 产品配置
   const product_config = configuration.productConfig[modelStr]!==undefined ? configuration.productConfig[modelStr]:configuration.productConfig['default'];
   console.log("Product Config:", product_config)
-  // 获取失败，提示故障
-  if (product_config===undefined) {
-    console.error("Product or filter configuration not found for productId:", pid);
-    return <View><Text style={{"fontSize": "40px"}}>Error: 未找到配置, 请检查model上报(id: 140), 确认正确后, 重新进入此页面</Text></View>;
-  }
+  
   // UI功能配置
   const mainUiConfig = configuration.mainUiConfig;
   const image = images[product_config.imageUrl];
@@ -156,9 +151,16 @@ export function Home() {
   // 计算属性
   const disableHeat =  (fault !== 0)
 
-  // 常用值
-  const buttonColor = '#00B7FB'
-  const buttonDisableColor = '#E8E8E8'
+
+  const roColor = roFiltertime>5?mainUiConfig.themeColor:'red'
+  const pcfColor = pcfFiltertime>5?mainUiConfig.themeColor:'red'
+
+
+  const radius = 77;
+  const roCircumference = 2 * Math.PI * radius;
+  const roProgressLength = roCircumference * (roFiltertime / 100);
+  const pcfCircumference = 2 * Math.PI * radius;
+  const pcfProgressLength = pcfCircumference * (pcfFiltertime / 100);
 
   // fault alert
   React.useEffect(() => {
@@ -301,7 +303,7 @@ export function Home() {
       dpId: 105,
       rangeKeys: ['1', '2', '3', '4', '5', '6'],
       selected: ['1', '2', '3', '4', '5', '6'].findIndex(item=>item===heatLevel),
-      rangeValues: ["45℃", "55℃", "65℃", "75℃", "85℃", "95℃"]
+      rangeValues: ["113℉", "131℉", "149℉", "167℉", "185℉", "203℉"]
     }
     
     if (mainUiConfig.heatingTemp4) {
@@ -471,35 +473,26 @@ export function Home() {
       <ScrollView scrollY={true} className={styles.content} refresherTriggered={false}>
         
         {/* 产品图片 */}
-        <View style={{position: 'relative' , alignItems: 'center', display: 'flex', }}>
-          {/* 区分滤芯冲洗类型 */}
-          {washStateType=='string' && washState!=='off' &&  
+        <View style={{position: 'relative' , display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+
+          {((washStateType=='string' && washState!=='off')||(washStateType=='boolean' && washState)) &&  
+          <>
             <View 
-            className={styles.tip}
-            style={{width: '45%', margin:'5% 27.5% 0 27.5%;'}}
+            className={styles.flushingIcon}
             >
-            <Svg width='35' height='35' viewBox="0 0 10.25 15" >
-              <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
-              <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>
-              <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
-              <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>  
+            <Svg width='130' height='130' viewBox="0 0 5.15 5.15" >
+              <path fill='rgb(153,162,178)' d="M4.91 1.39l-0.2 0.47c-0.3,-0.89 -1.14,-1.53 -2.13,-1.53 -1.2,0 -2.18,0.95 -2.25,2.13l0.26 0c0.06,-1.04 0.93,-1.87 1.98,-1.87 0.88,0 1.63,0.58 1.89,1.38l-0.48 -0.21 -0.1 0.24 0.88 0.39 0.39 -0.88 -0.24 -0.1m-2.34 3.18c-0.88,0 -1.63,-0.58 -1.89,-1.38l0.48 0.21 0.1 -0.24 -0.88 -0.39 -0.39 0.88 0.24 0.1 0.2 -0.47c0.3,0.89 1.14,1.53 2.13,1.53 1.2,0 2.18,-0.95 2.25,-2.13l-0.26 0c-0.06,1.04 -0.93,1.87 -1.98,1.87z"/>
             </Svg>
-            <Text style={{display: 'flex'}}>{flushType[washState]}</Text>
             </View>
+            <View className={styles.flushingText1}>Flushing</View>
+          </>
           }
-          {/* 不区分滤芯冲洗类型 */}
-          {washStateType=='boolean' && washState && 
-            <View 
-            className={styles.tip}
-            >
-            <Svg width='35' height='35' viewBox="0 0 10.25 15" >
-              <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
-              <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>
-              <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
-              <path fill='rgb(100,175,210)' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>  
-            </Svg>
-            <Text style={{display: 'flex'}}>Flushing</Text>
-            </View>
+          {configuration.brand==='Electrolux' &&
+            <Image 
+            className={styles.brandLogo}
+            mode='aspectFit'
+            src={require('src/images/ElectroluxLogo.png')}
+            />
           }
           <Image src={image}
             mode='aspectFit'
@@ -524,28 +517,16 @@ export function Home() {
           fontWeight: 'bold'
         }}>{product_config.serialName}</View>
 
-        {/* 水质与状态 */}
+        {/* 水质、状态、温度 */}
         {(mainUiConfig.waterTDS || mainUiConfig.waterQuality || mainUiConfig.hotWaterTemp) &&
-        <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
-          
-          <View className={styles.sectionTitle} id='水质'>
-            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 11.31 14.46">
-              <path fill='black' fill-rule='nonzero' d="M3.05 3.15l5.21 0 0 0.96 -5.21 0 0 -0.96zm0 2.92l5.21 0 0 0.96 -5.21 0 0 -0.96zm0 2.92l3.8 0 0 0.96 -3.8 0 0 -0.96zm6.43 5.46l-7.65 0c-0.51,0 -0.96,-0.21 -1.29,-0.54 -0.33,-0.33 -0.54,-0.79 -0.54,-1.29l0 -10.79c0,-0.51 0.21,-0.96 0.54,-1.29 0.33,-0.33 0.79,-0.54 1.29,-0.54l7.65 0c0.51,0 0.96,0.21 1.29,0.54 0.33,0.33 0.54,0.79 0.54,1.29l0 10.79c0,0.51 -0.21,0.96 -0.54,1.29 -0.33,0.33 -0.79,0.54 -1.3,0.54zm-7.65 -13.49c-0.24,0 -0.46,0.1 -0.61,0.25 -0.16,0.16 -0.25,0.37 -0.25,0.61l0 10.79c0,0.24 0.1,0.46 0.25,0.61 0.16,0.16 0.37,0.25 0.61,0.25l7.65 0c0.24,0 0.46,-0.1 0.61,-0.25 0.16,-0.16 0.25,-0.37 0.25,-0.61l0 -10.79c0,-0.24 -0.1,-0.46 -0.25,-0.61 -0.16,-0.16 -0.37,-0.25 -0.61,-0.25l-7.65 0z"/>
-            </Svg>
-            <View className={styles.sectionTitleText}>{mainUiConfig.hotWaterTemp?Strings.getLang('waterQualityFH'):Strings.getLang('waterQuality')}</View>
-          </View>
-
-          {mainUiConfig.waterTDS &&
-          <View className={styles.sectionItem} id='TDS值'>
-            <View className={styles.sectionItemText}>{Strings.getLang('tdsVal')}</View>
-            <View className={styles.sectionItemText}>{tdsOut} ppm</View>
-          </View>}
-
-          <Divider/>
-
-          {mainUiConfig.waterQuality &&
-          <View className={styles.sectionItem} id='水质'>
-            <View className={styles.infoItem} onClick={() => {
+        <View className={`${styles.baseSection}` } 
+        style={{flexDirection: "column"}}>
+          <View className={styles.stateSection} 
+          style={{gridTemplateColumns: mainUiConfig.hotWaterTemp?'repeat(3, 1fr)':'repeat(2, 1fr)'}}>
+            <View className={`${styles.stateTitle} ${styles.stateIcom}`} 
+            style={{}}
+            >TDS Value</View>
+            <View className={`${styles.stateTitle} ${styles.stateIcom}`} onClick={() => {
               popupPureWaterInfo.open({
                 header: 'Water Quality Classification',
                 headerStyle: {textAlign: 'center', whiteSpace: 'nowrap'},
@@ -553,153 +534,155 @@ export function Home() {
                 cancelText: 'OK',
                 content: (
                   <View style={{ padding: 16 , alignItems: 'center', flexDirection: 'column', display: 'flex'}}>
-                    <Text className={styles.infoBodyText}>{"TDS: Total Dissolved Solids\n\nGood: TDS Reduction ≥ 75%;\nPoor: TDS Reduction < 75%"} </Text>
+                    <Text className={styles.infoBodyText}>{"TDS: Total Dissolved Solids\n\nGood: TDS Reduction ≥ 75%;\nPoor: TDS Reduction < 75%;\n "} </Text>
                   </View>
                 ),
               })
-            }}>
-              <View className={styles.sectionItemText}>{Strings.getLang('pureWaterQuality')}</View>
-              <Svg style={{marginLeft: '5px'}} width='30' height='30' viewBox="0 0 1024 1024">
-                <path fill='black' fill-rule='nonzero' d="M512 0C229.23 0 0 229.23 0 512s229.23 512 512 512 512-229.23 512-512S794.77 0 512 0zM512 928c-229.75 0-416-186.25-416-416S282.25 96 512 96s416 186.25 416 416S741.75 928 512 928z" p-id="2360"></path>
-                <path fill='black' fill-rule='nonzero' d="M537.64 343.452c47.074 0 83.266-37.528 83.266-78.072 0-32.46-20.832-60.878-62.496-60.878-54.816 0-82.178 44.618-82.178 77.11C475.144 320.132 498.152 343.452 537.64 343.452z" p-id="2361"></path>
-                <path fill='black' fill-rule='nonzero' d="M533.162 728.934c-7.648 0-10.914-10.136-3.264-39.55l43.25-166.406c16.386-60.848 10.944-100.398-21.92-100.398-39.456 0-131.458 39.83-211.458 107.798l16.416 27.392c25.246-17.256 67.906-34.762 77.792-34.762 7.648 0 6.56 10.168 0 35.508l-37.746 158.292c-23.008 89.266 1.088 109.538 33.984 109.538 32.864 0 117.808-30.47 195.57-109.632l-18.656-25.34C575.354 716.714 543.05 728.934 533.162 728.934z" p-id="2362"></path>
-              </Svg>
-            </View>
-            {(waterQuality === 'good')&&<View className={`${styles.sectionItemText} ${styles.blueText}`}>{Strings.getLang('good')}</View>}
-            {(waterQuality === 'bad')&&<View className={`${styles.sectionItemText} ${styles.redText}`}>{Strings.getLang('bad')}</View>}
-          </View>}
+            }}
+            >Water Quality</View>
 
-          {mainUiConfig.hotWaterTemp&&<>
-          <Divider/>
+            {mainUiConfig.hotWaterTemp &&
+            <View className={`${styles.stateTitle} ${styles.stateIcom}`}
+            >Hot Water Temperature</View>
+            }
+          </View>
+          <View className={styles.stateSection} 
+          style={{gridTemplateColumns: mainUiConfig.hotWaterTemp?'repeat(3, 1fr)':'repeat(2, 1fr)', backgroundColor: configuration.brand === "MIZUDO" ? 'rgba(100,175,210,0.4)': mainUiConfig.themeColor}}>
+            <View className={`${styles.stateValue} ${styles.stateIcom}`}
+            style={{color: '#ffffff'}} 
+            >{tdsOut} ppm</View>
+            {(waterQuality === 'good')&&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.blueText}`}>{Strings.getLang('good')}</View>}
+            {(waterQuality === 'bad')&&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.redText}`}>{Strings.getLang('bad')}</View>}
+            
+            {mainUiConfig.hotWaterTemp &&
+            <View className={`${styles.stateValue} ${styles.stateIcom}`}
+            style={{color: 'red'}}
+            >{tempCurrent+' '+'℉'}</View>
+            }
 
-          <View className={styles.sectionItem} id='热水水温'>
-            <View className={styles.sectionItemText}>Hot Water Temperature</View>
-            <View className={`${styles.sectionItemText} ${styles.redText}`}>{tempCurrent+' '+'℉'}</View>
-          </View></>}
-
-          {mainUiConfig.powerSaving&&<>
-          <Divider/>
-          <View className={styles.sectionItem} id='省电模式'>
-            <View className={styles.infoItem}>
-              <View className={styles.sectionItemText}>Power Saving</View>
-            </View>
-            <Switch 
-              color={buttonColor}
-              checked={powerSaving}
-              // disabled={disableHeat}
-              onChange={ e =>
-                actions['power_saving'].set(e.detail.value)
-              }
-            />
-          </View></>
-          }
-
-        </View>}
+          </View>
+        </View>
+        }
 
         {/* 滤芯管理 */}
-        <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
-
-          <View className={styles.sectionTitle} id='滤芯'>
-            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 20.83 20.83">
-              <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M20.26 10.41c0,5.44 -4.41,9.85 -9.85,9.85 -5.44,0 -9.85,-4.41 -9.85,-9.85 0,-5.44 4.41,-9.85 9.85,-9.85 5.44,0 9.85,4.41 9.85,9.85z"/>
-              <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M10.41 16.61l0 0c-1.44,0 -2.62,-1.18 -2.62,-2.62l0 -7.16c0,-1.44 1.18,-2.62 2.62,-2.62l0 0c1.44,0 2.62,1.18 2.62,2.62l0 7.16c0,1.44 -1.18,2.62 -2.62,2.62z"/>
-              <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M20.26 10.41c0,5.44 -4.41,9.85 -9.85,9.85 -5.44,0 -9.85,-4.41 -9.85,-9.85 0,-5.44 4.41,-9.85 9.85,-9.85 5.44,0 9.85,4.41 9.85,9.85z"/>
-              <path stroke="#040000" stroke-width='1.14' stroke-miterlimit='10' fill='none' fill-rule='nonzero' d="M10.41 16.61l0 0c-1.44,0 -2.62,-1.18 -2.62,-2.62l0 -7.16c0,-1.44 1.18,-2.62 2.62,-2.62l0 0c1.44,0 2.62,1.18 2.62,2.62l0 7.16c0,1.44 -1.18,2.62 -2.62,2.62z"/>
-            </Svg>
-            <View className={styles.sectionTitleText}>{Strings.getLang('filterLife')}</View>
-          </View>
-
-          {mainUiConfig.pcf &&
-          <Button id='PCF'
-            className={styles.sectionItem}
+        <View className={`${styles.stateAndControlSection} ${styles.baseSection} ${mainUiConfig.sectionBorder&&styles.sectionBorder}`}>
+          <View className={styles.sectionTitle} id='滤芯'>{Strings.getLang('filterLife')}</View>
+          <View className={styles.filterSection}
+          style={{gridTemplateColumns: mainUiConfig.ro&&mainUiConfig.pcf?'repeat(2, 1fr)':'repeat(1, 1fr)'}}
+          >
+            {mainUiConfig.pcf && 
+            <Button className={styles.filterItem}
             onClick={ () =>
               navigateToFilter(FilterType.pcf)
             }
-          >
-            <View className={styles.sectionItemText}>PCF</View>
-            <View className={styles.arrowText}>
-              <View className={styles.sectionItemText} style={{color: pcfColor}}>{pcfFiltertime}%</View>
-              <Arrow/>
-            </View>
-          </Button>}
+            >
+              <View className={styles.filterCircleRect}>
+                <View className={styles.filterCircle}>
+                  <Svg width="100%" height='100%' viewBox='0 0 160 160'>
+                    {/* 背景圆环 */}
+                    <circle
+                      cx='80'
+                      cy='80'
+                      r='77'
+                      stroke='rgba(18, 17, 17, 1)'
+                      strokeWidth='4'
+                      fill="none"
+                    />
+                    {/* 进度圆环 */}
+                    <circle 
+                      cx='80' cy='80' r='77' stroke={pcfColor} stroke-width='6' fill='none' stroke-linecap='round' 
+                      stroke-dasharray={`${pcfProgressLength}, ${pcfCircumference}`}
+                      transform='rotate(90 80 80) scale(-1 1) translate(-160 0)'
+                    />
+                  </Svg>
+                </View>
+                <View className={styles.filterLifeText}>{pcfFiltertime}%</View>
+              </View>
+              <View className={styles.filterText}>PCF</View>
+            </Button>}
 
-          {mainUiConfig.pcf && <Divider/>}
-          
-          {mainUiConfig.ro &&
-          <Button id='RO'
-            className={styles.sectionItem}
+            {mainUiConfig.ro &&
+            <Button className={styles.filterItem}
             onClick={ () =>
               navigateToFilter(FilterType.ro)
             }
-          >
-            <View className={styles.sectionItemText}>RO</View>
-            <View className={styles.arrowText}>
-              <View className={styles.sectionItemText} style={{color: roColor}}>{roFiltertime}%</View>
-              <Arrow/>
-            </View>
-          </Button>}
+            >
+              <View className={styles.filterCircleRect}>
+                <View className={styles.filterCircle}>
+                  <Svg width="100%" height='100%' viewBox='0 0 160 160'>
+                    {/* 背景圆环 */}
+                    <circle
+                      cx='80'
+                      cy='80'
+                      r='77'
+                      stroke='rgba(18, 17, 17, 1)'
+                      strokeWidth='4'
+                      fill="none"
+                    />
+                    {/* 进度圆环 */}
+                    <circle 
+                      cx='80' cy='80' r='77' stroke={roColor} stroke-width='6' fill='none' stroke-linecap='round' 
+                      stroke-dasharray={`${roProgressLength}, ${roCircumference}`}
+                      transform='rotate(90 80 80) scale(-1 1) translate(-160 0)'
+                    />
+                  </Svg>
+                </View>
+                <View className={styles.filterLifeText} >
+                  {/* <Text style={{opacity: 0}}>%</Text> */}
+                  {roFiltertime}%</View>
+              </View>
+              <View className={styles.filterText}>RO</View>
+            </Button>
+            }
+          </View>
         </View>
 
         {/* 杯量管理 */}
         {(mainUiConfig.flow) &&
-        <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
-          <View className={styles.sectionTitle} id='杯量管理'>
-            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 13.95 15.48">
-            <g>
-              <path fill='black' fill-rule='nonzero' d="M6.87 1.87l7.08 0 0 1.01 -7.07 0c0.06,-0.15 0.09,-0.32 0.09,-0.49 0,-0.18 -0.03,-0.36 -0.1,-0.52zm-2.55 0c-0.06,0.16 -0.1,0.33 -0.1,0.52 0,0.17 0.03,0.34 0.09,0.49l-4.31 0 0 -1.01 4.32 0zm7.18 5.43l2.44 0 0 1.01 -2.44 0c0.06,-0.16 0.1,-0.33 0.1,-0.5 0,-0.17 -0.03,-0.35 -0.1,-0.51zm-2.56 0c-0.06,0.16 -0.1,0.33 -0.1,0.51 0,0.18 0.03,0.35 0.1,0.5l-8.94 0 0 -1.01 8.94 0zm-3.98 5.29l8.98 0 0 1.01 -8.98 0c0.06,-0.16 0.1,-0.33 0.1,-0.51 0,-0.18 -0.03,-0.35 -0.1,-0.51zm-2.56 0c-0.06,0.16 -0.1,0.33 -0.1,0.51 0,0.18 0.03,0.35 0.1,0.51l-2.41 0 0 -1.01 2.41 0z"/>
-              <path fill='black' fill-rule='nonzero' d="M6.97 2.39c0,-0.76 -0.61,-1.38 -1.37,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.62,1.38 1.37,1.38 0.76,0 1.37,-0.62 1.37,-1.38zm4.63 5.42c0,-0.76 -0.62,-1.38 -1.38,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.62,1.38 1.37,1.38 0.76,0 1.38,-0.62 1.38,-1.38zm-6.54 5.28c0,-0.76 -0.62,-1.38 -1.37,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.61,1.38 1.37,1.38 0.76,0 1.37,-0.62 1.37,-1.38zm2.92 -10.7c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39zm4.63 5.42c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39zm-6.54 5.28c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39z"/>
-            </g>
-            </Svg>
-            <View className={styles.sectionTitleText}>Cup Volume Selection</View>
-          </View>
-
-          {/* <View className={styles.sectionItem} id='调温'>
-            <View className={styles.sectionItemText}>Temp. Regulation</View>
-          </View> */}
-          <View style={{height: '8px', width: '10',display: 'flex'}}/>
-          <View className={styles.sectionItem} id='杯量'>
-          {cupSizes.map(({ text, value }) => (
-            <PressKey
-              key={value}
-              text={text}
-              status
-              padding={0}
-              height={30}
-              width={60}
-              radius={10}
-              contentStyle={{ fontSize: '13px' }}
-              bgColor={flow === value ? buttonColor : buttonDisableColor}
-              contentColor={flow === value ? 'white' : 'black'}
-              onPress={() => {
-                if (flow !== value && !disableHeat) {
-                  actions['flow'].set(value);
-                }
+        <View className={`${styles.stateAndControlSection} ${styles.baseSection} ${mainUiConfig.sectionBorder&&styles.sectionBorder}`}>
+          <View className={styles.sectionTitle} id='杯量'>Cup Volume Selection</View>
+          <View style={{width: '100%', height: '120rpx', display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
+            <View style={{width: '90%', position: 'absolute'}}>
+              <Tabs.SegmentedPicker
+              className={styles.tab}
+              // height='20px'
+              tabBarStyle={{backgroundColor: '#fff',}}
+              tabTextStyle={{fontSize: 'small'}}
+              tabActiveTextStyle={{color: '#fff'}}
+              tabDefaultColor={'#fff'}
+              activeKey={flow}
+              tabBarUnderlineStyle={{ backgroundColor: mainUiConfig.themeColor,borderRadius: '16px'}}
+              onChange={(activekey) => {
+                actions['flow'].set(activekey);
               }}
-            />
-          ))}
+              // tabBarStyle={{left: '15rpx', right: '15rpx', marginTop: '10px', marginBottom: '10px'}}
+              >
+                {cupSizes.map(({ text, value }) => (
+                  <Tabs.TabPanel tab={text} tabKey={value}/>
+                ))}
+              </Tabs.SegmentedPicker>
+            </View>
+            <View className={styles.tabBorder} style={{borderColor: mainUiConfig.themeColor}}/>
           </View>
+        </View>
+        }
 
-          <View style={{height: '8px', width: '10',display: 'flex'}}/>
-        </View>}
-        
         {/* 水温管理 */}
         {(mainUiConfig.heatingSwitch || mainUiConfig.heatingTemp4 || mainUiConfig.heatingTemp6 || mainUiConfig.heatingTimer) &&
-        <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
-          <View className={styles.sectionTitle} id='水温管理'>
-            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 13.95 15.48">
-            <g>
-              <path fill='black' fill-rule='nonzero' d="M6.87 1.87l7.08 0 0 1.01 -7.07 0c0.06,-0.15 0.09,-0.32 0.09,-0.49 0,-0.18 -0.03,-0.36 -0.1,-0.52zm-2.55 0c-0.06,0.16 -0.1,0.33 -0.1,0.52 0,0.17 0.03,0.34 0.09,0.49l-4.31 0 0 -1.01 4.32 0zm7.18 5.43l2.44 0 0 1.01 -2.44 0c0.06,-0.16 0.1,-0.33 0.1,-0.5 0,-0.17 -0.03,-0.35 -0.1,-0.51zm-2.56 0c-0.06,0.16 -0.1,0.33 -0.1,0.51 0,0.18 0.03,0.35 0.1,0.5l-8.94 0 0 -1.01 8.94 0zm-3.98 5.29l8.98 0 0 1.01 -8.98 0c0.06,-0.16 0.1,-0.33 0.1,-0.51 0,-0.18 -0.03,-0.35 -0.1,-0.51zm-2.56 0c-0.06,0.16 -0.1,0.33 -0.1,0.51 0,0.18 0.03,0.35 0.1,0.51l-2.41 0 0 -1.01 2.41 0z"/>
-              <path fill='black' fill-rule='nonzero' d="M6.97 2.39c0,-0.76 -0.61,-1.38 -1.37,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.62,1.38 1.37,1.38 0.76,0 1.37,-0.62 1.37,-1.38zm4.63 5.42c0,-0.76 -0.62,-1.38 -1.38,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.62,1.38 1.37,1.38 0.76,0 1.38,-0.62 1.38,-1.38zm-6.54 5.28c0,-0.76 -0.62,-1.38 -1.37,-1.38 -0.76,0 -1.37,0.62 -1.37,1.38 0,0.76 0.61,1.38 1.37,1.38 0.76,0 1.37,-0.62 1.37,-1.38zm2.92 -10.7c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39zm4.63 5.42c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39zm-6.54 5.28c0,1.32 -1.07,2.39 -2.39,2.39 -1.32,0 -2.39,-1.07 -2.39,-2.39 0,-1.32 1.07,-2.39 2.39,-2.39 1.32,0 2.39,1.07 2.39,2.39z"/>
-            </g>
-            </Svg>
-            <View className={styles.sectionTitleText}>Water Temp. Management</View>
-          </View>
-          
+        <View className={`${styles.stateAndControlSection} ${styles.baseSection} ${mainUiConfig.sectionBorder&&styles.sectionBorder}`}>
+          <View className={styles.sectionTitle} id='水温'>Water Temp. Management</View>
           {mainUiConfig.heatingSwitch &&
           <View className={styles.sectionItem} id='电源'>
-            <View className={styles.sectionItemText}>Heating ON/OFF</View>
+            <View className={styles.sectionItemTitle}>
+              <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 5.48 5.48">
+                <g>
+                  <path fill='black' fill-rule='nonzero' d="M2.85 2.83c0.13,-0.17 0.23,-0.34 0.28,-0.52 0.03,-0.12 0.05,-0.24 0.05,-0.36 0,-0.07 -0.01,-0.14 -0.02,-0.21 -0.03,-0.19 -0.1,-0.38 -0.21,-0.54 -0.11,-0.16 -0.25,-0.3 -0.42,-0.41l-0.13 0.21c0.14,0.08 0.26,0.2 0.34,0.33 0.09,0.13 0.15,0.28 0.17,0.44 0.01,0.06 0.01,0.12 0.01,0.17 0,0.1 -0.01,0.2 -0.04,0.29 -0.04,0.15 -0.12,0.29 -0.23,0.43l-0.02 0.03c-0.13,0.17 -0.23,0.34 -0.28,0.52 -0.03,0.12 -0.05,0.24 -0.05,0.36 0,0.07 0.01,0.14 0.02,0.21 0.03,0.17 0.09,0.33 0.18,0.48 0.09,0.15 0.21,0.28 0.34,0.38 0.02,0.02 0.05,0.03 0.08,0.03 0.01,0 0.01,-0 0.02,-0 0.06,-0.01 0.1,-0.06 0.1,-0.12 0,-0.01 -0,-0.02 -0,-0.02 -0.01,-0.03 -0.02,-0.06 -0.05,-0.08 -0.11,-0.09 -0.21,-0.19 -0.28,-0.31 -0.07,-0.12 -0.12,-0.25 -0.14,-0.39 -0.01,-0.06 -0.01,-0.12 -0.01,-0.17 0,-0.1 0.01,-0.2 0.04,-0.29 0.04,-0.15 0.12,-0.29 0.23,-0.43l0.02 -0.03 0 -0 -0 0zm1.18 0.93c-0.01,-0.06 -0.01,-0.12 -0.01,-0.18 0,-0.1 0.01,-0.2 0.04,-0.29 0.04,-0.15 0.11,-0.29 0.21,-0.43l0.02 -0.03c0.12,-0.16 0.2,-0.33 0.25,-0.52 0.03,-0.12 0.04,-0.23 0.04,-0.35 0,-0.07 -0.01,-0.14 -0.02,-0.21 -0.03,-0.19 -0.09,-0.37 -0.19,-0.54 -0.1,-0.16 -0.23,-0.3 -0.38,-0.41l-0.14 0.2c0.13,0.09 0.23,0.2 0.31,0.33 0.08,0.13 0.13,0.29 0.16,0.44 0.01,0.06 0.01,0.12 0.01,0.18 0,0.1 -0.01,0.2 -0.04,0.29 -0.04,0.15 -0.11,0.29 -0.21,0.43l-0.02 0.03c-0.12,0.16 -0.2,0.33 -0.25,0.52 -0.03,0.12 -0.04,0.23 -0.04,0.35 0,0.07 0.01,0.14 0.02,0.21 0.02,0.17 0.08,0.33 0.16,0.48 0.08,0.14 0.18,0.27 0.31,0.38 0.02,0.02 0.05,0.03 0.08,0.03 0.07,0 0.12,-0.06 0.12,-0.12 0,-0.04 -0.02,-0.07 -0.05,-0.1 -0.1,-0.09 -0.19,-0.19 -0.25,-0.31 -0.06,-0.12 -0.11,-0.25 -0.13,-0.39l0 0zm-2.62 -0.93c0.12,-0.16 0.2,-0.33 0.25,-0.52 0.03,-0.12 0.04,-0.23 0.04,-0.35 0,-0.07 -0.01,-0.14 -0.02,-0.21 -0.03,-0.19 -0.09,-0.37 -0.19,-0.54 -0.1,-0.16 -0.23,-0.3 -0.38,-0.41l-0.14 0.2c0.13,0.09 0.23,0.2 0.31,0.33 0.08,0.14 0.13,0.29 0.16,0.44 0.01,0.06 0.01,0.12 0.01,0.18 0,0.1 -0.01,0.2 -0.04,0.29 -0.04,0.15 -0.11,0.29 -0.21,0.43l-0.02 0.03c-0.12,0.16 -0.2,0.33 -0.25,0.52 -0.03,0.12 -0.04,0.23 -0.04,0.35 0,0.07 0.01,0.14 0.02,0.21 0.02,0.17 0.08,0.33 0.16,0.48 0.08,0.14 0.18,0.27 0.31,0.38 0.02,0.02 0.05,0.03 0.08,0.03 0.07,0 0.12,-0.06 0.12,-0.12 0,-0.04 -0.02,-0.07 -0.05,-0.1 -0.1,-0.09 -0.19,-0.19 -0.25,-0.31 -0.06,-0.12 -0.11,-0.25 -0.13,-0.39 -0.01,-0.06 -0.01,-0.12 -0.01,-0.18 0,-0.1 0.01,-0.2 0.04,-0.29 0.04,-0.15 0.11,-0.29 0.21,-0.43l0.02 -0.03 0 -0 0 0zm0 0l0 0 0 0z"/>
+                </g>
+              </Svg>
+              <View className={styles.sectionItemText}>Heating</View>
+            </View>
             <Switch 
-              color={buttonColor}
+              color={mainUiConfig.themeColor}
               checked={heat}
               disabled={disableHeat}
               onChange={ e =>
@@ -709,201 +692,149 @@ export function Home() {
           </View>}
 
           <Divider/>
-          {/* 4档调温 */}
-          {mainUiConfig.heatingTemp4 && <>
-          <View className={styles.sectionItem} id='调温'>
-            <View className={styles.sectionItemText}>Temp. Regulation</View>
-          </View>
 
-          <View className={styles.sectionItem} id='调温'>
-          {heatLevels4.map(({ text, value }) => (
-            <PressKey
-              key={value}
-              text={text}
-              status
-              padding={0}
-              height={30}
-              width={60}
-              radius={10}
-              contentStyle={{ fontSize: '13px' }}
-              bgColor={heatLevel === value ? buttonColor : buttonDisableColor}
-              contentColor={heatLevel === value ? 'white' : 'black'}
-              onPress={() => {
-                if (heatLevel !== value && !disableHeat) {
-                  actions['level'].set(value);
-                }
+          {/* 调温 */}
+          {(mainUiConfig.heatingTemp4 || mainUiConfig.heatingTemp6) && 
+          <View style={{width: '100%', height: '100rpx', display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
+            <View style={{width: '90%', position: 'absolute'}}>
+              <Tabs.SegmentedPicker
+              disableMoveControls={disableHeat}
+              className={styles.tab}
+              // height='20px'
+              tabBarStyle={{backgroundColor: '#fff',}}
+              tabTextStyle={{fontSize: 'small'}}
+              tabActiveTextStyle={{color: '#fff'}}
+              tabDefaultColor={'#fff'}
+              activeKey={heatLevel}
+              tabBarUnderlineStyle={{ backgroundColor: mainUiConfig.themeColor,borderRadius: '16px'}}
+              onChange={(activekey) => {
+                actions['level'].set(activekey);
               }}
-            />
-          ))}
-          </View>
-
-          <View style={{height: '8px', width: '10',display: 'flex'}}/></>
-          }
-          {/* 6档调温 */}
-          {mainUiConfig.heatingTemp6 && <>
-          <View className={styles.sectionItem} id='调温'>
-            <View className={styles.sectionItemText}>Temp. Regulation</View>
-          </View>
-
-          <View className={styles.sectionItem} id='调温'>
-          {heatLevels6.map(({ text, value }) => (
-            <PressKey
-              key={value}
-              text={text}
-              status
-              padding={0}
-              height={30}
-              width={40}
-              radius={10}
-              contentStyle={{ fontSize: '13px' }}
-              bgColor={heatLevel === value ? buttonColor : buttonDisableColor}
-              contentColor={heatLevel === value ? 'white' : 'black'}
-              onPress={() => {
-                if (heatLevel !== value && !disableHeat) {
-                  actions['level'].set(value);
+              >
+                {(mainUiConfig.heatingTemp4 ? heatLevels4 : heatLevels6).map(({ text, value }) => (
+                  <Tabs.TabPanel tab={text} tabKey={value}/>))
                 }
-              }}
-            />
-          ))}
+              </Tabs.SegmentedPicker>
+            </View>
+            <View className={styles.tabBorder} style={{borderColor: mainUiConfig.themeColor}}/>
           </View>
-
-          <View style={{height: '8px', width: '10',display: 'flex'}}/></>
           }
+
           <Divider/>
-          
+
+          {/* 定时 */}
           {mainUiConfig.heatingTimer && 
-          <Button 
+          <View 
             className={styles.sectionItem} id='RO'
             onClick={ () =>
               myOpenTimerPage()
             }
           >
-            <View className={styles.sectionItemText}>Time Setting</View>
+            <View className={styles.sectionItemTitle}>
+              <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 5.48 5.48">
+                <g>
+                  <g>
+                    <path fill='black' fill-rule='nonzero' d="M2.91 3.87c-0.02,0.04 -0.07,0.07 -0.12,0.07 -0.03,0 -0.07,-0.01 -0.09,-0.04 -0.15,-0.14 -0.25,-0.32 -0.28,-0.52 -0.01,-0.04 -0.01,-0.09 -0.01,-0.13 0,-0.21 0.08,-0.42 0.21,-0.58 0.11,-0.11 0.17,-0.26 0.17,-0.42 0,-0.21 -0.11,-0.41 -0.29,-0.52l0.14 -0.23c0.26,0.16 0.42,0.45 0.42,0.75 0,0.21 -0.08,0.41 -0.21,0.57 -0.11,0.11 -0.17,0.26 -0.17,0.42 0,0.03 0,0.06 0.01,0.09 0.02,0.14 0.09,0.27 0.2,0.36 0.03,0.03 0.05,0.06 0.05,0.1 0,0.02 -0.01,0.05 -0.02,0.07l0 -0 -0 0zm0.86 0c-0.02,0.04 -0.07,0.06 -0.11,0.06 -0.04,0 -0.07,-0.01 -0.1,-0.04 -0.14,-0.14 -0.22,-0.32 -0.25,-0.51 -0.01,-0.04 -0.01,-0.09 -0.01,-0.14 0,-0.2 0.07,-0.4 0.19,-0.56 0.1,-0.12 0.16,-0.28 0.16,-0.43 0,-0.03 -0,-0.07 -0.01,-0.1 -0.02,-0.17 -0.12,-0.33 -0.26,-0.43l0.15 -0.23c0.2,0.14 0.34,0.37 0.37,0.61 0.01,0.04 0.01,0.09 0.01,0.14 0,0.2 -0.07,0.4 -0.19,0.56 -0.1,0.12 -0.15,0.27 -0.15,0.43 0,0.03 0,0.07 0.01,0.1 0.02,0.13 0.08,0.26 0.17,0.36 0.03,0.03 0.04,0.06 0.04,0.1 0,0.03 -0.01,0.05 -0.02,0.08l-0.01 0.02 0 0zm-1.75 0c-0.02,0.04 -0.07,0.06 -0.11,0.06 -0.04,0 -0.07,-0.01 -0.1,-0.04 -0.14,-0.14 -0.22,-0.32 -0.25,-0.51 -0.01,-0.04 -0.01,-0.09 -0.01,-0.14 0,-0.2 0.07,-0.4 0.19,-0.56 0.1,-0.12 0.15,-0.27 0.15,-0.43 0,-0.03 -0,-0.07 -0.01,-0.1 -0.02,-0.18 -0.11,-0.33 -0.26,-0.44l0.15 -0.23c0.21,0.14 0.34,0.37 0.37,0.62 0.01,0.04 0.01,0.09 0.01,0.14 0,0.2 -0.07,0.4 -0.19,0.56 -0.1,0.12 -0.16,0.28 -0.16,0.43 0,0.03 0,0.06 0.01,0.09 0.02,0.13 0.08,0.26 0.17,0.36 0.03,0.03 0.04,0.06 0.04,0.1 0,0.03 -0.01,0.05 -0.02,0.08l0 0.01 -0 0zm2.81 -2.19l-0.23 0.14c0.12,0.24 0.19,0.51 0.21,0.78l0.27 0c-0.02,-0.32 -0.11,-0.63 -0.25,-0.92l-0 0zm-0.94 -0.67c0.23,0.15 0.42,0.34 0.57,0.57l0.23 -0.14c-0.18,-0.27 -0.41,-0.5 -0.68,-0.68l-0.12 0.25 -0 0zm-0.1 -0.37c-0.28,-0.14 -0.59,-0.23 -0.91,-0.25l0 0.27c0.26,0.02 0.52,0.09 0.76,0.21l0.15 -0.24 0 0zm0 0l0 0 0 0z"/>
+                  </g>
+                  <path fill='black' fill-rule='nonzero' d="M4.81 2.87c-0.07,1.09 -0.98,1.94 -2.07,1.94 -1.15,0 -2.07,-0.93 -2.07,-2.07 0,-1.09 0.85,-2 1.94,-2.07l0 -0.27c-1.24,0.07 -2.21,1.1 -2.21,2.34 0,1.3 1.05,2.35 2.35,2.35 1.24,0 2.27,-0.97 2.34,-2.21l-0.27 0z"/>
+                </g>
+              </Svg>
+              <View className={styles.sectionItemText}>Time Setting</View>
+            </View>
             <Arrow/>
-          </Button>}
-        </View>}
+          </View>}
+
+          {/* 省电 */}
+          {mainUiConfig.powerSaving &&
+          <>
+            <Divider/>
+              <View className={styles.sectionItem} id='省电'>
+              <View className={styles.sectionItemTitle}>
+                <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 5.48 5.48">
+                  <g>
+                    <path fill='black' fill-rule='nonzero' d="M5.09 2.74c0,-1.29 -1.05,-2.35 -2.35,-2.35 -1.3,0 -2.35,1.05 -2.35,2.35 0,1.3 1.05,2.35 2.35,2.35 1.3,0 2.35,-1.05 2.35,-2.35l0 0zm-0.27 -0c0,1.14 -0.93,2.08 -2.08,2.08 -1.14,0 -2.08,-0.93 -2.08,-2.08 0,-1.14 0.93,-2.08 2.08,-2.08 1.14,0 2.08,0.93 2.08,2.08l0 0zm-2.98 0.37l0 -0.39 0.91 0.91 0.91 -0.91 0 0.39 -0.91 0.91 -0.91 -0.91 0 0zm0 -1.12l0 -0.39 0.91 0.91 0.91 -0.91 0 0.39 -0.91 0.91 -0.91 -0.91z"/>
+                  </g>
+                </Svg>
+                <View className={styles.sectionItemText}>Power Saving</View>
+              </View>
+              <Switch 
+                color={mainUiConfig.themeColor}
+                checked={powerSaving}
+                disabled={disableHeat}
+                onChange={ e =>
+                  actions['power_saving'].set(e.detail.value)
+                }
+              />
+            </View>
+          </>
+          }
+        </View>
+        }
         
         {/* 冲洗模式 */}
         {(mainUiConfig.cleanFilter || mainUiConfig.recycledFlushing || mainUiConfig.scheduledFlushing) &&
-        <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
-          <View className={styles.sectionTitle} id='冲洗模式'>
-            <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 10.25 15" >
-              <path fill='black' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
-              <path fill='black' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>
-              <path fill='black' fill-rule='nonzero' d="M6.74 12.55c-0.25,0.17 -0.59,0.1 -0.76,-0.15 -0.17,-0.25 -0.1,-0.59 0.15,-0.76 0.07,-0.05 0.13,-0.09 0.19,-0.14 0.06,-0.05 0.12,-0.11 0.18,-0.16 0.06,-0.06 0.11,-0.12 0.16,-0.18 0.05,-0.06 0.1,-0.12 0.14,-0.19 0.05,-0.07 0.09,-0.14 0.13,-0.21 0.04,-0.07 0.07,-0.14 0.1,-0.22 0.03,-0.07 0.05,-0.14 0.08,-0.23 0.02,-0.07 0.04,-0.15 0.06,-0.23 0.06,-0.3 0.35,-0.49 0.65,-0.43 0.3,0.06 0.49,0.35 0.43,0.65 -0.02,0.1 -0.05,0.22 -0.09,0.34 -0.03,0.11 -0.07,0.22 -0.12,0.33 -0.04,0.11 -0.09,0.21 -0.15,0.31 -0.06,0.11 -0.12,0.2 -0.18,0.3 -0.06,0.09 -0.13,0.19 -0.21,0.28 -0.07,0.09 -0.15,0.18 -0.23,0.26 -0.08,0.08 -0.17,0.16 -0.26,0.23 -0.09,0.07 -0.19,0.14 -0.28,0.21z"/>
-              <path fill='black' fill-rule='nonzero' d="M6.15 2.07c0.19,0.33 0.38,0.65 0.57,0.96 0.38,0.61 0.79,1.2 1.18,1.76l0.02 0.03c0.62,0.89 1.2,1.73 1.63,2.56 0.43,0.84 0.71,1.66 0.71,2.5 0,0.34 -0.03,0.68 -0.1,1 -0.07,0.33 -0.16,0.65 -0.29,0.96 -0.13,0.31 -0.29,0.61 -0.48,0.89 -0.19,0.28 -0.4,0.54 -0.64,0.78 -0.24,0.24 -0.5,0.45 -0.78,0.64 -0.28,0.19 -0.58,0.35 -0.89,0.48 -0.31,0.13 -0.63,0.22 -0.96,0.29 -0.32,0.06 -0.66,0.1 -1,0.1 -0.34,0 -0.68,-0.03 -1,-0.1 -0.33,-0.07 -0.65,-0.16 -0.96,-0.29 -0.31,-0.13 -0.61,-0.29 -0.89,-0.47 -0.28,-0.19 -0.54,-0.4 -0.78,-0.64 -0.24,-0.24 -0.45,-0.5 -0.64,-0.78 -0.19,-0.28 -0.35,-0.58 -0.47,-0.89 -0.13,-0.31 -0.23,-0.63 -0.29,-0.96 -0.06,-0.32 -0.1,-0.66 -0.1,-1 0,-1.7 1.15,-3.37 2.42,-5.21l0.03 -0.04c0.38,-0.56 0.78,-1.13 1.15,-1.71 0.19,-0.29 0.37,-0.6 0.55,-0.91 0.17,-0.31 0.34,-0.62 0.48,-0.93l0.5 -1.07 0.5 1.07c0.16,0.34 0.34,0.67 0.52,1zm0.85 3.36l-0.04 -0.05c-0.56,-0.81 -1.14,-1.66 -1.67,-2.58l-0.16 -0.28 -0.16 0.28c-0.12,0.21 -0.26,0.43 -0.39,0.64 -0.14,0.22 -0.27,0.43 -0.4,0.63l-0.42 0.63 -0.41 0.6c-0.59,0.85 -1.15,1.67 -1.56,2.44 -0.4,0.76 -0.66,1.47 -0.66,2.15 0,0.27 0.03,0.53 0.08,0.78 0.05,0.26 0.13,0.51 0.23,0.75 0.1,0.25 0.23,0.48 0.37,0.7 0.15,0.22 0.31,0.42 0.5,0.61 0.19,0.19 0.39,0.35 0.61,0.5 0.22,0.14 0.45,0.27 0.69,0.37 0.24,0.1 0.49,0.18 0.75,0.23 0.25,0.05 0.52,0.08 0.78,0.08 0.27,0 0.53,-0.03 0.78,-0.08 0.26,-0.05 0.51,-0.13 0.75,-0.23 0.24,-0.1 0.48,-0.23 0.69,-0.37 0.22,-0.15 0.42,-0.32 0.61,-0.5 0.18,-0.19 0.35,-0.39 0.5,-0.61 0.14,-0.22 0.27,-0.45 0.37,-0.69 0.1,-0.24 0.18,-0.49 0.23,-0.75 0.05,-0.25 0.08,-0.52 0.08,-0.78 0,-0.67 -0.25,-1.36 -0.63,-2.08 -0.39,-0.74 -0.94,-1.53 -1.51,-2.36z"/>  
-            </Svg>
-            <View className={styles.infoItem} onClick={() => {
-              popupFlushMode.open({
-                header: 'Smart Flush',
-                headerStyle: {textAlign: 'center', whiteSpace: 'nowrap'},
-                okText: '',
-                cancelText: 'OK',
-                content: (
-                  <View style={{ padding: 16 , alignItems: 'flex-start', flexDirection: 'column', display: 'flex'}}>
-                    
-                    <View className={styles.infoSection}>
-                      <Text className={styles.infoSectionTitle}>Why Flush? 🔄\n</Text>
-                      <Text className={styles.infoBodyText}>
-                      The reverse osmosis membrane features a filtration capacity as fine as 0.0001 microns, effectively removing contaminants. The flush mode helps expel accumulated contaminants from the membrane, ensuring a longer filter lifespan and delivering purer water.
-                      </Text>
-                    </View>
-
-                    {mainUiConfig.recycledFlushing && (
-                      <View className={styles.infoSection}>
-                        <Text className={styles.infoSectionTitle}>Recycled Flushing 🌱\n</Text>
-                        <Text className={styles.infoBodyText}>
-                        The recycled flushing function ensures that each cup of water is fresh and healthy. The system will automatically recycle fresh water and start flushing after it has dispensed water for over 10 minutes.
-                        </Text>
-                      </View>
-                    )}
-
-                    <View className={styles.infoSection}>
-                      <Text className={styles.infoSectionTitle}>Scheduled Flushing ⏰\n</Text>
-                      <Text className={styles.infoBodyText}>
-                      To maintain and extend the life expectancy of the filters, the system will be automatically flushed for 300 seconds per 24 hours.
-                      </Text>
-                    </View>
-                  </View>
-                ),
-              })
-            }}>
-              <View className={styles.sectionTitleText}>{Strings.getLang('flushMode')}</View>
-              <Svg style={{marginLeft: '5px'}} width='30' height='30' viewBox="0 0 1024 1024">
-                <path fill='black' fill-rule='nonzero' d="M512 0C229.23 0 0 229.23 0 512s229.23 512 512 512 512-229.23 512-512S794.77 0 512 0zM512 928c-229.75 0-416-186.25-416-416S282.25 96 512 96s416 186.25 416 416S741.75 928 512 928z" p-id="2360"></path>
-                <path fill='black' fill-rule='nonzero' d="M537.64 343.452c47.074 0 83.266-37.528 83.266-78.072 0-32.46-20.832-60.878-62.496-60.878-54.816 0-82.178 44.618-82.178 77.11C475.144 320.132 498.152 343.452 537.64 343.452z" p-id="2361"></path>
-                <path fill='black' fill-rule='nonzero' d="M533.162 728.934c-7.648 0-10.914-10.136-3.264-39.55l43.25-166.406c16.386-60.848 10.944-100.398-21.92-100.398-39.456 0-131.458 39.83-211.458 107.798l16.416 27.392c25.246-17.256 67.906-34.762 77.792-34.762 7.648 0 6.56 10.168 0 35.508l-37.746 158.292c-23.008 89.266 1.088 109.538 33.984 109.538 32.864 0 117.808-30.47 195.57-109.632l-18.656-25.34C575.354 716.714 543.05 728.934 533.162 728.934z" p-id="2362"></path>
-              </Svg>
-            </View>
-          </View>
-
-          {mainUiConfig.cleanFilter&&<>
+        <View className={`${styles.stateAndControlSection} ${styles.baseSection} ${mainUiConfig.sectionBorder&&styles.sectionBorder}`}>
+          <View className={styles.sectionTitle} id='冲洗'>Flush Mode</View>
+          {mainUiConfig.cleanFilter&&
           <View className={styles.sectionItem} id='手动冲洗'>
-            <View className={styles.infoItem}>
+            <View className={styles.sectionItemTitle}>
+              <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 5.15 5.15">
+                <g>
+                  <path fill='black' fill-rule='nonzero' d="M2.57 0.53l-0.64 1.74 -1.74 0.64 1.74 0.64 0.64 1.74 0.64 -1.74 1.74 -0.64 -1.74 -0.64 -0.64 -1.74 -0 0 0 0zm0.54 2.76c-0.08,0.03 -0.14,0.09 -0.16,0.16l-0.38 1.03 -0.38 -1.03c-0.03,-0.08 -0.09,-0.14 -0.16,-0.16l-1.03 -0.38 1.03 -0.38c0.08,-0.03 0.14,-0.09 0.16,-0.16l0.38 -1.03 0.38 1.03c0.03,0.08 0.09,0.14 0.16,0.16l1.03 0.38 -1.03 0.38 -0 0zm1.2 -1.15l0.26 -0.71 0.71 -0.26 -0.71 -0.26 -0.26 -0.71 -0.26 0.71 -0.71 0.26 0.71 0.26 0.26 0.71z"/>
+                </g>
+              </Svg>
               <View className={styles.sectionItemText}>Clean Filter</View>
             </View>
-
             {/* 区分滤芯冲洗类型 */}
-          {washStateType==='string' &&  
-          <>
-            {washState==='off'&&!wash&&
-              <Button
-                disabled={disableHeat}
-                onClick={() => {
-                  actions['wash'].set(true)
-                }}
-              >
-                {Strings.getLang('flush')}
-              </Button>
-            }
-            {!(washState==='off'&&!wash)&&
-              <View className={styles.arrowText}>
-                <View className={styles.flushingText}>Flushing</View>
-              </View>
-            }
-          </>
-          }
-          {/* 不区分滤芯冲洗类型 */}
-          {washStateType==='boolean' && 
-          <>
-          {!washState&&!wash&&
-            <Button
-            disabled={disableHeat}
-            onClick={() => {
-              actions['wash'].set(true)
-            }}
-            >
-              {Strings.getLang('flush')}
-            </Button>
-          }
-          {!(!washState&&!wash)&&
-            <View className={styles.arrowText}>
-              <View className={styles.flushingText}>Flushing</View>
-            </View>
-          }
-          </>
-          }
+            {washStateType==='string' &&  
+            <>
+              {washState==='off'&&!wash&&
+                <Button
+                  disabled={disableHeat}
+                  onClick={() => {
+                    actions['wash'].set(true)
+                  }}
+                >
+                  {Strings.getLang('flush')}
+                </Button>
+              }
+              {!(washState==='off'&&!wash)&&
+                <View className={styles.arrowText}>
+                  <View className={styles.flushingText2}
+                  style={{color: mainUiConfig.themeColor}}
+                  >Flushing</View>
+                </View>
+              }
+            </>}
           </View>
-          
-          <Divider/></>}
+          }
 
-          {mainUiConfig.recycledFlushing&&<>
+          {mainUiConfig.cleanFilter&& <Divider/>}
+
+          {mainUiConfig.recycledFlushing &&
           <View className={styles.sectionItem} id='零陈水'>
-            <View className={styles.infoItem}>
-              <View className={styles.sectionItemText}>{Strings.getLang('recycledFlushing')}</View>
+            <View className={styles.sectionItemTitle}>
+              <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 5.48 5.48">
+                <g>
+                  <path fill='black' fill-rule='nonzero' d="M2.02 2.82l-0.75 0.27 0.75 -0.27zm-0.75 0.27l0 0 0.75 0.27 0.27 0.75 0.27 -0.75 0.75 -0.27 -0.75 -0.27 -0.27 -0.75 -0.14 0.39 -0.13 0.35 -0.75 0.27zm2.11 -0.42l0.17 -0.47 0.47 -0.17 -0.47 -0.17 -0.17 -0.47 -0.17 0.47 -0.47 0.17 0.47 0.17 0.17 0.47z"/>
+                </g>
+                <g>
+                  <path fill='black' fill-rule='nonzero' d="M5.18 1.5l-0.21 0.49c-0.31,-0.93 -1.19,-1.6 -2.22,-1.6 -1.25,0 -2.28,0.99 -2.34,2.22l0.27 0c0.07,-1.09 0.97,-1.95 2.07,-1.95 0.92,0 1.7,0.6 1.97,1.44l-0.5 -0.22 -0.11 0.25 0.92 0.4 0.4 -0.92 -0.25 -0.11 -0 -0zm-2.44 3.31c-0.92,0 -1.7,-0.6 -1.97,-1.44l0.5 0.22 0.11 -0.25 -0.92 -0.4 -0.4 0.92 0.25 0.11 0.21 -0.49c0.31,0.93 1.19,1.6 2.22,1.6 1.25,0 2.28,-0.99 2.34,-2.22l-0.27 0c-0.07,1.09 -0.97,1.95 -2.07,1.95z"/>
+                </g>
+              </Svg>
+              <View className={styles.sectionItemText}>Recycle Flushing</View>
             </View>
             <Switch 
-              color={buttonColor}
+              color={mainUiConfig.themeColor}
               checked={recycledFlushing}
-              // disabled={disableHeat}
               onChange={ e =>
                 actions['recycled_flushing'].set(e.detail.value)
               }
             />
           </View>
-          {(mainUiConfig.scheduledFlushing||mainUiConfig.holidayMdoe)&&<Divider/>}
-          </>}
+          }  
           
+          {mainUiConfig.recycledFlushing&&<Divider/>}
           {mainUiConfig.scheduledFlushing&&
           <Picker mode='time' style={{width: '100%', marginLeft: '10%'}}
             onChange={(e) => {
@@ -914,8 +845,15 @@ export function Home() {
             confirmText='Confirm'
             cancelText='Cancel'
           >
-            <View className={styles.sectionItem} id='timer'>
-              <View className={styles.sectionItemText}>{Strings.getLang('scheduledFlushing')}</View>
+            <View className={styles.sectionItem} id='零陈水'>
+              <View className={styles.sectionItemTitle}>
+                <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 5.48 5.48">
+                  <g>
+                    <path fill='black' fill-rule='nonzero' d="M2.04 2.89l-0.74 0.27 0.74 0.27 0.27 0.74 0.27 -0.74 0.74 -0.27 -0.74 -0.27 -0.27 -0.74 -0.27 0.74 0 0zm1.34 -0.15l0.17 -0.47 0.47 -0.17 -0.47 -0.17 -0.17 -0.47 -0.17 0.47 -0.47 0.17 0.47 0.17 0.17 0.47 0 0zm1.02 -1.16l0.29 -0.17c-0.17,-0.25 -0.38,-0.46 -0.63,-0.63l-0.17 0.29c0.2,0.14 0.37,0.31 0.51,0.51l-0 -0 -0 0zm0.35 0.98l0.34 0c-0.02,-0.3 -0.1,-0.59 -0.23,-0.86l-0.29 0.17c0.1,0.21 0.17,0.45 0.19,0.69l0 0zm-2.01 2.18c-1.11,0 -2.02,-0.91 -2.02,-2.02 0,-1.11 0.81,-1.92 1.85,-2.01l0 -0.34c-1.22,0.09 -2.18,1.1 -2.18,2.34 0,1.24 1.06,2.35 2.35,2.35 1.3,0 2.26,-0.97 2.34,-2.18l-0.34 0c-0.09,1.03 -0.95,1.85 -2.01,1.85l0 0 0 0zm1.02 -4.13c-0.27,-0.13 -0.56,-0.21 -0.86,-0.23l0 0.34c0.24,0.02 0.48,0.09 0.69,0.19l0.17 -0.29 0 0zm0 0l0 0 0 0z"/>
+                  </g>
+                </Svg>
+                <View className={styles.sectionItemText}>Scheduled Flushing/24h</View>
+              </View>
               <View className={styles.arrowText}>
                 <View className={styles.sectionItemText}>{formatTime(flushTimer)}</View>
                 <Arrow/>
@@ -923,7 +861,7 @@ export function Home() {
             </View>
           </Picker>}
 
-          {mainUiConfig.holidayMdoe&&
+          {/* {mainUiConfig.holidayMdoe&&
           <View className={styles.sectionItem} id='假日模式'>
             <View className={styles.infoItem}>
               <View className={styles.sectionItemText}>Holiday Mode</View>
@@ -937,31 +875,28 @@ export function Home() {
               }
             />
           </View>
-          }
-        </View>}
+          } */}
 
-        {/* 使用报告 */}        
-        <View className={`${styles.stateAndControlSection} ${styles.baseSection}`} style={{marginTop: '15px'}}>
-          <Button 
-            className={styles.sectionBtn}
-            onClick={ () =>
-              navigateToHistory()
-            }
-          >
-            <View className={styles.sectionTitle} style={{marginBottom: '5%', marginLeft: '20px'}}>
-              <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 14.83 14.86">
-                <path fill='black' fill-rule='nonzero' d="M14.83 13.75l-13.71 0 0 -13.7 -1.12 -0.05 0 14.36c0.03,0.28 0.27,0.51 0.56,0.51 0.01,0 0.02,0 0.03,-0l14.24 0 0 -1.12z"/>
-                <path fill='black' fill-rule='nonzero' d="M11.67 2.65l1.8 0 0 10.33 -1.8 0 0 -10.33zm-3.17 4.63l1.8 0 0 5.7 -1.8 0 0 -5.7zm-3.17 -1.46l1.8 0 0 7.16 -1.8 0 0 -7.16zm-3.17 3.41l1.8 0 0 3.75 -1.8 0 0 -3.75z"/>
-              </Svg>
-              <Text className={styles.sectionTitleText}>{Strings.getLang('consumptionReport')}</Text>
-            </View>
-
-            <Svg style={{marginRight: '6px',  width: '49px', height:'19px'}} viewBox="0 0 5.17 9.44">
-              <path fill='black' fill-rule='nonzero' d="M5.04 4.44l-4.56 -4.44 -0.47 0.48 4.37 4.24 -4.37 4.24 0.47 0.49 4.57 -4.45c0.02,-0.02 0.05,-0.05 0.06,-0.07 0.11,-0.18 0.07,-0.34 -0.07,-0.49z"/>
-            </Svg>
-            
-          </Button>
         </View>
+        }
+
+        {/* 使用报告 */}   
+
+        <Button className={`${styles.stateAndControlSection} ${styles.baseSection} ${styles.sectionBtn} ${mainUiConfig.sectionBorder&&styles.sectionBorder}`} 
+        style={{color: 'black', justifyContent: 'space-between', marginTop: '15px'}}
+        onClick={ () =>
+          navigateToHistory()
+        }
+        >
+          
+          <View className={styles.sectionTitle} id='报告'
+          style={{paddingBottom: '30rpx'}}
+          >Unsing Report</View>
+          <Svg style={{marginRight: '6px',  width: '49px', height:'19px'}} viewBox="0 0 5.17 9.44">
+            <path fill='black' fill-rule='nonzero' d="M5.04 4.44l-4.56 -4.44 -0.47 0.48 4.37 4.24 -4.37 4.24 0.47 0.49 4.57 -4.45c0.02,-0.02 0.05,-0.05 0.06,-0.07 0.11,-0.18 0.07,-0.34 -0.07,-0.49z"/>
+          </Svg>
+        </Button>
+
         <popupPureWaterInfo.Container />
         <popupFlushMode.Container />
         <popupFilterInfo.Container />
