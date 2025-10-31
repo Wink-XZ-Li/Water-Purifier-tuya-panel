@@ -6,73 +6,9 @@ import Svg from '@ray-js/svg';
 import { Arrow, Divider } from '..';
 import ActionSheet from '@ray-js/components-ty-actionsheet';
 import productConfig from '../../../configuration/productConfig.json';
-
+import filterConfig from '../../../configuration/filterConfig.json';
 
 export enum FilterType{ro, pcf};
-
-const pcfFilters = {
-    // F FH
-    'RP009A0N': {
-        models: ['WP800A0G','WP1000A0G','WD800A0G','WP800A1G','WP1000A1G','WD800A1G'], 
-        amazon: 'https://www.amazon.com/dp/B0D3GBM3LY', 
-        fogatti: 'https://watercomfortdepot.com/products/pcf-filter-replacement-cartridge'
-    },
-    // G
-    'RP010A0N': {
-        models: ['WD600A0W','WP600A0W','WP800A1W','WP1000A1W','WD600A2W','WP600A2W','WP800A2W','WP1000A2W'], 
-        amazon: 'https://www.amazon.com/dp/B0DPG6JR2P', 
-        fogatti: 'https://watercomfortdepot.com/products/pcf-filter-for-mizudo-pureflo-megaflo-mini-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system'
-    },
-}
-const roFilters = {
-    // F FH
-    'RP007A0N': {
-        models: ['WP800A0G', 'WD800A0G', 'WP800A1G', 'WD800A1G'], 
-        amazon: 'https://www.amazon.com/dp/B0D3GBJKB7', 
-        fogatti: 'https://watercomfortdepot.com/products/800gpd-ro-filter-replacement-cartridge'
-    },
-    // F FH
-    'RP008A0N': {
-        models: ['WP1000A0G', 'WP1000A1G'], 
-        amazon: 'https://www.amazon.com/dp/B0D3GDB334', 
-        fogatti: 'https://watercomfortdepot.com/products/1000gpd-ro-filter-replacement-cartridge'
-    },
-
-    // G
-    'RP011A0N': {
-        models: ['WD600A0W', 'WD600A2W'], 
-        amazon: 'https://www.amazon.com/dp/B0DJS77D62', 
-        fogatti: 'https://watercomfortdepot.com/products/ro-filter-for-mizudo-pureflo-400g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system'
-    },
-    'RP012A0N': {
-        models: ['WP600A0W', 'WP600A2W'], 
-        amazon: 'https://www.amazon.com/dp/B0DPG78585', 
-        fogatti: 'https://watercomfortdepot.com/products/ro-filter-for-mizudo-pureflo-600g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system'
-    },
-    'RP013A0N': {
-        models: ['WP800A1W', 'WP800A2W'], 
-        amazon: 'https://www.amazon.com/dp/B0DPG6PSHM', 
-        fogatti: 'https://watercomfortdepot.com/products/ro-filter-for-mizudo-megaflo-mini-800g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system'
-    },
-    'RP014A0N': {
-        models: ['WP1000A1W', 'WP1000A2W'], 
-        amazon: 'https://www.amazon.com/dp/B0DJS6VCJ6', 
-        fogatti: 'https://watercomfortdepot.com/products/ro-filter-for-mizudo-megaflo-mini-1000g-reverse-osmosis-water-filter-tankless-ro-water-filtration-system-under-sink'
-    },
-}
-
-export function getFilterLink(model: string, type: string): { amazon: string; fogatti: string } | null {
-    const filters = (type === "0")?roFilters:pcfFilters
-    for (const filterKey in filters) {
-        if (filters[filterKey].models.includes(model)) {
-            return {
-                amazon: filters[filterKey].amazon,
-                fogatti: filters[filterKey].fogatti,
-            };
-        }
-    }
-    return null; // 如果没有找到对应的编码
-}
 
 var resetImageUrl = '';
 
@@ -88,23 +24,18 @@ export function FilterManage(props) {
     const type = props.location.query.type
     const modelStr = dpState['model'];
 
-    const title = type === "0"?'RO Filter':'PCF Filter';
-    const typeStr = type === "0"?'RO':'PCF';
+    // 产品配置
+    const mainUiConfig = productConfig[pid].mainUiConfig
+    const configuration = productConfig[pid]
+    const product_config = configuration.productConfig[modelStr]!==undefined ? configuration.productConfig[modelStr]:configuration.productConfig['default'];
+      // 滤芯配置
+    const pcf_config = filterConfig[product_config.pcfFilter] !==undefined ? filterConfig[product_config.pcfFilter]: filterConfig["defaultPCF"];
+    const ro_config = filterConfig[product_config.roFilter] !==undefined ? filterConfig[product_config.roFilter]: filterConfig["defaultRO"];
+
+    const filter = type === "0" ? ro_config : pcf_config;
+    const title = filter.name+' Filter';
     const filterTime = type === "0"?roFiltertime:pcfFiltertime;
     const filterDays = type === "0"?roFiltertimeDay:pcfFiltertimeDay;
-
-    const mainUiConfig = productConfig[pid].mainUiConfig
-
-/**
- * MIZUDO：
- * mini款400&600:   dknfai4pqtl1k2hf
- * mini款800&1000:  kaaz0cxdgvroa6qp
- * F款:             wcssrdbcufckhbzk
- * 净热款:           ptrtzvzn3e7u8ijm
- * 
- * 伊莱克斯：
- * F款:             z0xsaptrkwdyjy9i
- */
     
     if (pid === 'dknfai4pqtl1k2hf') { resetImageUrl = type === "0"?require('src/images/G46-reset-ro.png'):require('src/images/G46-reset-pcf.png')}
     else if (pid === 'kaaz0cxdgvroa6qp') { resetImageUrl = type === "0"?require('src/images/G810-reset-ro.png'):require('src/images/G810-reset-pcf.png')}
@@ -115,16 +46,6 @@ export function FilterManage(props) {
 
     const roColor = roFiltertime>5?'black':'red'
     const pcfColor = pcfFiltertime>5?'black':'red'
-    // var roColor = "";
-    // var pcfColor = "";
-    // if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk') { 
-    //     roColor = roFiltertime>5?'black':'red'
-    //     pcfColor = pcfFiltertime>5?'black':'red'
-    // }
-    // else if (pid === 'ptrtzvzn3e7u8ijm') { 
-    //     roColor = roFiltertime>10?'black':'red'
-    //     pcfColor = pcfFiltertime>10?'black':'red'
-    // }
     const timeColor = type === "0"?roColor:pcfColor
     
     const Popup = ActionSheet.createPopup();
@@ -153,8 +74,6 @@ export function FilterManage(props) {
             realDays = 361-days
         }
         return `${realDays} Days Used`;
-
-        
     }
 
     setNavigationBarTitle({title: title});
@@ -197,11 +116,10 @@ export function FilterManage(props) {
             <View className={`${styles.stateAndControlSection} ${styles.baseSection}`}>
                 <Button 
                     className={styles.sectionItem} id='PCF'
-                    disabled={getFilterLink(modelStr,type)===null}
+                    disabled={filter===undefined || filter.fogatti===""}
                     onClick={ () => {
                         /// 暂时只支持独立张商城，后续需要增加亚马逊链接再加入
-                        const url = getFilterLink(modelStr,type)
-                        openURL({url:url.fogatti})
+                        openURL({url:filter.fogatti})
                         // showActionSheet({
                         //     itemList: ['Amazon', 'MIZUDO Store'],
                         //     success(params) {
@@ -243,7 +161,7 @@ export function FilterManage(props) {
                             cancelText: 'OK',
                             content: (
                               <View style={{ padding: 16 , alignItems: 'center', flexDirection: 'column', display: 'flex'}}>
-                                <View className={styles.infoBodyText}>{`Press and hold the ${typeStr} button for 3 seconds to reset the filter lifetime.`}</View>
+                                <View className={styles.infoBodyText}>{filter.resetGuide}</View>
                                 <Image src={resetImageUrl} style={{margin: '0 auto'}}/>
                               </View>
                             ),

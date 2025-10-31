@@ -1,124 +1,167 @@
 {
-    "pcf": {
-        "以下为MIZUDO":{},
-        "RP009A0N": {
-            "models": ["WP800A0G","WP1000A0G","WD800A0G","WP800A1G","WP1000A1G","WD800A1G"], 
-            "amazon": "https://www.amazon.com/dp/B0D3GBM3LY", 
-            "fogatti": "https://watercomfortdepot.com/products/pcf-filter-replacement-cartridge",
-            "maxDays": 360,
-            "remindPercentage": 95
-        },
-        "RP010A0N": {
-            "models": ["WD600A0W","WP600A0W","WP800A1W","WP1000A1W","WD600A2W","WP600A2W","WP800A2W","WP1000A2W"], 
-            "amazon": "https://www.amazon.com/dp/B0DPG6JR2P", 
-            "fogatti": "https://watercomfortdepot.com/products/pcf-filter-for-mizudo-pureflo-megaflo-mini-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system",
-            "maxDays": 360,
-            "remindPercentage": 95
-        },
-        
-        "以下为Electrolux":{},
-        "ERP001A0N": {
-            "models": ["EWP600A0W", "EWP800A0W", "EWP1000A0W"],
-            "maxDays": 360,
-            "remindPercentage": 95
-            
-        }
+    "defaultPCF": {
+        "name": "PCF",
+        "models": [], 
+        "amazon": "", 
+        "fogatti": "",
+        "maxDays": 360,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the PCF button for 3 seconds to reset the filter lifetime."
     },
-    "ro": {
-        "以下为MIZUDO":{},
-        "RP007A0N": {
-            "models": ["WP800A0G", "WD800A0G", "WP800A1G", "WD800A1G"], 
-            "amazon": "https://www.amazon.com/dp/B0D3GBJKB7", 
-            "fogatti": "https://watercomfortdepot.com/products/800gpd-ro-filter-replacement-cartridge",
-            "maxDays": 1080,
-            "remindPercentage": 95
-        },
-        "RP008A0N": {
-            "models": ["WP1000A0G", "WP1000A1G"], 
-            "amazon": "https://www.amazon.com/dp/B0D3GDB334", 
-            "fogatti": "https://watercomfortdepot.com/products/1000gpd-ro-filter-replacement-cartridge",
-            "maxDays": 1080,
-            "remindPercentage": 95
-        },
-        "RP011A0N": {
-            "models": ["WD600A0W", "WD600A2W"], 
-            "amazon": "https://www.amazon.com/dp/B0DJS77D62", 
-            "fogatti": "https://watercomfortdepot.com/products/ro-filter-for-mizudo-pureflo-400g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system",
-            "maxDays": 720,
-            "remindPercentage": 95
-        },
-        "RP012A0N": {
-            "models": ["WP600A0W", "WP600A2W"], 
-            "amazon": "https://www.amazon.com/dp/B0DPG78585", 
-            "fogatti": "https://watercomfortdepot.com/products/ro-filter-for-mizudo-pureflo-600g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system",
-            "maxDays": 720,
-            "remindPercentage": 95
-        },
-        "RP013A0N": {
-            "models": ["WP800A1W", "WP800A2W"], 
-            "amazon": "https://www.amazon.com/dp/B0DPG6PSHM", 
-            "fogatti": "https://watercomfortdepot.com/products/ro-filter-for-mizudo-megaflo-mini-800g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system",
-            "maxDays": 1080,
-            "remindPercentage": 95
-        },
-        "RP014A0N": {
-            "models": ["WP1000A1W", "WP1000A2W"], 
-            "amazon": "https://www.amazon.com/dp/B0DJS6VCJ6", 
-            "fogatti": "https://watercomfortdepot.com/products/ro-filter-for-mizudo-megaflo-mini-1000g-reverse-osmosis-water-filter-tankless-ro-water-filtration-system-under-sink",
-            "maxDays": 1080,
-            "remindPercentage": 95
-        },
+    "以下为MIZUDO PCF":{},
+    "RP009A0N": {
+        "name": "PCF",
+        "models": ["WP800A0G","WP1000A0G","WD800A0G","WP800A1G","WP1000A1G","WD800A1G"], 
+        "amazon": "https://www.amazon.com/dp/B0D3GBM3LY", 
+        "fogatti": "https://watercomfortdepot.com/products/pcf-filter-replacement-cartridge",
+        "maxDays": 360,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the PCF button for 3 seconds to reset the filter lifetime."
+    },
+    "RP010A0N": {
+        "name": "PCF",
+        "models": ["WD600A0W","WP600A0W","WP800A1W","WP1000A1W","WD600A2W","WP600A2W","WP800A2W","WP1000A2W"], 
+        "amazon": "https://www.amazon.com/dp/B0DPG6JR2P", 
+        "fogatti": "https://watercomfortdepot.com/products/pcf-filter-for-mizudo-pureflo-megaflo-mini-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system",
+        "maxDays": 360,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the PCF button for 3 seconds to reset the filter lifetime."
+    },
+    "以下为Electrolux PCF":{},
+    "ERP001A0N": {
+        "name": "PCF",
+        "models": ["EWP600A0W", "EWP800A0W", "EWP1000A0W"],
+        "maxDays": 360,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the PCF button for 3 seconds to reset the filter lifetime."
+    },
 
-        "RP015A0N": {
-            "models": ["WP1200A1G"], 
-            "amazon": "", 
-            "fogatti": "",
-            "maxDays": 1080,
-            "remindPercentage": 95
-        },
-
-        "以下为Electrolux":{},
-        "ERP002A0N": {
-            "models": ["EWP600A0W"],
-            "amazon": "",
-            "fogatti": "",
-            "maxDays": 720,
-            "remindPercentage": 95
-        },
-        "ERP003A0N": {
-            "models": ["EWP800A0W"],
-            "amazon": "",
-            "fogatti": "",
-            "maxDays": 1080,
-            "remindPercentage": 95
-        },
-        "ERP004A0N": {
-            "models": ["EWP1000A0W"],
-            "amazon": "",
-            "fogatti": "",
-            "maxDays": 1080,
-            "remindPercentage": 95
-        },
-        "ERP007A0N": {
-            "models": ["EWP1200C0W"],
-            "amazon": "",
-            "fogatti": "",
-            "maxDays": 720,
-            "remindPercentage": 98
-        },
-        "ERP010A0N": {
-            "models": ["EWD600A0W"],
-            "amazon": "",
-            "fogatti": "",
-            "maxDays": 730,
-            "remindPercentage": 95
-        },
-        "ERP011A0N": {
-            "models": ["EWD800A0W"],
-            "amazon": "",
-            "fogatti": "",
-            "maxDays": 730,
-            "remindPercentage": 95
-        }
+    "defaultRO": {
+        "name": "RO",
+        "models": [], 
+        "amazon": "", 
+        "fogatti": "",
+        "maxDays": 1080,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "以下为MIZUDO RO":{},
+    "RP007A0N": {
+        "name": "RO",
+        "models": ["WP800A0G", "WD800A0G", "WP800A1G", "WD800A1G"], 
+        "amazon": "https://www.amazon.com/dp/B0D3GBJKB7", 
+        "fogatti": "https://watercomfortdepot.com/products/800gpd-ro-filter-replacement-cartridge",
+        "maxDays": 1080,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "RP008A0N": {
+        "name": "RO",
+        "models": ["WP1000A0G", "WP1000A1G"], 
+        "amazon": "https://www.amazon.com/dp/B0D3GDB334", 
+        "fogatti": "https://watercomfortdepot.com/products/1000gpd-ro-filter-replacement-cartridge",
+        "maxDays": 1080,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "RP011A0N": {
+        "name": "RO",
+        "models": ["WD600A0W", "WD600A2W"], 
+        "amazon": "https://www.amazon.com/dp/B0DJS77D62", 
+        "fogatti": "https://watercomfortdepot.com/products/ro-filter-for-mizudo-pureflo-400g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system",
+        "maxDays": 720,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "RP012A0N": {
+        "name": "RO",
+        "models": ["WP600A0W", "WP600A2W"], 
+        "amazon": "https://www.amazon.com/dp/B0DPG78585", 
+        "fogatti": "https://watercomfortdepot.com/products/ro-filter-for-mizudo-pureflo-600g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system",
+        "maxDays": 720,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "RP013A0N": {
+        "name": "RO",
+        "models": ["WP800A1W", "WP800A2W"], 
+        "amazon": "https://www.amazon.com/dp/B0DPG6PSHM", 
+        "fogatti": "https://watercomfortdepot.com/products/ro-filter-for-mizudo-megaflo-mini-800g-reverse-osmosis-water-filter-tankless-under-sink-ro-water-filtration-system",
+        "maxDays": 1080,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "RP014A0N": {
+        "name": "RO",
+        "models": ["WP1000A1W", "WP1000A2W"], 
+        "amazon": "https://www.amazon.com/dp/B0DJS6VCJ6", 
+        "fogatti": "https://watercomfortdepot.com/products/ro-filter-for-mizudo-megaflo-mini-1000g-reverse-osmosis-water-filter-tankless-ro-water-filtration-system-under-sink",
+        "maxDays": 1080,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "RP015A0N": {
+        "name": "RO",
+        "models": ["WP1200A1G"], 
+        "amazon": "", 
+        "fogatti": "",
+        "maxDays": 1080,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "以下为Electrolux RO":{},
+    "ERP002A0N": {
+        "name": "RO",
+        "models": ["EWP600A0W"],
+        "amazon": "",
+        "fogatti": "",
+        "maxDays": 720,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "ERP003A0N": {
+        "name": "RO",
+        "models": ["EWP800A0W"],
+        "amazon": "",
+        "fogatti": "",
+        "maxDays": 1080,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "ERP004A0N": {
+        "name": "RO",
+        "models": ["EWP1000A0W"],
+        "amazon": "",
+        "fogatti": "",
+        "maxDays": 1080,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "ERP007A0N": {
+        "name": "All-in-One",
+        "models": ["EWP1200C0W"],
+        "amazon": "",
+        "fogatti": "",
+        "maxDays": 720,
+        "remindPercentage": 98,
+        "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
+    },
+    "ERP010A0N": {
+        "name": "All-in-One",
+        "models": ["EWD600A0W"],
+        "amazon": "",
+        "fogatti": "",
+        "maxDays": 730,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 5 seconds to reset the filter lifetime."
+    },
+    "ERP011A0N": {
+        "name": "All-in-One",
+        "models": ["EWD800A0W"],
+        "amazon": "",
+        "fogatti": "",
+        "maxDays": 730,
+        "remindPercentage": 95,
+        "resetGuide": "Press and hold the RO button for 5 seconds to reset the filter lifetime."
     }
 }

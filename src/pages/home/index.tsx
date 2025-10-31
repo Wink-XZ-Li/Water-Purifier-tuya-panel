@@ -8,7 +8,6 @@ import Svg, { Icon } from '@ray-js/svg';
 import Strings from '@/i18n';
 import { FilterType } from './filter';
 import ActionSheet from '@ray-js/components-ty-actionsheet';
-import { getFilterLink } from './filter';
 import productConfig from '../../configuration/productConfig.json';
 import filterConfig from '../../configuration/filterConfig.json';
 import Tabs from '@ray-js/components-ty-tabs';
@@ -105,7 +104,12 @@ export function Home() {
   const washStateType = typeof(washState);
   
   const modelStr = dpState['model'];
+
+  // note： 部分产品支持7.5h循环冲洗，以及24h循环冲洗，部分产品仅支持24h循环冲洗，注意区分！！！
   const flushTimer = dpState['flush_timer'];
+  const flushTimer24 = dpState['flush_timer_24'];
+  const flushTimer7_5 = dpState['flush_timer_7_5'];
+  const flushTimerType = dpState['flush_timer_type'];
 
   // mini款800&1000
   const waterQuality = dpState['pure_water_quality'];
@@ -145,8 +149,11 @@ export function Home() {
   const mainUiConfig = configuration.mainUiConfig;
   const image = images[product_config.imageUrl];
   // 滤芯配置
-  const pcf_config = filterConfig.pcf[product_config.pcfFilter];
-  const ro_config = filterConfig.ro[product_config.roFilter];
+  const pcf_config = filterConfig[product_config.pcfFilter] !==undefined ? filterConfig[product_config.pcfFilter]: filterConfig["defaultPCF"];
+  const ro_config = filterConfig[product_config.roFilter] !==undefined ? filterConfig[product_config.roFilter]: filterConfig["defaultRO"];
+
+  console.log("PCF Config:", pcf_config)
+  console.log("RO Config:", ro_config)
 
   // 计算属性
   const disableHeat =  (fault !== 0)
@@ -370,8 +377,8 @@ export function Home() {
                 okText: 'Buy Now',
                 cancelText: 'OK',
                 onOk() {
-                  const roUrl = getFilterLink(modelStr, '0').fogatti;
-                  const pcfUrl = getFilterLink(modelStr, '1').fogatti;
+                  const roUrl = ro_config.fogatti;
+                  const pcfUrl = pcf_config.fogatti;
                   if ((roFiltertime <= 10)&&(pcfFiltertime <= 10)) {
                     // 弹出选择按钮
                     showActionSheet({
@@ -525,7 +532,10 @@ export function Home() {
           style={{gridTemplateColumns: mainUiConfig.hotWaterTemp?'repeat(3, 1fr)':'repeat(2, 1fr)'}}>
             <View className={`${styles.stateTitle} ${styles.stateIcom}`} 
             style={{}}
-            >TDS Value</View>
+            >
+              <Text>Filtered</Text>
+              <Text>TDS Value</Text>
+            </View>
             <View className={`${styles.stateTitle} ${styles.stateIcom}`} onClick={() => {
               popupPureWaterInfo.open({
                 header: 'Water Quality Classification',
@@ -598,7 +608,7 @@ export function Home() {
                 </View>
                 <View className={styles.filterLifeText}>{pcfFiltertime}%</View>
               </View>
-              <View className={styles.filterText}>PCF</View>
+              <View className={styles.filterText}>{pcf_config.name}</View>
             </Button>}
 
             {mainUiConfig.ro &&
@@ -631,7 +641,7 @@ export function Home() {
                   {/* <Text style={{opacity: 0}}>%</Text> */}
                   {roFiltertime}%</View>
               </View>
-              <View className={styles.filterText}>RO</View>
+              <View className={styles.filterText}>{ro_config.name}</View>
             </Button>
             }
           </View>
@@ -774,7 +784,69 @@ export function Home() {
         {/* 冲洗模式 */}
         {(mainUiConfig.cleanFilter || mainUiConfig.recycledFlushing || mainUiConfig.scheduledFlushing) &&
         <View className={`${styles.stateAndControlSection} ${styles.baseSection} ${mainUiConfig.sectionBorder&&styles.sectionBorder}`}>
-          <View className={styles.sectionTitle} id='冲洗'>Flush Mode</View>
+          <View className={styles.sectionTitle} id='冲洗'
+          style={{flexDirection: 'row', alignItems: 'center'}}
+           onClick={() => {
+            // if (mainUiConfig.scheduledFlushing) {
+              popupFlushMode.open({
+                header: 'Flush Mode',
+                headerStyle: {textAlign: 'center', whiteSpace: 'nowrap'},
+                okText: '',
+                cancelText: 'OK',
+                content: (
+                  <View style={{ padding: 16 , alignItems: 'flex-start', flexDirection: 'column', display: 'flex'}}>
+                    <View className={styles.infoSection}>
+                      {/* <Text className={styles.infoSectionTitle}>Smart Flush:\n</Text> */}
+                      <Text className={styles.infoBodyText}>
+                      The reverse osmosis membrane features a filtration capacity as fine as 0.0001 microns, effectively removing contaminants.\nThe flush mode helps expel accumulated contaminants from the membrane, ensuring a longer filter lifespan and delivering purer water.
+                      </Text>
+                    </View>
+
+                    {mainUiConfig.supportScheduledFlushing7_5&&//定时冲洗描述
+                    <>
+                    <View className={styles.infoSection}>
+                      <Text className={styles.infoSectionTitle}>Fresh Mode:\n</Text>
+                      <Text className={styles.infoBodyText}>
+                      Increases rinsing frequency for fresher and purer water, but may shorten filter lifespan. Recommended for frequent-use scenarios.
+                      </Text>
+                    </View>
+
+                    <View className={styles.infoSection}>
+                      <Text className={styles.infoSectionTitle}>Eco Mode:\n</Text>
+                      <Text className={styles.infoBodyText}>
+                      Reduces rinsing frequency to extend filter lifespan, but may result in slightly higher TDS or less fresh water. Recommended for low-use scenarios.
+                      </Text>
+                    </View>
+
+                    <View className={styles.infoSection}>
+                      <Text className={styles.infoSectionTitle}>Tip:\n</Text>
+                      <Text className={styles.infoBodyText}>
+                      Choose the rinsing frequency that best suits your drinking habits — balancing between fresher, purer water and longer filter lifespan.
+                      </Text>
+                    </View>
+                    </>}
+
+                    {mainUiConfig.recycledFlushing&&//回流冲洗描述
+                    <View className={styles.infoSection}>
+                      <Text className={styles.infoSectionTitle}>Recycle Flushing:\n</Text>
+                      <Text className={styles.infoBodyText}>
+                      The recycled flushing function ensures that each cup of water is fresh and healthy. The system will automatically recycle fresh water and start lushing after it has dispensed water.
+                      </Text>
+                    </View>}
+                  </View>
+                ),
+              })
+            // }
+           }}
+          >Flush Mode
+          {/* {mainUiConfig.scheduledFlushing&& */}
+            <Svg style={{marginLeft: '5px'}} width='30' height='30' viewBox="0 0 1024 1024">
+              <path fill='black' fill-rule='nonzero' d="M512 0C229.23 0 0 229.23 0 512s229.23 512 512 512 512-229.23 512-512S794.77 0 512 0zM512 928c-229.75 0-416-186.25-416-416S282.25 96 512 96s416 186.25 416 416S741.75 928 512 928z" p-id="2360"></path>
+              <path fill='black' fill-rule='nonzero' d="M537.64 343.452c47.074 0 83.266-37.528 83.266-78.072 0-32.46-20.832-60.878-62.496-60.878-54.816 0-82.178 44.618-82.178 77.11C475.144 320.132 498.152 343.452 537.64 343.452z" p-id="2361"></path>
+              <path fill='black' fill-rule='nonzero' d="M533.162 728.934c-7.648 0-10.914-10.136-3.264-39.55l43.25-166.406c16.386-60.848 10.944-100.398-21.92-100.398-39.456 0-131.458 39.83-211.458 107.798l16.416 27.392c25.246-17.256 67.906-34.762 77.792-34.762 7.648 0 6.56 10.168 0 35.508l-37.746 158.292c-23.008 89.266 1.088 109.538 33.984 109.538 32.864 0 117.808-30.47 195.57-109.632l-18.656-25.34C575.354 716.714 543.05 728.934 533.162 728.934z" p-id="2362"></path>
+            </Svg>
+          </View>
+
           {mainUiConfig.cleanFilter&&
           <View className={styles.sectionItem} id='手动冲洗'>
             <View className={styles.sectionItemTitle}>
@@ -834,49 +906,87 @@ export function Home() {
           </View>
           }  
           
-          {mainUiConfig.recycledFlushing&&<Divider/>}
-          {mainUiConfig.scheduledFlushing&&
-          <Picker mode='time' style={{width: '100%', marginLeft: '10%'}}
-            onChange={(e) => {
-              const time = parseTimeToMinutes(e.detail.value)
-              actions['flush_timer'].set(time)
-            }}
-            value={formatTime(flushTimer)}
-            confirmText='Confirm'
-            cancelText='Cancel'
-          >
-            <View className={styles.sectionItem} id='零陈水'>
-              <View className={styles.sectionItemTitle}>
-                <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 5.48 5.48">
-                  <g>
-                    <path fill='black' fill-rule='nonzero' d="M2.04 2.89l-0.74 0.27 0.74 0.27 0.27 0.74 0.27 -0.74 0.74 -0.27 -0.74 -0.27 -0.27 -0.74 -0.27 0.74 0 0zm1.34 -0.15l0.17 -0.47 0.47 -0.17 -0.47 -0.17 -0.17 -0.47 -0.17 0.47 -0.47 0.17 0.47 0.17 0.17 0.47 0 0zm1.02 -1.16l0.29 -0.17c-0.17,-0.25 -0.38,-0.46 -0.63,-0.63l-0.17 0.29c0.2,0.14 0.37,0.31 0.51,0.51l-0 -0 -0 0zm0.35 0.98l0.34 0c-0.02,-0.3 -0.1,-0.59 -0.23,-0.86l-0.29 0.17c0.1,0.21 0.17,0.45 0.19,0.69l0 0zm-2.01 2.18c-1.11,0 -2.02,-0.91 -2.02,-2.02 0,-1.11 0.81,-1.92 1.85,-2.01l0 -0.34c-1.22,0.09 -2.18,1.1 -2.18,2.34 0,1.24 1.06,2.35 2.35,2.35 1.3,0 2.26,-0.97 2.34,-2.18l-0.34 0c-0.09,1.03 -0.95,1.85 -2.01,1.85l0 0 0 0zm1.02 -4.13c-0.27,-0.13 -0.56,-0.21 -0.86,-0.23l0 0.34c0.24,0.02 0.48,0.09 0.69,0.19l0.17 -0.29 0 0zm0 0l0 0 0 0z"/>
-                  </g>
-                </Svg>
-                <View className={styles.sectionItemText}>Scheduled Flushing/24h</View>
+          {(mainUiConfig.recycledFlushing&&mainUiConfig.scheduledFlushing)&&<Divider/>}
+          {/* 支持24h定时冲洗与7.5h定时冲洗 */}
+          {mainUiConfig.supportScheduledFlushing7_5 && 
+            <>
+            {flushTimerType==='24'&&
+            <Picker mode='time' style={{width: '100%', marginLeft: '10%'}}
+              onChange={(e) => {
+                const time = parseTimeToMinutes(e.detail.value)
+                actions['flush_timer_24'].set(time)
+              }}
+              value={formatTime(flushTimer24)}
+              confirmText='Confirm'
+              cancelText='Cancel'
+            >
+              <View className={styles.sectionItem} id='定时冲洗24'>
+                <View className={styles.sectionItemTitle}>
+                  <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 5.48 5.48">
+                    <g>
+                      <path fill='black' fill-rule='nonzero' d="M2.04 2.89l-0.74 0.27 0.74 0.27 0.27 0.74 0.27 -0.74 0.74 -0.27 -0.74 -0.27 -0.27 -0.74 -0.27 0.74 0 0zm1.34 -0.15l0.17 -0.47 0.47 -0.17 -0.47 -0.17 -0.17 -0.47 -0.17 0.47 -0.47 0.17 0.47 0.17 0.17 0.47 0 0zm1.02 -1.16l0.29 -0.17c-0.17,-0.25 -0.38,-0.46 -0.63,-0.63l-0.17 0.29c0.2,0.14 0.37,0.31 0.51,0.51l-0 -0 -0 0zm0.35 0.98l0.34 0c-0.02,-0.3 -0.1,-0.59 -0.23,-0.86l-0.29 0.17c0.1,0.21 0.17,0.45 0.19,0.69l0 0zm-2.01 2.18c-1.11,0 -2.02,-0.91 -2.02,-2.02 0,-1.11 0.81,-1.92 1.85,-2.01l0 -0.34c-1.22,0.09 -2.18,1.1 -2.18,2.34 0,1.24 1.06,2.35 2.35,2.35 1.3,0 2.26,-0.97 2.34,-2.18l-0.34 0c-0.09,1.03 -0.95,1.85 -2.01,1.85l0 0 0 0zm1.02 -4.13c-0.27,-0.13 -0.56,-0.21 -0.86,-0.23l0 0.34c0.24,0.02 0.48,0.09 0.69,0.19l0.17 -0.29 0 0zm0 0l0 0 0 0z"/>
+                    </g>
+                  </Svg>
+                  <View className={styles.sectionItemText}>Scheduled Flushing/24h</View>
+                </View>
+                <View className={styles.arrowText}>
+                  <View className={styles.sectionItemText}>{formatTime(flushTimer24)}</View>
+                  <Arrow/>
+                </View>
               </View>
-              <View className={styles.arrowText}>
-                <View className={styles.sectionItemText}>{formatTime(flushTimer)}</View>
-                <Arrow/>
-              </View>
-            </View>
-          </Picker>}
-
-          {/* {mainUiConfig.holidayMdoe&&
-          <View className={styles.sectionItem} id='假日模式'>
-            <View className={styles.infoItem}>
-              <View className={styles.sectionItemText}>Holiday Mode</View>
+            </Picker>
+            }
+            {flushTimerType==='7_5'&&
+            <View className={styles.sectionItem} id='定时冲洗7.5'>
+            <View className={styles.sectionItemTitle}>
+              <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 5.48 5.48">
+                <g>
+                  <path fill='black' fill-rule='nonzero' d="M2.04 2.89l-0.74 0.27 0.74 0.27 0.27 0.74 0.27 -0.74 0.74 -0.27 -0.74 -0.27 -0.27 -0.74 -0.27 0.74 0 0zm1.34 -0.15l0.17 -0.47 0.47 -0.17 -0.47 -0.17 -0.17 -0.47 -0.17 0.47 -0.47 0.17 0.47 0.17 0.17 0.47 0 0zm1.02 -1.16l0.29 -0.17c-0.17,-0.25 -0.38,-0.46 -0.63,-0.63l-0.17 0.29c0.2,0.14 0.37,0.31 0.51,0.51l-0 -0 -0 0zm0.35 0.98l0.34 0c-0.02,-0.3 -0.1,-0.59 -0.23,-0.86l-0.29 0.17c0.1,0.21 0.17,0.45 0.19,0.69l0 0zm-2.01 2.18c-1.11,0 -2.02,-0.91 -2.02,-2.02 0,-1.11 0.81,-1.92 1.85,-2.01l0 -0.34c-1.22,0.09 -2.18,1.1 -2.18,2.34 0,1.24 1.06,2.35 2.35,2.35 1.3,0 2.26,-0.97 2.34,-2.18l-0.34 0c-0.09,1.03 -0.95,1.85 -2.01,1.85l0 0 0 0zm1.02 -4.13c-0.27,-0.13 -0.56,-0.21 -0.86,-0.23l0 0.34c0.24,0.02 0.48,0.09 0.69,0.19l0.17 -0.29 0 0zm0 0l0 0 0 0z"/>
+                </g>
+              </Svg>
+              <View className={styles.sectionItemText}>Scheduled Flushing/7.5h</View>
             </View>
             <Switch 
-              color={buttonColor}
-              checked={holidayMdoe}
-              // disabled={disableHeat}
+              color={mainUiConfig.themeColor}
+              checked={flushTimer7_5}
               onChange={ e =>
-                actions['holiday_mdoe'].set(e.detail.value)
+                actions['flush_timer_7_5'].set(e.detail.value)
               }
             />
           </View>
-          } */}
-
+            }
+            </>
+          }
+          {/* 仅支持24h定时冲洗 */}
+          {!mainUiConfig.supportScheduledFlushing7_5 && 
+            <>
+            {mainUiConfig.scheduledFlushing&&
+            <Picker mode='time' style={{width: '100%', marginLeft: '10%'}}
+              onChange={(e) => {
+                const time = parseTimeToMinutes(e.detail.value)
+                actions['flush_timer'].set(time)
+              }}
+              value={formatTime(flushTimer)}
+              confirmText='Confirm'
+              cancelText='Cancel'
+            >
+              <View className={styles.sectionItem} id='定时冲洗'>
+                <View className={styles.sectionItemTitle}>
+                  <Svg className={styles.sectionTitleLogo}  width='40' height='40' viewBox="0 0 5.48 5.48">
+                    <g>
+                      <path fill='black' fill-rule='nonzero' d="M2.04 2.89l-0.74 0.27 0.74 0.27 0.27 0.74 0.27 -0.74 0.74 -0.27 -0.74 -0.27 -0.27 -0.74 -0.27 0.74 0 0zm1.34 -0.15l0.17 -0.47 0.47 -0.17 -0.47 -0.17 -0.17 -0.47 -0.17 0.47 -0.47 0.17 0.47 0.17 0.17 0.47 0 0zm1.02 -1.16l0.29 -0.17c-0.17,-0.25 -0.38,-0.46 -0.63,-0.63l-0.17 0.29c0.2,0.14 0.37,0.31 0.51,0.51l-0 -0 -0 0zm0.35 0.98l0.34 0c-0.02,-0.3 -0.1,-0.59 -0.23,-0.86l-0.29 0.17c0.1,0.21 0.17,0.45 0.19,0.69l0 0zm-2.01 2.18c-1.11,0 -2.02,-0.91 -2.02,-2.02 0,-1.11 0.81,-1.92 1.85,-2.01l0 -0.34c-1.22,0.09 -2.18,1.1 -2.18,2.34 0,1.24 1.06,2.35 2.35,2.35 1.3,0 2.26,-0.97 2.34,-2.18l-0.34 0c-0.09,1.03 -0.95,1.85 -2.01,1.85l0 0 0 0zm1.02 -4.13c-0.27,-0.13 -0.56,-0.21 -0.86,-0.23l0 0.34c0.24,0.02 0.48,0.09 0.69,0.19l0.17 -0.29 0 0zm0 0l0 0 0 0z"/>
+                    </g>
+                  </Svg>
+                  <View className={styles.sectionItemText}>Scheduled Flushing/24h</View>
+                </View>
+                <View className={styles.arrowText}>
+                  <View className={styles.sectionItemText}>{formatTime(flushTimer)}</View>
+                  <Arrow/>
+                </View>
+              </View>
+            </Picker>}
+            </>
+          }
         </View>
         }
 
@@ -888,10 +998,9 @@ export function Home() {
           navigateToHistory()
         }
         >
-          
           <View className={styles.sectionTitle} id='报告'
           style={{paddingBottom: '30rpx'}}
-          >Unsing Report</View>
+          >Using Report</View>
           <Svg style={{marginRight: '6px',  width: '49px', height:'19px'}} viewBox="0 0 5.17 9.44">
             <path fill='black' fill-rule='nonzero' d="M5.04 4.44l-4.56 -4.44 -0.47 0.48 4.37 4.24 -4.37 4.24 0.47 0.49 4.57 -4.45c0.02,-0.02 0.05,-0.05 0.06,-0.07 0.11,-0.18 0.07,-0.34 -0.07,-0.49z"/>
           </Svg>
