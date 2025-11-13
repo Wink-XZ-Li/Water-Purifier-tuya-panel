@@ -125,13 +125,13 @@ export function Home() {
   const powerSaving = dpState['power_saving'];
 
   const highAltitude = dpState['high_altitude'];
-  if (highAltitude !== undefined) {
-    if (highAltitude) {
-      heatLevels6[5].text = '189℉'
-    } else {
-      heatLevels6[5].text = '203℉'
-    }
-  }
+  // if (highAltitude !== undefined) {
+  //   if (highAltitude) {
+  //     heatLevels6[5].text = '189℉'
+  //   } else {
+  //     heatLevels6[5].text = '203℉'
+  //   }
+  // }
 
   // 净热款
   const tempCurrent = dpState['temp_current'];
