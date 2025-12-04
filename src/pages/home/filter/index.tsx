@@ -31,7 +31,8 @@ export function FilterManage(props) {
       // 滤芯配置
     const pcf_config = filterConfig[product_config.pcfFilter] !==undefined ? filterConfig[product_config.pcfFilter]: filterConfig["defaultPCF"];
     const ro_config = filterConfig[product_config.roFilter] !==undefined ? filterConfig[product_config.roFilter]: filterConfig["defaultRO"];
-
+    console.log('pcf',pcf_config)
+    console.log('ro',ro_config)
     const filter = type === "0" ? ro_config : pcf_config;
     const title = filter.name+' Filter';
     const filterTime = type === "0"?roFiltertime:pcfFiltertime;
@@ -41,8 +42,8 @@ export function FilterManage(props) {
     else if (pid === 'kaaz0cxdgvroa6qp') { resetImageUrl = type === "0"?require('src/images/G810-reset-ro.png'):require('src/images/G810-reset-pcf.png')}
     else if (pid === 'wcssrdbcufckhbzk') { resetImageUrl = type === "0"?require('src/images/F-reset-ro.png'):require('src/images/F-reset-pcf.png')}
     // TODO: 图片待替换
-    else if (pid === 'z0xsaptrkwdyjy9i') { resetImageUrl = type === "0"?require('src/images/F-reset-ro.png'):require('src/images/F-reset-pcf.png')}
-    else if (pid === 'ptrtzvzn3e7u8ijm') { resetImageUrl = type === "0"?require('src/images/FH-reset-ro.png'):require('src/images/FH-reset-pcf.png')}
+    // else if (pid === 'z0xsaptrkwdyjy9i') { resetImageUrl = type === "0"?require('src/images/F-reset-ro.png'):require('src/images/F-reset-pcf.png')}
+    // else if (pid === 'ptrtzvzn3e7u8ijm') { resetImageUrl = type === "0"?require('src/images/FH-reset-ro.png'):require('src/images/FH-reset-pcf.png')}
 
     const roColor = roFiltertime>5?'black':'red'
     const pcfColor = pcfFiltertime>5?'black':'red'
@@ -118,7 +119,7 @@ export function FilterManage(props) {
                     className={styles.sectionItem} id='PCF'
                     disabled={filter===undefined || filter.fogatti===""}
                     onClick={ () => {
-                        /// 暂时只支持独立张商城，后续需要增加亚马逊链接再加入
+                        /// 暂时只支持独立站商城，后续需要增加亚马逊链接再加入
                         openURL({url:filter.fogatti})
                         // showActionSheet({
                         //     itemList: ['Amazon', 'MIZUDO Store'],
@@ -154,6 +155,7 @@ export function FilterManage(props) {
                 
                 <Button className={styles.sectionItem} id='RO'
                     onClick={ () => {
+                        console.log('resetImageUrl', resetImageUrl)
                         Popup.open({
                             header: 'How to reset filter lifetime',
                             headerStyle: {fontSize: 'large', whiteSpace: 'nowrap'},
@@ -162,7 +164,7 @@ export function FilterManage(props) {
                             content: (
                               <View style={{ padding: 16 , alignItems: 'center', flexDirection: 'column', display: 'flex'}}>
                                 <View className={styles.infoBodyText}>{filter.resetGuide}</View>
-                                <Image src={resetImageUrl} style={{margin: '0 auto'}}/>
+                                {resetImageUrl!==''&&<Image src={resetImageUrl} style={{margin: '0 auto'}}/>}
                               </View>
                             ),
                           })

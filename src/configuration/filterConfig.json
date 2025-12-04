@@ -31,6 +31,8 @@
     "ERP001A0N": {
         "name": "PCF",
         "models": ["EWP600A0W", "EWP800A0W", "EWP1000A0W"],
+        "amazon": "https://www.amazon.com/dp/B0FSKZ8RQL", 
+        "fogatti": "https://www.amazon.com/dp/B0FSKZ8RQL",
         "maxDays": 360,
         "remindPercentage": 95,
         "resetGuide": "Press and hold the PCF button for 3 seconds to reset the filter lifetime."
@@ -122,8 +124,8 @@
     "ERP003A0N": {
         "name": "RO",
         "models": ["EWP800A0W"],
-        "amazon": "",
-        "fogatti": "",
+        "amazon": "https://www.amazon.com/dp/B0FSKXK4S7",
+        "fogatti": "https://www.amazon.com/dp/B0FSKXK4S7",
         "maxDays": 1080,
         "remindPercentage": 95,
         "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
@@ -131,17 +133,17 @@
     "ERP004A0N": {
         "name": "RO",
         "models": ["EWP1000A0W"],
-        "amazon": "",
-        "fogatti": "",
+        "amazon": "https://www.amazon.com/dp/B0FSKYGQR7",
+        "fogatti": "https://www.amazon.com/dp/B0FSKYGQR7",
         "maxDays": 1080,
         "remindPercentage": 95,
         "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."
     },
     "ERP007A0N": {
         "name": "All-in-One",
-        "models": ["EWP1200C0W"],
-        "amazon": "",
-        "fogatti": "",
+        "models": ["EWP600A0W"],
+        "amazon": "https://www.amazon.com/dp/B0FSL1HT2C",
+        "fogatti": "https://www.amazon.com/dp/B0FSL1HT2C",
         "maxDays": 720,
         "remindPercentage": 98,
         "resetGuide": "Press and hold the RO button for 3 seconds to reset the filter lifetime."

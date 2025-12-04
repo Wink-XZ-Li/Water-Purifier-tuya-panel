@@ -438,7 +438,7 @@
         "serialName": "PureEssence 600GPD",
         "imageUrl": "src/images/E_F800.png",
         "pcfFilter": "ERP001A0N",
-        "roFilter": "ERP002A0N"
+        "roFilter": "ERP007A0N"
       },
       "EWP800A0W": {
         "serialName": "PureEssence 800GPD",
@@ -496,7 +496,7 @@
         "serialName": "PureOne 1200GPD",
         "imageUrl": "src/images/E_one.png",
         "pcfFilter": null,
-        "roFilter": "ERP007A0N"
+        "roFilter": "ERP006A0N"
       },
       "default": {
         "serialName": "PureOne",

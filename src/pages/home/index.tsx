@@ -125,6 +125,9 @@ export function Home() {
   const powerSaving = dpState['power_saving'];
 
   const highAltitude = dpState['high_altitude'];
+
+  // 禁止编辑水龙头属性
+  const disableEditFaucetProp = dpState['disable_edit_faucet_prop'];
   // if (highAltitude !== undefined) {
   //   if (highAltitude) {
   //     heatLevels6[5].text = '189℉'
@@ -175,7 +178,7 @@ export function Home() {
     var title = ""
     var content = ""
     if (fault !== 0) {
-      if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk' || pid === 'z0xsaptrkwdyjy9i' || pid === 'rdrqs27qctf11vmn') { 
+      if (pid === 'dknfai4pqtl1k2hf' || pid === 'kaaz0cxdgvroa6qp' || pid === 'wcssrdbcufckhbzk' || pid === 'z0xsaptrkwdyjy9i' || pid === 'rdrqs27qctf11vmn' || pid === 'bijpoxamfcgyokmh' || pid === 'oekfxto4k2yaglsd' || pid === 'lja0jbxm9hdhargs') { 
         if (binaryFault[0]==='1') {
           title = "Error Code : E8"
           content = "Faucet and water purifier communication failure. Please check the connection."
@@ -652,7 +655,12 @@ export function Home() {
         <View className={`${styles.stateAndControlSection} ${styles.baseSection} ${mainUiConfig.sectionBorder&&styles.sectionBorder}`}>
           <View className={styles.sectionTitle} id='杯量'>Cup Volume Selection</View>
           <View style={{width: '100%', height: '120rpx', display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
-            <View style={{width: '90%', position: 'absolute'}}>
+            <View style={{
+              width: '90%', 
+              position: 'absolute', 
+              // 出水中，禁止操作
+              pointerEvents: disableEditFaucetProp?'none':"auto"
+            }}>
               <Tabs.SegmentedPicker
               className={styles.tab}
               // height='20px'
@@ -661,7 +669,7 @@ export function Home() {
               tabActiveTextStyle={{color: '#fff'}}
               tabDefaultColor={'#fff'}
               activeKey={flow}
-              tabBarUnderlineStyle={{ backgroundColor: mainUiConfig.themeColor,borderRadius: '16px'}}
+              tabBarUnderlineStyle={{ backgroundColor: disableEditFaucetProp?mainUiConfig.themeColorOp:mainUiConfig.themeColor,borderRadius: '16px'}}
               onChange={(activekey) => {
                 actions['flow'].set(activekey);
               }}
@@ -672,7 +680,7 @@ export function Home() {
                 ))}
               </Tabs.SegmentedPicker>
             </View>
-            <View className={styles.tabBorder} style={{borderColor: mainUiConfig.themeColor}}/>
+            <View className={styles.tabBorder} style={{borderColor: disableEditFaucetProp?mainUiConfig.themeColorOp:mainUiConfig.themeColor}}/>
           </View>
         </View>
         }
@@ -694,7 +702,7 @@ export function Home() {
             <Switch 
               color={mainUiConfig.themeColor}
               checked={heat}
-              disabled={disableHeat}
+              disabled={disableHeat||disableEditFaucetProp}
               onChange={ e =>
                 actions['heat'].set(e.detail.value)
               }
@@ -706,7 +714,12 @@ export function Home() {
           {/* 调温 */}
           {(mainUiConfig.heatingTemp4 || mainUiConfig.heatingTemp6) && 
           <View style={{width: '100%', height: '100rpx', display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
-            <View style={{width: '90%', position: 'absolute'}}>
+            <View style={{
+              width: '90%', 
+              position: 'absolute',
+              // 出水中，禁止操作
+              pointerEvents: disableEditFaucetProp?'none':"auto"
+            }}>
               <Tabs.SegmentedPicker
               disableMoveControls={disableHeat}
               className={styles.tab}
@@ -716,7 +729,7 @@ export function Home() {
               tabActiveTextStyle={{color: '#fff'}}
               tabDefaultColor={'#fff'}
               activeKey={heatLevel}
-              tabBarUnderlineStyle={{ backgroundColor: mainUiConfig.themeColor,borderRadius: '16px'}}
+              tabBarUnderlineStyle={{ backgroundColor: disableEditFaucetProp?mainUiConfig.themeColorOp:mainUiConfig.themeColor, borderRadius: '16px'}}
               onChange={(activekey) => {
                 actions['level'].set(activekey);
               }}
@@ -726,7 +739,7 @@ export function Home() {
                 }
               </Tabs.SegmentedPicker>
             </View>
-            <View className={styles.tabBorder} style={{borderColor: mainUiConfig.themeColor}}/>
+            <View className={styles.tabBorder} style={{borderColor: disableEditFaucetProp?mainUiConfig.themeColorOp:mainUiConfig.themeColor, }}/>
           </View>
           }
 
