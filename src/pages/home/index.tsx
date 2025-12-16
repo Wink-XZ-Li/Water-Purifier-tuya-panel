@@ -564,8 +564,8 @@ export function Home() {
             <View className={`${styles.stateValue} ${styles.stateIcom}`}
             style={{color: '#ffffff'}} 
             >{tdsOut} ppm</View>
-            {(waterQuality === 'good')&&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.blueText}`}>{Strings.getLang('good')}</View>}
-            {(waterQuality === 'bad')&&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.redText}`}>{Strings.getLang('bad')}</View>}
+            {(waterQuality === 'good' && tdsOut<166)&&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.blueText}`}>{Strings.getLang('good')}</View>}
+            {(waterQuality === 'bad' || tdsOut>=166)&&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.redText}`}>{Strings.getLang('bad')}</View>}
             
             {mainUiConfig.hotWaterTemp &&
             <View className={`${styles.stateValue} ${styles.stateIcom}`}
