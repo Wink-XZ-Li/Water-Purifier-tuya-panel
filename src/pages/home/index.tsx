@@ -559,21 +559,40 @@ export function Home() {
             >Hot Water Temperature</View>
             }
           </View>
-          <View className={styles.stateSection} 
-          style={{gridTemplateColumns: mainUiConfig.hotWaterTemp?'repeat(3, 1fr)':'repeat(2, 1fr)', backgroundColor: configuration.brand === "MIZUDO" ? 'rgba(100,175,210,0.4)': mainUiConfig.themeColor}}>
-            <View className={`${styles.stateValue} ${styles.stateIcom}`}
-            style={{color: '#ffffff'}} 
-            >{tdsOut} ppm</View>
-            {(waterQuality === 'good' && tdsOut<166)&&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.blueText}`}>{Strings.getLang('good')}</View>}
-            {(waterQuality === 'bad' || tdsOut>=166)&&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.redText}`}>{Strings.getLang('bad')}</View>}
-            
-            {mainUiConfig.hotWaterTemp &&
-            <View className={`${styles.stateValue} ${styles.stateIcom}`}
-            style={{color: 'red'}}
-            >{tempCurrent+' '+'℉'}</View>
-            }
+            {(pid==="kaaz0cxdgvroa6qp" || pid==="oekfxto4k2yaglsd") &&
+              <View className={styles.stateSection} 
+              style={{gridTemplateColumns: mainUiConfig.hotWaterTemp?'repeat(3, 1fr)':'repeat(2, 1fr)', backgroundColor: configuration.brand === "MIZUDO" ? 'rgba(100,175,210,0.4)': mainUiConfig.themeColor}}>
+                <View className={`${styles.stateValue} ${styles.stateIcom}`}
+                style={{color: '#ffffff'}} 
+                >{tdsOut} ppm</View>
+                {(waterQuality === 'good' && tdsOut<166)&&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.blueText}`}>{Strings.getLang('good')}</View>}
+                {(waterQuality === 'bad' || tdsOut>=166)&&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.redText}`}>{Strings.getLang('bad')}</View>}
+                
+                {mainUiConfig.hotWaterTemp &&
+                <View className={`${styles.stateValue} ${styles.stateIcom}`}
+                style={{color: 'red'}}
+                >{tempCurrent+' '+'℉'}</View>
+                }
 
-          </View>
+              </View>
+            }
+            {!(pid==="kaaz0cxdgvroa6qp" || pid==="oekfxto4k2yaglsd") &&
+              <View className={styles.stateSection} 
+              style={{gridTemplateColumns: mainUiConfig.hotWaterTemp?'repeat(3, 1fr)':'repeat(2, 1fr)', backgroundColor: configuration.brand === "MIZUDO" ? 'rgba(100,175,210,0.4)': mainUiConfig.themeColor}}>
+                <View className={`${styles.stateValue} ${styles.stateIcom}`}
+                style={{color: '#ffffff'}} 
+                >{tdsOut} ppm</View>
+                {waterQuality === 'good' &&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.blueText}`}>{Strings.getLang('good')}</View>}
+                {waterQuality === 'bad' &&<View className={`${styles.stateValue} ${styles.stateIcom} ${styles.redText}`}>{Strings.getLang('bad')}</View>}
+                
+                {mainUiConfig.hotWaterTemp &&
+                <View className={`${styles.stateValue} ${styles.stateIcom}`}
+                style={{color: 'red'}}
+                >{tempCurrent+' '+'℉'}</View>
+                }
+
+              </View>
+            }
         </View>
         }
 
