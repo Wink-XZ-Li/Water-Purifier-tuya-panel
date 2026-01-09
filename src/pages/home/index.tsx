@@ -814,7 +814,7 @@ export function Home() {
         }
         
         {/* 冲洗模式 */}
-        {(mainUiConfig.cleanFilter || mainUiConfig.recycledFlushing || mainUiConfig.scheduledFlushing) &&
+        {(mainUiConfig.cleanFilter || mainUiConfig.recycledFlushing || (mainUiConfig.scheduledFlushing && flushTimerType==='24')) &&
         <View className={`${styles.stateAndControlSection} ${styles.baseSection} ${mainUiConfig.sectionBorder&&styles.sectionBorder}`}>
           <View className={styles.sectionTitle} id='冲洗'
           style={{flexDirection: 'row', alignItems: 'center'}}
